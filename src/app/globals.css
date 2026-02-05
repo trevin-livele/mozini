@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+:root {
+  --copper: #2C5F63;
+  --copper-light: #3A7A7F;
+  --copper-dark: #1F4447;
+  --copper-pale: #E8F3F4;
+  --gold: #B8860B;
+  --cream: #FDF8F4;
+  --warm-white: #FFFBF7;
+  --dark: #1A1A1A;
+  --text: #444444;
+  --text-light: #777777;
+  --border: #EDEDED;
+  --bg-soft: #F5FAFB;
+  --red: #E74C3C;
+  --green: #27AE60;
+  --orange: #E67E22;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+  color: var(--text);
+  background: #fff;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-soft);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--copper);
+  border-radius: 4px;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+.animate-slideIn {
+  animation: slideIn 0.3s ease forwards;
+}
+
+.animate-bounce-once {
+  animation: bounce 0.3s ease;
+}
