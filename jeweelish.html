@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jeweelish - Gold Earrings & Designer Jewelry</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --copper: #C17F59;
+  --copper-light: #D4956E;
+  --copper-dark: #A66B48;
+  --gold: #B8860B;
+  --cream: #FDF8F4;
+  --warm-white: #FFFBF7;
+  --dark: #1A1A1A;
+  --text: #444444;
+  --text-light: #777777;
+  --border: #EDEDED;
+  --bg-soft: #F9F5F1;
+  --red: #E74C3C;
+  --green: #27AE60;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.12);
+  --radius: 4px;
+}
+
+body {
+  font-family: 'Jost', sans-serif;
+  color: var(--text);
+  background: #fff;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+img { max-width: 100%; display: block; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+/* ===== TOP BAR ===== */
+.top-bar {
+  background: var(--copper);
+  color: #fff;
+  font-size: 12px;
+  padding: 8px 0;
+  letter-spacing: 0.5px;
+}
+.top-bar .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.top-bar-right {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.top-bar-right select {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+}
+.top-bar-right select option { color: #333; }
+
+/* ===== HEADER ===== */
+.header {
+  background: #fff;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.header .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.search-box {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 30px;
+  padding: 8px 16px;
+  width: 220px;
+  gap: 8px;
+}
+.search-box input {
+  border: none;
+  outline: none;
+  font-family: inherit;
+  font-size: 14px;
+  width: 100%;
+  color: var(--text);
+}
+.search-box svg { flex-shrink: 0; color: var(--text-light); }
+
+.logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--dark);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.logo .gem {
+  width: 28px;
+  height: 28px;
+  background: var(--copper);
+  clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+  display: inline-block;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.header-actions .icon-btn {
+  position: relative;
+  color: var(--dark);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+}
+.icon-btn .badge {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  background: var(--copper);
+  color: #fff;
+  font-size: 10px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cart-amount { font-weight: 500; color: var(--dark); margin-left: 4px; }
+
+/* ===== NAV ===== */
+.main-nav {
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  padding: 0;
+}
+.main-nav .container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+.browse-categories {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border-right: 1px solid var(--border);
+}
+.browse-categories svg { width: 16px; height: 16px; }
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+.nav-links a {
+  padding: 14px 22px;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text);
+  transition: color 0.3s;
+  position: relative;
+  letter-spacing: 0.3px;
+}
+.nav-links a:hover, .nav-links a.active {
+  color: var(--copper);
+}
+.nav-links a.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 22px;
+  right: 22px;
+  height: 2px;
+  background: var(--copper);
+}
+
+/* ===== HERO SLIDER ===== */
+.hero {
+  position: relative;
+  height: 480px;
+  overflow: hidden;
+  background: var(--bg-soft);
+}
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+.hero-slide.active { opacity: 1; }
+.hero-content {
+  position: relative;
+  z-index: 2;
+  padding-left: 80px;
+  max-width: 500px;
+}
+.hero-label {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--copper);
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 52px;
+  font-weight: 700;
+  color: var(--dark);
+  line-height: 1.15;
+  margin-bottom: 16px;
+}
+.hero-desc {
+  font-size: 14px;
+  color: var(--text-light);
+  margin-bottom: 28px;
+  line-height: 1.7;
+}
+.btn-primary {
+  display: inline-block;
+  background: var(--copper);
+  color: #fff;
+  padding: 12px 32px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  transition: all 0.3s;
+}
+.btn-primary:hover {
+  background: var(--copper-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+.hero-image {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 60%;
+  background: linear-gradient(135deg, #f5e6d8 0%, #e8d5c4 50%, #dcc7b5 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hero-image::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, var(--bg-soft) 0%, transparent 30%);
+  z-index: 1;
+}
+.hero-model {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.hero-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--dark);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s;
+  cursor: pointer;
+}
+.hero-arrow:hover { background: #fff; box-shadow: var(--shadow-md); }
+.hero-arrow.left { left: 20px; }
+.hero-arrow.right { right: 20px; }
+
+/* ===== CONTAINER ===== */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ===== POPULAR CATEGORIES ===== */
+.categories-section {
+  padding: 70px 0 50px;
+  text-align: center;
+}
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--dark);
+  margin-bottom: 40px;
+  position: relative;
+}
+.section-title::after {
+  content: '';
+  display: block;
+  width: 50px;
+  height: 2px;
+  background: var(--copper);
+  margin: 12px auto 0;
+}
+.categories-grid {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+.category-item {
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+.category-item:hover { transform: translateY(-4px); }
+.category-circle {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+  background: #fff;
+  transition: all 0.3s;
+  overflow: hidden;
+}
+.category-item:hover .category-circle {
+  border-color: var(--copper);
+  box-shadow: 0 0 0 4px rgba(193,127,89,0.1);
+}
+.category-circle svg {
+  width: 44px;
+  height: 44px;
+  color: var(--copper);
+}
+.category-name {
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--dark);
+  margin-bottom: 2px;
+}
+.category-count {
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+/* ===== PROMO BANNERS ===== */
+.promo-banners {
+  padding: 20px 0 60px;
+}
+.promo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+.promo-card {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 200px;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+.promo-card:hover { transform: scale(1.01); }
+.promo-card.dark {
+  background: linear-gradient(135deg, #3d3225 0%, #2a2118 100%);
+  color: #fff;
+}
+.promo-card.light {
+  background: linear-gradient(135deg, #f5e6d8 0%, #ecddd0 100%);
+  color: var(--dark);
+}
+.promo-card-content {
+  position: relative;
+  z-index: 2;
+  padding: 30px 35px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.promo-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+  opacity: 0.7;
+}
+.promo-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 16px;
+}
+.promo-btn {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 8px 20px;
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  width: fit-content;
+  transition: all 0.3s;
+}
+.promo-card.dark .promo-btn:hover {
+  background: #fff;
+  color: var(--dark);
+  border-color: #fff;
+}
+.promo-card.light .promo-btn:hover {
+  background: var(--dark);
+  color: #fff;
+  border-color: var(--dark);
+}
+.promo-image-area {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.promo-jewel {
+  font-size: 60px;
+  opacity: 0.3;
+}
+
+/* ===== TRENDING PRODUCTS ===== */
+.trending-section {
+  padding: 30px 0 70px;
+  text-align: center;
+}
+.filter-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 36px;
+}
+.filter-tab {
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-light);
+  padding: 6px 0;
+  border-bottom: 2px solid transparent;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+.filter-tab:hover { color: var(--copper); }
+.filter-tab.active {
+  color: var(--copper);
+  border-bottom-color: var(--copper);
+}
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  margin-bottom: 24px;
+}
+.product-card {
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s;
+  border: 1px solid var(--border);
+  position: relative;
+}
+.product-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: transparent;
+}
+.product-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 3;
+  padding: 3px 10px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.badge-sale { background: var(--red); color: #fff; }
+.badge-new { background: var(--copper); color: #fff; }
+.badge-hot { background: #E67E22; color: #fff; }
+
+.product-image {
+  position: relative;
+  height: 220px;
+  background: var(--bg-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.product-image .jewel-icon {
+  font-size: 80px;
+  opacity: 0.8;
+}
+.product-actions {
+  position: absolute;
+  bottom: -50px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  transition: bottom 0.3s;
+}
+.product-card:hover .product-actions { bottom: 10px; }
+.action-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s;
+  color: var(--text);
+}
+.action-btn:hover { background: var(--copper); color: #fff; }
+
+.product-info {
+  padding: 16px;
+  text-align: left;
+}
+.product-brand {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-light);
+  margin-bottom: 4px;
+}
+.product-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--dark);
+  margin-bottom: 8px;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.product-price {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.price-old {
+  font-size: 13px;
+  color: var(--text-light);
+  text-decoration: line-through;
+}
+.price-new {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--copper);
+}
+
+/* ===== CTA BANNER ===== */
+.cta-banner {
+  position: relative;
+  height: 380px;
+  background: linear-gradient(135deg, #2a2118 0%, #3d3225 40%, #4a3d30 100%);
+  overflow: hidden;
+  margin: 20px 0 0;
+}
+.cta-banner .container {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  position: relative;
+}
+.cta-image-side {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(135deg, #c9a882 0%, #b8956e 100%);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+}
+.cta-model-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #c9a882 0%, #a8845c 60%, #8c6e4a 100%);
+  position: relative;
+}
+.cta-model-placeholder::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 300px;
+  background: radial-gradient(ellipse at center bottom, rgba(0,0,0,0.15) 0%, transparent 70%);
+}
+.cta-content {
+  margin-left: 55%;
+  color: #fff;
+  position: relative;
+  z-index: 2;
+}
+.cta-label {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--copper-light);
+  margin-bottom: 12px;
+  font-style: italic;
+}
+.cta-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 42px;
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: 14px;
+}
+.cta-desc {
+  font-size: 14px;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 28px;
+}
+.btn-outline {
+  display: inline-block;
+  border: 1.5px solid var(--copper);
+  color: #fff;
+  padding: 12px 32px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  transition: all 0.3s;
+  background: var(--copper);
+}
+.btn-outline:hover {
+  background: var(--copper-dark);
+  border-color: var(--copper-dark);
+}
+
+/* ===== FEATURES BAR ===== */
+.features-bar {
+  padding: 60px 0;
+  border-top: 1px solid var(--border);
+}
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  text-align: center;
+}
+.feature-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.feature-icon {
+  width: 50px;
+  height: 50px;
+  color: var(--dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.feature-icon svg { width: 36px; height: 36px; }
+.feature-title {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--dark);
+}
+.feature-desc {
+  font-size: 13px;
+  color: var(--text-light);
+  line-height: 1.6;
+  max-width: 260px;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  background: var(--dark);
+  color: rgba(255,255,255,0.7);
+  padding: 60px 0 30px;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+.footer-brand .logo {
+  color: #fff;
+  margin-bottom: 16px;
+}
+.footer-brand .logo .gem { background: var(--copper); }
+.footer-brand p {
+  font-size: 13px;
+  line-height: 1.8;
+  margin-bottom: 20px;
+}
+.social-links {
+  display: flex;
+  gap: 12px;
+}
+.social-link {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  font-size: 14px;
+}
+.social-link:hover {
+  background: var(--copper);
+  border-color: var(--copper);
+  color: #fff;
+}
+.footer-col h4 {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.footer-col ul li {
+  margin-bottom: 10px;
+}
+.footer-col ul li a {
+  font-size: 13px;
+  transition: color 0.3s;
+}
+.footer-col ul li a:hover { color: var(--copper-light); }
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding-top: 24px;
+  text-align: center;
+  font-size: 13px;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-in {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .hero { height: 360px; }
+  .hero-title { font-size: 32px; }
+  .hero-content { padding-left: 30px; }
+  .hero-image { width: 50%; }
+  .products-grid { grid-template-columns: repeat(2, 1fr); }
+  .promo-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .features-grid { grid-template-columns: 1fr; gap: 30px; }
+  .categories-grid { gap: 20px; }
+  .category-circle { width: 80px; height: 80px; }
+  .cta-title { font-size: 28px; }
+  .cta-image-side { width: 40%; }
+  .cta-content { margin-left: 45%; }
+  .nav-links a { padding: 14px 12px; font-size: 13px; }
+  .browse-categories { display: none; }
+}
+@media (max-width: 480px) {
+  .products-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .search-box { width: 140px; }
+  .logo { font-size: 22px; }
+  .hero-image { display: none; }
+  .hero-content { padding: 30px; max-width: 100%; }
+  .cta-image-side { display: none; }
+  .cta-content { margin-left: 0; padding: 30px; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="container">
+    <span>Winter Season Sale Up To 25% Off · Use Coupon Code</span>
+    <div class="top-bar-right">
+      <a href="#">My Account</a>
+      <select><option>USD $</option><option>EUR €</option><option>GBP £</option></select>
+      <select><option>English</option><option>French</option><option>Spanish</option></select>
+    </div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="container">
+    <div class="search-box">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="text" placeholder="Search...">
+    </div>
+    <a href="#" class="logo">
+      <span class="gem"></span>
+      JEWEELISH
+    </a>
+    <div class="header-actions">
+      <button class="icon-btn" title="Wishlist">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <span class="badge">0</span>
+      </button>
+      <button class="icon-btn" title="Compare">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
+      </button>
+      <button class="icon-btn" title="Cart">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span class="cart-amount">$0.00</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- NAVIGATION -->
+<nav class="main-nav">
+  <div class="container">
+    <div class="browse-categories">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      BROWSE CATEGORIES
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="nav-links">
+      <a href="#" class="active">HOME</a>
+      <a href="#">SHOP ▾</a>
+      <a href="#">COLLECTIONS</a>
+      <a href="#">PENDANT ▾</a>
+      <a href="#">SILVER RING</a>
+      <a href="#">BLOG</a>
+      <a href="#">CONTACT</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO SLIDER -->
+<section class="hero">
+  <div class="hero-slide active">
+    <div class="hero-content">
+      <div class="hero-label">Best of the Best</div>
+      <h1 class="hero-title">Gold Earrings For Women</h1>
+      <p class="hero-desc">Designer Jewellery · Necklaces · Bracelets · Earrings</p>
+      <a href="#" class="btn-primary">Shop Now</a>
+    </div>
+    <div class="hero-image">
+      <div style="width:100%;height:100%;background:linear-gradient(135deg,#f0dcc8,#e4ccb5,#d4b89e);display:flex;align-items:center;justify-content:center;position:relative;">
+        <div style="position:absolute;right:20%;top:30%;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.15);"></div>
+        <div style="font-family:'Playfair Display',serif;font-size:120px;color:rgba(255,255,255,0.2);font-weight:300;">✦</div>
+      </div>
+    </div>
+  </div>
+  <button class="hero-arrow left">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+  </button>
+  <button class="hero-arrow right">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </button>
+</section>
+
+<!-- POPULAR CATEGORIES -->
+<section class="categories-section">
+  <div class="container">
+    <h2 class="section-title">Popular Categories</h2>
+    <div class="categories-grid">
+      <div class="category-item">
+        <div class="category-circle">
+          <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="22" cy="32" r="14"/><circle cx="42" cy="32" r="14"/></svg>
+        </div>
+        <div class="category-name">Bracelets</div>
+        <div class="category-count">(70 Items)</div>
+      </div>
+      <div class="category-item">
+        <div class="category-circle">
+          <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="32" cy="24" r="10"/><path d="M22 34 c0 12 20 12 20 0"/><circle cx="32" cy="48" r="4"/></svg>
+        </div>
+        <div class="category-name">Charm & Dangles</div>
+        <div class="category-count">(30 Items)</div>
+      </div>
+      <div class="category-item">
+        <div class="category-circle">
+          <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 16 L32 8 L44 16 L44 38 Q32 52 20 38 Z"/><circle cx="32" cy="28" r="6"/></svg>
+        </div>
+        <div class="category-name">Earrings</div>
+        <div class="category-count">(17 Items)</div>
+      </div>
+      <div class="category-item">
+        <div class="category-circle">
+          <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="32" cy="32" r="16"/><circle cx="32" cy="32" r="10"/><path d="M32 16 L36 26 L32 22 L28 26 Z"/></svg>
+        </div>
+        <div class="category-name">Engagement Ring</div>
+        <div class="category-count">(9 Items)</div>
+      </div>
+      <div class="category-item">
+        <div class="category-circle">
+          <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5"><ellipse cx="32" cy="44" rx="16" ry="8"/><path d="M32 36 L32 20"/><path d="M26 20 L38 20"/><circle cx="32" cy="16" r="5"/></svg>
+        </div>
+        <div class="category-name">Necklaces</div>
+        <div class="category-count">(10 Items)</div>
+      </div>
+      <div class="category-item">
+        <div class="category-circle">
+          <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M32 12 L40 24 L48 24 L42 34 L44 46 L32 40 L20 46 L22 34 L16 24 L24 24 Z"/></svg>
+        </div>
+        <div class="category-name">Pendant</div>
+        <div class="category-count">(12 Items)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROMO BANNERS -->
+<section class="promo-banners">
+  <div class="container">
+    <div class="promo-grid">
+      <div class="promo-card dark">
+        <div class="promo-card-content">
+          <div class="promo-label">Special Offer</div>
+          <h3 class="promo-title">Flutter & Butterfly Pendant</h3>
+          <a href="#" class="promo-btn">Shop Now</a>
+        </div>
+        <div class="promo-image-area">
+          <div class="promo-jewel">🦋</div>
+        </div>
+      </div>
+      <div class="promo-card light">
+        <div class="promo-card-content">
+          <div class="promo-label">New Collection</div>
+          <h3 class="promo-title">Best Gold Filled Bracelet</h3>
+          <a href="#" class="promo-btn">Shop Now</a>
+        </div>
+        <div class="promo-image-area">
+          <div class="promo-jewel">💎</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRENDING PRODUCTS -->
+<section class="trending-section">
+  <div class="container">
+    <h2 class="section-title">Trending Products</h2>
+    <div class="filter-tabs">
+      <button class="filter-tab active">Featured</button>
+      <button class="filter-tab">New Arrivals</button>
+      <button class="filter-tab">Best Seller</button>
+    </div>
+
+    <!-- Row 1 -->
+    <div class="products-grid">
+      <div class="product-card">
+        <span class="product-badge badge-sale">Sale</span>
+        <div class="product-image">
+          <div class="jewel-icon">💧</div>
+          <div class="product-actions">
+            <button class="action-btn" title="Add to Cart"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></button>
+            <button class="action-btn" title="Wishlist"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+            <button class="action-btn" title="Quick View"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-brand">PJHA</div>
+          <div class="product-name">Romi diamond stud earrings</div>
+          <div class="product-price">
+            <span class="price-old">$400.00</span>
+            <span class="price-new">$250.00</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-image">
+          <div class="jewel-icon">🔗</div>
+          <div class="product-actions">
+            <button class="action-btn" title="Add to Cart"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></button>
+            <button class="action-btn" title="Wishlist"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+            <button class="action-btn" title="Quick View"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-brand">Allen Solly</div>
+          <div class="product-name">Roma pearl stud earrings</div>
+          <div class="product-price">
+            <span class="price-new">$350.00</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <span class="product-badge badge-sale">Sale</span>
+        <div class="product-image">
+          <div class="jewel-icon">💍</div>
+          <div class="product-actions">
+            <button class="action-btn" title="Add to Cart"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></button>
+            <button class="action-btn" title="Wishlist"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+            <button class="action-btn" title="Quick View"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-brand">PJHA</div>
+          <div class="product-name">Women's Princess Rose Gold Plated</div>
+          <div class="product-price">
+            <span class="price-old">$490.00</span>
+            <span class="price-new">$270.00</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-image">
+          <div class="jewel-icon">✨</div>
+          <div class="product-actions">
+            <button class="action-btn" title="Add to Cart"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></button>
+            <button class="action-btn" title="Wishlist"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+            <button class="action-btn" title="Quick View"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-brand">Allen Solly</div>
+          <div class="product-name">Versatile sleek gold hoops</div>
+          <div class="product-price">
+            <span class="price-new">$185.00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2 -->
+    <div class="products-grid">
+      <div class="product-card">
+        <span class="product-badge badge-new">7%</span>
+        <div class="product-image">
+          <div class="jewel-icon">💎</div>
+          <div class="product-actions">
+            <button class="action-btn" title="Add to Cart"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></button>
+            <button class="action-btn" title="Wishlist"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+            <button class="action-btn" title="Quick View"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-brand">Liviya</div>
+          <div class="product-name">Gold Plated Crystal Earrings</div>
+          <div class="product-price">
+            <span class="price-old">$399.00</span>
+            <span class="price-new">$370.00</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <span class="product-badge badge-hot">Best Sell</span>
+        <div class="product-image">
+          <div class="jewel-icon">🌸</div>
+          <div class="product-actions">
+            <button class="action-btn" title="Add to Cart"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></button>
+            <button class="action-btn" title="Wishlist"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+            <button class="action-btn" title="Quick View"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-brand">Brandname</div>
+          <div class="product-name">Yellow gold sapphire pendant</div>
+          <div class="product-price">
+            <span class="price-new">$550.00</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <span class="product-badge badge-new">7%</span>
+        <div class="product-image">
+          <div class="jewel-icon">🌹</div>
+          <div class="product-actions">
+            <button class="action-btn" title="Add to Cart"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></button>
+            <button class="action-btn" title="Wishlist"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+            <button class="action-btn" title="Quick View"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-brand">PJHA</div>
+          <div class="product-name">Estée Lauder Lisa Pink Earrings Gold</div>
+          <div class="product-price">
+            <span class="price-old">$99.00</span>
+            <span class="price-new">$90.00</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-image">
+          <div class="jewel-icon">💠</div>
+          <div class="product-actions">
+            <button class="action-btn" title="Add to Cart"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></button>
+            <button class="action-btn" title="Wishlist"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+            <button class="action-btn" title="Quick View"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-brand">Liviya</div>
+          <div class="product-name">Contemporary diamond ring</div>
+          <div class="product-price">
+            <span class="price-new">$140.00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section class="cta-banner">
+  <div class="cta-image-side">
+    <div class="cta-model-placeholder"></div>
+  </div>
+  <div class="container">
+    <div class="cta-content">
+      <div class="cta-label">Stand Out in Style</div>
+      <h2 class="cta-title">Silver And Diamond Earrings</h2>
+      <p class="cta-desc">Designer Jewellery · Necklaces · Bracelets · Earrings</p>
+      <a href="#" class="btn-outline">Shop Now</a>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES BAR -->
+<section class="features-bar">
+  <div class="container">
+    <div class="features-grid">
+      <div class="feature-item">
+        <div class="feature-icon">
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="4" y="20" width="40" height="24" rx="2"/>
+            <path d="M24 20V12"/>
+            <path d="M16 12h16"/>
+            <circle cx="24" cy="32" r="5"/>
+          </svg>
+        </div>
+        <div class="feature-title">Worldwide Shipping</div>
+        <div class="feature-desc">There are many variations of passages of lorem ipsum available.</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M12 28l8 8 16-16"/>
+            <rect x="4" y="8" width="40" height="32" rx="3"/>
+          </svg>
+        </div>
+        <div class="feature-title">Easy 30 Day Returns</div>
+        <div class="feature-desc">There are many variations of passages of lorem ipsum available.</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M24 4l6 12h14l-11 8 4 14-13-9-13 9 4-14L4 16h14z"/>
+          </svg>
+        </div>
+        <div class="feature-title">Money Back Guarantee</div>
+        <div class="feature-desc">There are many variations of passages of lorem ipsum available.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo">
+          <span class="gem"></span>
+          JEWEELISH
+        </a>
+        <p>Discover the finest collection of designer jewelry. From elegant earrings to stunning necklaces, we bring you timeless pieces crafted with precision.</p>
+        <div class="social-links">
+          <a href="#" class="social-link">f</a>
+          <a href="#" class="social-link">𝕏</a>
+          <a href="#" class="social-link">in</a>
+          <a href="#" class="social-link">▶</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Shop</a></li>
+          <li><a href="#">Collections</a></li>
+          <li><a href="#">New Arrivals</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Customer Care</h4>
+        <ul>
+          <li><a href="#">My Account</a></li>
+          <li><a href="#">Order Tracking</a></li>
+          <li><a href="#">Wishlist</a></li>
+          <li><a href="#">Returns</a></li>
+          <li><a href="#">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact Info</h4>
+        <ul>
+          <li><a href="#">📍 123 Jewel Street, NY</a></li>
+          <li><a href="#">📞 +1 234 567 890</a></li>
+          <li><a href="#">✉ info@jeweelish.com</a></li>
+          <li><a href="#">🕐 Mon–Sat: 9AM – 8PM</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2026 Jeweelish. All rights reserved. Designed with ♥
+    </div>
+  </div>
+</footer>
+
+<script>
+// Filter tabs
+document.querySelectorAll('.filter-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+  });
+});
+
+// Scroll animations
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('animate-in');
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.product-card, .category-item, .feature-item, .promo-card').forEach(el => {
+  el.style.opacity = '0';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
