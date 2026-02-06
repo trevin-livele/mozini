@@ -20,6 +20,13 @@ export default function Header() {
 
   return (
     <>
+      {/* Valentine's Banner */}
+      <div className="bg-gradient-to-r from-[var(--copper-dark)] via-[var(--copper)] to-[var(--copper-dark)] text-white text-center py-2 px-4 relative overflow-hidden">
+        <p className="text-xs md:text-sm font-medium relative z-10">
+          💝 Valentine's Day Special: Show Your Love with Perfect Gifts! Free Gift Wrapping 💝
+        </p>
+      </div>
+
       {/* Top Bar */}
       <div className="bg-[var(--copper)] text-white text-xs py-2 hidden md:block">
         <div className="max-w-6xl mx-auto px-5 flex justify-between items-center flex-wrap gap-2">

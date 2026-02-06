@@ -3,16 +3,23 @@
 import Link from 'next/link';
 import { products, categories } from '@/lib/data';
 import ProductCard from '@/components/ProductCard';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState('featured');
   const [heroIndex, setHeroIndex] = useState(0);
+  const heroRef = useRef<HTMLDivElement>(null);
+  const categoriesRef = useRef<HTMLDivElement>(null);
+  const productsRef = useRef<HTMLDivElement>(null);
 
   const heroSlides = [
-    { label: 'Best of the Best', title: 'Premium Watches Collection', desc: 'Elegant timepieces · Classic designs · Modern style', icon: '⌚', bg: 'linear-gradient(135deg,#f0dcc8,#e4ccb5,#d4b89e)' },
-    { label: 'New Arrivals', title: 'Luxury Perfumes & Fragrances', desc: 'Long-lasting scents · Premium quality · Gift ready', icon: '🧴', bg: 'linear-gradient(135deg,#e8d5c4,#dcc7b5,#c9b19e)' },
-    { label: 'Special Offers', title: 'Gift Sets for Every Occasion', desc: 'Perfect combinations · Beautiful packaging · Great value', icon: '🎁', bg: 'linear-gradient(135deg,#d8c8b8,#c9b5a2,#b8a18e)' },
+    { label: 'Valentine\'s Special 💝', title: 'Perfect Gifts for Your Loved One', desc: 'Watches · Perfumes · Gift Sets · Express Your Love', icon: '⌚', bg: 'linear-gradient(135deg,#f0dcc8,#e4ccb5,#d4b89e)' },
+    { label: 'Love Collection 💕', title: 'Romantic Fragrances & Timepieces', desc: 'Premium quality · Beautiful packaging · Made with love', icon: '🧴', bg: 'linear-gradient(135deg,#e8d5c4,#dcc7b5,#c9b19e)' },
+    { label: 'Special Offers ❤️', title: 'Valentine\'s Day Gift Sets', desc: 'Perfect combinations · Romantic packaging · Great value', icon: '🎁', bg: 'linear-gradient(135deg,#d8c8b8,#c9b5a2,#b8a18e)' },
   ];
 
   const filteredProducts = products.filter(p => p.tag === activeTab).slice(0, 8);
@@ -20,13 +27,101 @@ export default function Home() {
   const nextSlide = () => setHeroIndex((prev) => (prev + 1) % heroSlides.length);
   const prevSlide = () => setHeroIndex((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
 
+  useEffect(() => {
+    // Floating hearts animation
+    const createFloatingHeart = () => {
+      const heart = document.createElement('div');
+      heart.className = 'floating-heart';
+      heart.textContent = ['❤️', '💕', '💖', '💝'][Math.floor(Math.random() * 4)];
+      heart.style.left = Math.random() * 100 + '%';
+      heart.style.fontSize = (Math.random() * 10 + 15) + 'px';
+      heart.style.animationDuration = (Math.random() * 5 + 10) + 's';
+      document.body.appendChild(heart);
+      
+      setTimeout(() => heart.remove(), 20000);
+    };
+
+    const heartInterval = setInterval(createFloatingHeart, 3000);
+
+    // GSAP Animations
+    const ctx = gsap.context(() => {
+      // Hero animation
+      gsap.from('.hero-content', {
+        opacity: 0,
+        x: -50,
+        duration: 1,
+        ease: 'power3.out'
+      });
+
+      // Categories animation
+      gsap.from('.category-item', {
+        scrollTrigger: {
+          trigger: categoriesRef.current,
+          start: 'top 80%',
+        },
+        opacity: 0,
+        y: 30,
+        stagger: 0.1,
+        duration: 0.6,
+        ease: 'back.out(1.7)'
+      });
+
+      // Products animation
+      gsap.from('.product-card', {
+        scrollTrigger: {
+          trigger: productsRef.current,
+          start: 'top 80%',
+        },
+        opacity: 0,
+        y: 50,
+        stagger: 0.1,
+        duration: 0.5,
+        ease: 'power2.out'
+      });
+
+      // Promo cards animation
+      gsap.from('.promo-card', {
+        scrollTrigger: {
+          trigger: '.promo-banners',
+          start: 'top 80%',
+        },
+        opacity: 0,
+        scale: 0.9,
+        stagger: 0.2,
+        duration: 0.6,
+        ease: 'back.out(1.7)'
+      });
+
+      // Features animation
+      gsap.from('.feature-item', {
+        scrollTrigger: {
+          trigger: '.features-bar',
+          start: 'top 80%',
+        },
+        opacity: 0,
+        y: 30,
+        stagger: 0.15,
+        duration: 0.6,
+        ease: 'power2.out'
+      });
+    });
+
+    return () => {
+      clearInterval(heartInterval);
+      ctx.revert();
+    };
+  }, [activeTab]);
+
   return (
     <>
+      {/* Floating Hearts Container */}
+      <div className="floating-hearts" />
+
       {/* Hero */}
-      <section className="relative h-[360px] md:h-[420px] lg:h-[480px] overflow-hidden bg-[var(--bg-soft)]">
+      <section ref={heroRef} className="relative h-[360px] md:h-[420px] lg:h-[480px] overflow-hidden bg-[var(--bg-soft)]">
         {heroSlides.map((slide, i) => (
           <div key={i} className={`absolute inset-0 flex items-center transition-opacity duration-700 ${i === heroIndex ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-            <div className="relative z-10 px-5 md:pl-12 lg:pl-20 max-w-[90%] md:max-w-[500px]">
+            <div className="hero-content relative z-10 px-5 md:pl-12 lg:pl-20 max-w-[90%] md:max-w-[500px]">
               <div className="font-serif text-xs md:text-sm tracking-[2px] md:tracking-[3px] uppercase text-[var(--copper)] mb-2 md:mb-3 font-semibold">{slide.label}</div>
               <h1 className="font-serif text-2xl md:text-4xl lg:text-5xl font-bold text-[var(--dark)] leading-tight mb-3 md:mb-4">{slide.title}</h1>
               <p className="text-xs md:text-sm text-[var(--text-light)] mb-5 md:mb-7 leading-relaxed">{slide.desc}</p>
@@ -56,14 +151,15 @@ export default function Home() {
       </section>
 
       {/* Categories */}
-      <section className="py-12 md:py-16 text-center">
+      <section ref={categoriesRef} className="py-12 md:py-16 text-center">
         <div className="max-w-6xl mx-auto px-4 md:px-5">
-          <h2 className="font-serif text-2xl md:text-3xl font-semibold text-[var(--dark)] mb-8 md:mb-10 relative after:content-[''] after:block after:w-12 after:h-0.5 after:bg-[var(--copper)] after:mx-auto after:mt-3">
-            Popular Categories
+          <h2 className="font-serif text-2xl md:text-3xl font-semibold text-[var(--dark)] mb-2 relative">
+            Perfect Valentine's Gifts 💝
           </h2>
+          <p className="text-sm text-[var(--text-light)] mb-8 md:mb-10">Show your love with our curated collection</p>
           <div className="flex justify-center gap-6 md:gap-9 flex-wrap">
             {categories.map((cat) => (
-              <Link key={cat.name} href={`/shop?category=${encodeURIComponent(cat.name)}`} className="text-center cursor-pointer transition-transform hover:-translate-y-1.5 group">
+              <Link key={cat.name} href={`/shop?category=${encodeURIComponent(cat.name)}`} className="category-item text-center cursor-pointer transition-transform hover:-translate-y-1.5 group">
                 <div className="w-[85px] h-[85px] md:w-[105px] md:h-[105px] rounded-full border-2 border-[var(--border)] flex items-center justify-center mx-auto mb-2.5 md:mb-3.5 bg-white text-[36px] md:text-[42px] transition-all group-hover:border-[var(--copper)] group-hover:shadow-[0_0_0_4px_rgba(44,95,99,0.1)]">
                   {cat.icon}
                 </div>
@@ -76,20 +172,20 @@ export default function Home() {
       </section>
 
       {/* Promo Banners */}
-      <section className="pb-12 md:pb-16">
+      <section className="promo-banners pb-12 md:pb-16">
         <div className="max-w-6xl mx-auto px-4 md:px-5">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-            <Link href="/shop?category=Men's Watches" className="relative rounded-lg overflow-hidden h-[160px] md:h-[200px] cursor-pointer transition-transform hover:scale-[1.015] bg-gradient-to-br from-[#3d3225] to-[#2a2118] text-white">
+            <Link href="/shop?category=Men's Watches" className="promo-card relative rounded-lg overflow-hidden h-[160px] md:h-[200px] cursor-pointer transition-transform hover:scale-[1.015] bg-gradient-to-br from-[#3d3225] to-[#2a2118] text-white">
               <div className="relative z-10 p-6 md:p-8 h-full flex flex-col justify-center">
-                <div className="text-[10px] md:text-[11px] uppercase tracking-[2px] mb-2 md:mb-2.5 opacity-70">Special Offer</div>
+                <div className="text-[10px] md:text-[11px] uppercase tracking-[2px] mb-2 md:mb-2.5 opacity-70">For Him 💖</div>
                 <h3 className="font-serif text-xl md:text-2xl font-semibold leading-tight mb-3 md:mb-4">Premium Men&apos;s Watches</h3>
                 <span className="inline-block text-[11px] md:text-xs font-medium uppercase tracking-wider px-4 md:px-5 py-1.5 md:py-2 border border-current rounded w-fit hover:bg-white hover:text-[var(--dark)] transition-colors">Shop Now</span>
               </div>
               <div className="absolute right-3 md:right-5 top-1/2 -translate-y-1/2 text-[60px] md:text-[80px] opacity-15">⌚</div>
             </Link>
-            <Link href="/shop?category=Women's Perfumes" className="relative rounded-lg overflow-hidden h-[160px] md:h-[200px] cursor-pointer transition-transform hover:scale-[1.015] bg-gradient-to-br from-[#f5e6d8] to-[#ecddd0] text-[var(--dark)]">
+            <Link href="/shop?category=Women's Perfumes" className="promo-card relative rounded-lg overflow-hidden h-[160px] md:h-[200px] cursor-pointer transition-transform hover:scale-[1.015] bg-gradient-to-br from-[#f5e6d8] to-[#ecddd0] text-[var(--dark)]">
               <div className="relative z-10 p-6 md:p-8 h-full flex flex-col justify-center">
-                <div className="text-[10px] md:text-[11px] uppercase tracking-[2px] mb-2 md:mb-2.5 opacity-70">New Collection</div>
+                <div className="text-[10px] md:text-[11px] uppercase tracking-[2px] mb-2 md:mb-2.5 opacity-70">For Her 💕</div>
                 <h3 className="font-serif text-xl md:text-2xl font-semibold leading-tight mb-3 md:mb-4">Luxury Fragrances</h3>
                 <span className="inline-block text-[11px] md:text-xs font-medium uppercase tracking-wider px-4 md:px-5 py-1.5 md:py-2 border border-current rounded w-fit hover:bg-[var(--dark)] hover:text-white hover:border-[var(--dark)] transition-colors">Shop Now</span>
               </div>
@@ -100,11 +196,12 @@ export default function Home() {
       </section>
 
       {/* Trending Products */}
-      <section className="py-6 md:py-8 pb-12 md:pb-16 text-center">
+      <section ref={productsRef} className="py-6 md:py-8 pb-12 md:pb-16 text-center">
         <div className="max-w-6xl mx-auto px-4 md:px-5">
-          <h2 className="font-serif text-2xl md:text-3xl font-semibold text-[var(--dark)] mb-8 md:mb-10 relative after:content-[''] after:block after:w-12 after:h-0.5 after:bg-[var(--copper)] after:mx-auto after:mt-3">
-            Trending Products
+          <h2 className="font-serif text-2xl md:text-3xl font-semibold text-[var(--dark)] mb-2 relative">
+            Trending Love Gifts ❤️
           </h2>
+          <p className="text-sm text-[var(--text-light)] mb-8 md:mb-10">Most loved by our customers</p>
           
           <div className="flex justify-center gap-4 md:gap-6 mb-7 md:mb-9 overflow-x-auto pb-2">
             {['featured', 'new', 'best'].map((tab) => (
@@ -133,8 +230,8 @@ export default function Home() {
         </div>
         <div className="max-w-6xl mx-auto px-4 md:px-5 h-full flex items-center">
           <div className="ml-[50%] md:ml-[55%] text-white relative z-10">
-            <div className="font-serif text-xs md:text-sm tracking-[2px] md:tracking-[3px] uppercase text-[var(--copper-light)] mb-2 md:mb-3 italic">Stand Out in Style</div>
-            <h2 className="font-serif text-2xl md:text-3xl lg:text-4xl font-semibold leading-tight mb-2.5 md:mb-3.5">Perfect Gifts for Every Occasion</h2>
+            <div className="font-serif text-xs md:text-sm tracking-[2px] md:tracking-[3px] uppercase text-[var(--copper-light)] mb-2 md:mb-3 italic">Valentine's Day Special 💕</div>
+            <h2 className="font-serif text-2xl md:text-3xl lg:text-4xl font-semibold leading-tight mb-2.5 md:mb-3.5">Celebrate Love with Perfect Gifts</h2>
             <p className="text-xs md:text-sm text-white/70 mb-5 md:mb-7">Watches · Perfumes · Gift Sets</p>
             <Link href="/shop" className="inline-block bg-[var(--copper)] text-white px-6 md:px-8 py-2.5 md:py-3 rounded text-xs md:text-sm font-medium uppercase tracking-wider border-2 border-[var(--copper)] hover:bg-[var(--copper-dark)] hover:border-[var(--copper-dark)] transition-all">
               Shop Now
@@ -144,20 +241,20 @@ export default function Home() {
       </section>
 
       {/* Features */}
-      <section className="py-12 md:py-16 border-t border-[var(--border)]">
+      <section className="features-bar py-12 md:py-16 border-t border-[var(--border)]">
         <div className="max-w-6xl mx-auto px-4 md:px-5">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 text-center">
-            <div className="flex flex-col items-center gap-3 md:gap-3.5 transition-transform hover:-translate-y-1">
+            <div className="feature-item flex flex-col items-center gap-3 md:gap-3.5 transition-transform hover:-translate-y-1">
               <span className="text-3xl md:text-4xl">🚚</span>
               <div className="text-xs md:text-sm font-semibold uppercase tracking-wider text-[var(--dark)]">Nationwide Shipping</div>
               <div className="text-xs md:text-sm text-[var(--text-light)] max-w-[260px]">Free delivery across Kenya for orders above KES 10,000.</div>
             </div>
-            <div className="flex flex-col items-center gap-3 md:gap-3.5 transition-transform hover:-translate-y-1">
-              <span className="text-3xl md:text-4xl">🔄</span>
-              <div className="text-xs md:text-sm font-semibold uppercase tracking-wider text-[var(--dark)]">Easy 30 Day Returns</div>
-              <div className="text-xs md:text-sm text-[var(--text-light)] max-w-[260px]">Hassle-free returns within 30 days of purchase.</div>
+            <div className="feature-item flex flex-col items-center gap-3 md:gap-3.5 transition-transform hover:-translate-y-1">
+              <span className="text-3xl md:text-4xl">🎁</span>
+              <div className="text-xs md:text-sm font-semibold uppercase tracking-wider text-[var(--dark)]">Gift Wrapping</div>
+              <div className="text-xs md:text-sm text-[var(--text-light)] max-w-[260px]">Beautiful packaging for all Valentine's orders.</div>
             </div>
-            <div className="flex flex-col items-center gap-3 md:gap-3.5 transition-transform hover:-translate-y-1">
+            <div className="feature-item flex flex-col items-center gap-3 md:gap-3.5 transition-transform hover:-translate-y-1">
               <span className="text-3xl md:text-4xl">🛡️</span>
               <div className="text-xs md:text-sm font-semibold uppercase tracking-wider text-[var(--dark)]">Money Back Guarantee</div>
               <div className="text-xs md:text-sm text-[var(--text-light)] max-w-[260px]">100% money back guarantee on all our products.</div>
