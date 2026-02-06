@@ -23,11 +23,15 @@ export type Database = {
           role?: 'customer' | 'admin';
         };
         Update: {
+          id?: string;
+          email?: string;
           full_name?: string | null;
           phone?: string | null;
           address?: string | null;
           city?: string | null;
+          role?: 'customer' | 'admin';
         };
+        Relationships: [];
       };
       products: {
         Row: {
@@ -48,6 +52,7 @@ export type Database = {
           updated_at: string;
         };
         Insert: {
+          id?: number;
           name: string;
           brand?: string;
           category: string;
@@ -62,6 +67,7 @@ export type Database = {
           is_active?: boolean;
         };
         Update: {
+          id?: number;
           name?: string;
           brand?: string;
           category?: string;
@@ -75,6 +81,7 @@ export type Database = {
           stock?: number;
           is_active?: boolean;
         };
+        Relationships: [];
       };
       cart_items: {
         Row: {
@@ -86,13 +93,31 @@ export type Database = {
           updated_at: string;
         };
         Insert: {
+          id?: string;
           user_id: string;
           product_id: number;
           quantity?: number;
         };
         Update: {
+          id?: string;
+          user_id?: string;
+          product_id?: number;
           quantity?: number;
         };
+        Relationships: [
+          {
+            foreignKeyName: 'cart_items_user_id_fkey';
+            columns: ['user_id'];
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'cart_items_product_id_fkey';
+            columns: ['product_id'];
+            referencedRelation: 'products';
+            referencedColumns: ['id'];
+          }
+        ];
       };
       orders: {
         Row: {
@@ -114,6 +139,7 @@ export type Database = {
           updated_at: string;
         };
         Insert: {
+          id?: string;
           user_id?: string | null;
           status?: string;
           subtotal: number;
@@ -129,9 +155,29 @@ export type Database = {
           idempotency_key?: string | null;
         };
         Update: {
+          id?: string;
+          user_id?: string | null;
           status?: string;
+          subtotal?: number;
+          shipping?: number;
+          total?: number;
+          payment_method?: string;
+          shipping_name?: string;
+          shipping_email?: string;
+          shipping_phone?: string;
+          shipping_address?: string;
+          shipping_city?: string;
           notes?: string | null;
+          idempotency_key?: string | null;
         };
+        Relationships: [
+          {
+            foreignKeyName: 'orders_user_id_fkey';
+            columns: ['user_id'];
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          }
+        ];
       };
       order_items: {
         Row: {
@@ -145,6 +191,7 @@ export type Database = {
           created_at: string;
         };
         Insert: {
+          id?: string;
           order_id: string;
           product_id?: number | null;
           product_name: string;
@@ -152,7 +199,29 @@ export type Database = {
           quantity: number;
           unit_price: number;
         };
-        Update: never;
+        Update: {
+          id?: string;
+          order_id?: string;
+          product_id?: number | null;
+          product_name?: string;
+          product_icon?: string;
+          quantity?: number;
+          unit_price?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'order_items_order_id_fkey';
+            columns: ['order_id'];
+            referencedRelation: 'orders';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'order_items_product_id_fkey';
+            columns: ['product_id'];
+            referencedRelation: 'products';
+            referencedColumns: ['id'];
+          }
+        ];
       };
       wishlists: {
         Row: {
@@ -162,12 +231,40 @@ export type Database = {
           created_at: string;
         };
         Insert: {
+          id?: string;
           user_id: string;
           product_id: number;
         };
-        Update: never;
+        Update: {
+          id?: string;
+          user_id?: string;
+          product_id?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'wishlists_user_id_fkey';
+            columns: ['user_id'];
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'wishlists_product_id_fkey';
+            columns: ['product_id'];
+            referencedRelation: 'products';
+            referencedColumns: ['id'];
+          }
+        ];
       };
     };
+    Views: Record<string, never>;
+    Functions: {
+      is_admin: {
+        Args: Record<string, never>;
+        Returns: boolean;
+      };
+    };
+    Enums: Record<string, never>;
+    CompositeTypes: Record<string, never>;
   };
 };
 
