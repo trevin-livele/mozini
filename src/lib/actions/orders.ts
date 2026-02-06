@@ -1,7 +1,12 @@
 'use server';
 
 import { createClient } from '@/lib/supabase/server';
+import type { Order, OrderItem } from '@/lib/supabase/types';
 import type { CartItemWithProduct } from './cart';
+
+export type OrderWithItems = Order & {
+  order_items: OrderItem[];
+};
 
 interface CheckoutInput {
   shippingName: string;
@@ -131,7 +136,7 @@ export async function createOrder(
   return { orderId: order.id, duplicate: false };
 }
 
-export async function getOrders() {
+export async function getOrders(): Promise<OrderWithItems[]> {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error('Must be logged in');
@@ -143,10 +148,10 @@ export async function getOrders() {
     .order('created_at', { ascending: false });
 
   if (error) throw new Error(`Failed to fetch orders: ${error.message}`);
-  return data || [];
+  return (data || []) as OrderWithItems[];
 }
 
-export async function getOrderById(orderId: string) {
+export async function getOrderById(orderId: string): Promise<OrderWithItems | null> {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error('Must be logged in');
@@ -159,5 +164,5 @@ export async function getOrderById(orderId: string) {
     .single();
 
   if (error) return null;
-  return data;
+  return data as OrderWithItems;
 }

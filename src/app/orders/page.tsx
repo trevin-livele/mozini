@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getOrders } from '@/lib/actions/orders';
+import { getOrders, type OrderWithItems } from '@/lib/actions/orders';
 import { redirect } from 'next/navigation';
 import { getUser } from '@/lib/actions/auth';
 
@@ -59,7 +59,7 @@ export default async function OrdersPage() {
                   </div>
 
                   <div className="space-y-2 mb-4">
-                    {(order as any).order_items?.map((item: any) => (
+                    {order.order_items.map((item) => (
                       <div key={item.id} className="flex items-center justify-between text-sm">
                         <span>
                           {item.product_icon} {item.product_name} × {item.quantity}
