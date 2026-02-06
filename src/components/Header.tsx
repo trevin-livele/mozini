@@ -1,29 +1,65 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useStore } from '@/lib/store';
 import { formatPrice } from '@/lib/data';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
 
 export default function Header() {
   const { getCartCount, getCartTotal, wishlist } = useStore();
   const [mounted, setMounted] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const bannerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setMounted(true);
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
+
+    // Animated Valentine banner
+    if (bannerRef.current) {
+      const tl = gsap.timeline({ repeat: -1 });
+      tl.to(bannerRef.current.querySelector('.banner-text'), {
+        scale: 1.03,
+        duration: 0.8,
+        ease: 'power1.inOut',
+        yoyo: true,
+        repeat: 1,
+      })
+      .to(bannerRef.current.querySelectorAll('.banner-heart'), {
+        y: -4,
+        rotation: 15,
+        duration: 0.4,
+        stagger: 0.1,
+        ease: 'power1.inOut',
+        yoyo: true,
+        repeat: 1,
+      }, 0)
+      .to({}, { duration: 2 }); // pause between loops
+    }
+
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
     <>
       {/* Valentine's Banner */}
-      <div className="bg-gradient-to-r from-[var(--copper-dark)] via-[var(--copper)] to-[var(--copper-dark)] text-white text-center py-2 px-4 relative overflow-hidden">
-        <p className="text-xs md:text-sm font-medium relative z-10">
-          💝 Valentine's Day Special: Show Your Love with Perfect Gifts! Free Gift Wrapping 💝
+      <div ref={bannerRef} className="bg-gradient-to-r from-[#D32F2F] via-[#E91E63] to-[#D32F2F] text-white text-center py-2.5 px-4 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 left-[10%] text-lg">❤️</div>
+          <div className="absolute top-0 left-[30%] text-lg">💕</div>
+          <div className="absolute top-0 left-[50%] text-lg">💖</div>
+          <div className="absolute top-0 left-[70%] text-lg">💝</div>
+          <div className="absolute top-0 left-[90%] text-lg">❤️</div>
+        </div>
+        <p className="banner-text text-xs md:text-sm font-semibold relative z-10 flex items-center justify-center gap-1.5">
+          <span className="banner-heart inline-block">💝</span>
+          <span>Valentine&apos;s Day Special — Show Your Love with Perfect Gifts!</span>
+          <span className="hidden sm:inline">Free Gift Wrapping on All Orders</span>
+          <span className="banner-heart inline-block">💝</span>
         </p>
       </div>
 
@@ -42,10 +78,10 @@ export default function Header() {
       </div>
 
       {/* Header */}
-      <header className={`bg-white py-3 md:py-3.5 border-b border-[var(--border)] sticky top-0 z-50 transition-shadow ${scrolled ? 'shadow-md' : ''}`}>
+      <header className={`bg-white py-2.5 md:py-3 border-b border-[var(--border)] sticky top-0 z-50 transition-shadow ${scrolled ? 'shadow-md' : ''}`}>
         <div className="max-w-6xl mx-auto px-4 md:px-5 flex items-center justify-between gap-3">
           {/* Mobile Menu Toggle */}
-          <button 
+          <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="lg:hidden flex flex-col gap-1 p-2"
             aria-label="Menu"
@@ -56,9 +92,12 @@ export default function Header() {
           </button>
 
           {/* Logo */}
-          <Link href="/" className="font-serif text-xl md:text-2xl font-bold text-[var(--dark)] flex items-center gap-1.5 md:gap-2 group">
-            <span className="w-5 h-5 md:w-6 md:h-6 bg-[var(--copper)] transition-transform group-hover:rotate-[72deg]" style={{ clipPath: 'polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%)' }}></span>
-            MOZINI
+          <Link href="/" className="flex items-center gap-2 group shrink-0">
+            <Image src="/images/1.png" alt="Mozini Logo" width={40} height={40} className="h-8 md:h-10 w-auto" />
+            <span className="font-serif text-lg md:text-xl font-bold text-[var(--dark)] leading-tight">
+              Mozini<br className="hidden md:block" />
+              <span className="text-[10px] md:text-xs font-normal tracking-wider text-[var(--text-light)] uppercase">Watches &amp; Gifts</span>
+            </span>
           </Link>
 
           {/* Actions */}
@@ -86,13 +125,17 @@ export default function Header() {
       <nav className="bg-white border-b border-[var(--border)] hidden lg:block">
         <div className="max-w-6xl mx-auto px-5 flex items-center justify-center">
           <div className="flex items-center">
-            <Link href="/" className="px-4 xl:px-5 py-3.5 text-sm text-[var(--text)] hover:text-[var(--copper)] transition-colors">HOME</Link>
-            <Link href="/shop" className="px-4 xl:px-5 py-3.5 text-sm text-[var(--text)] hover:text-[var(--copper)] transition-colors">SHOP</Link>
-            <Link href="/shop?category=Men's Watches" className="px-4 xl:px-5 py-3.5 text-sm text-[var(--text)] hover:text-[var(--copper)] transition-colors">WATCHES</Link>
-            <Link href="/shop?category=Men's Perfumes" className="px-4 xl:px-5 py-3.5 text-sm text-[var(--text)] hover:text-[var(--copper)] transition-colors">PERFUMES</Link>
-            <Link href="/shop?category=Gift Sets" className="px-4 xl:px-5 py-3.5 text-sm text-[var(--text)] hover:text-[var(--copper)] transition-colors">GIFT SETS</Link>
-            <Link href="/about" className="px-4 xl:px-5 py-3.5 text-sm text-[var(--text)] hover:text-[var(--copper)] transition-colors">ABOUT</Link>
-            <Link href="/contact" className="px-4 xl:px-5 py-3.5 text-sm text-[var(--text)] hover:text-[var(--copper)] transition-colors">CONTACT</Link>
+            {[
+              { href: '/', label: 'HOME' },
+              { href: '/shop', label: 'SHOP' },
+              { href: '/shop?category=Men\'s Watches', label: 'WATCHES' },
+              { href: '/shop?category=Men\'s Perfumes', label: 'PERFUMES' },
+              { href: '/shop?category=Gift Sets', label: 'GIFT SETS' },
+              { href: '/about', label: 'ABOUT' },
+              { href: '/contact', label: 'CONTACT' },
+            ].map(link => (
+              <Link key={link.label} href={link.href} className="px-4 xl:px-5 py-3.5 text-sm text-[var(--text)] hover:text-[var(--copper)] transition-colors">{link.label}</Link>
+            ))}
           </div>
         </div>
       </nav>
@@ -104,17 +147,21 @@ export default function Header() {
           <div className="fixed top-0 left-0 w-[280px] h-full bg-white z-50 shadow-lg lg:hidden overflow-y-auto">
             <div className="p-6">
               <div className="flex items-center justify-between mb-8">
-                <span className="font-serif text-xl font-bold text-[var(--dark)]">Menu</span>
+                <Image src="/images/1.png" alt="Mozini" width={32} height={32} className="h-8 w-auto" />
                 <button onClick={() => setMobileMenuOpen(false)} className="text-2xl">&times;</button>
               </div>
               <nav className="flex flex-col gap-1">
-                <Link href="/" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-sm text-[var(--text)] hover:text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors">HOME</Link>
-                <Link href="/shop" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-sm text-[var(--text)] hover:text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors">SHOP</Link>
-                <Link href="/shop?category=Men's Watches" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-sm text-[var(--text)] hover:text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors">WATCHES</Link>
-                <Link href="/shop?category=Men's Perfumes" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-sm text-[var(--text)] hover:text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors">PERFUMES</Link>
-                <Link href="/shop?category=Gift Sets" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-sm text-[var(--text)] hover:text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors">GIFT SETS</Link>
-                <Link href="/about" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-sm text-[var(--text)] hover:text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors">ABOUT</Link>
-                <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-sm text-[var(--text)] hover:text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors">CONTACT</Link>
+                {[
+                  { href: '/', label: 'HOME' },
+                  { href: '/shop', label: 'SHOP' },
+                  { href: '/shop?category=Men\'s Watches', label: 'WATCHES' },
+                  { href: '/shop?category=Men\'s Perfumes', label: 'PERFUMES' },
+                  { href: '/shop?category=Gift Sets', label: 'GIFT SETS' },
+                  { href: '/about', label: 'ABOUT' },
+                  { href: '/contact', label: 'CONTACT' },
+                ].map(link => (
+                  <Link key={link.label} href={link.href} onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-sm text-[var(--text)] hover:text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors">{link.label}</Link>
+                ))}
               </nav>
             </div>
           </div>

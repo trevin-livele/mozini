@@ -22,12 +22,34 @@ export default function Home() {
     { label: 'Special Offers ❤️', title: 'Valentine\'s Day Gift Sets', desc: 'Perfect combinations · Romantic packaging · Great value', icon: '🎁', bg: 'linear-gradient(135deg,#d8c8b8,#c9b5a2,#b8a18e)' },
   ];
 
+  const giftSlides = [
+    { icon: '⌚', title: "Classic Gold Men's Watch", price: 'KES 4,500' },
+    { icon: '🌸', title: 'Floral Dreams EDP 50ml', price: 'KES 3,200' },
+    { icon: '🎁', title: "Men's Watch & Perfume Set", price: 'KES 6,500' },
+    { icon: '🧴', title: 'Oud Royale Perfume 100ml', price: 'KES 4,500' },
+    { icon: '⌚', title: 'Rose Gold Ladies Watch', price: 'KES 3,800' },
+    { icon: '🎁', title: 'Ladies Gift Collection', price: 'KES 5,800' },
+  ];
+
+  const [giftIndex, setGiftIndex] = useState(0);
+  const giftSliderRef = useRef<HTMLDivElement>(null);
+
   const filteredProducts = products.filter(p => p.tag === activeTab).slice(0, 8);
 
   const nextSlide = () => setHeroIndex((prev) => (prev + 1) % heroSlides.length);
   const prevSlide = () => setHeroIndex((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
 
   useEffect(() => {
+    // Hero auto-advance
+    const heroTimer = setInterval(() => {
+      setHeroIndex(prev => (prev + 1) % 3);
+    }, 5000);
+
+    // Gift slider auto-advance
+    const giftTimer = setInterval(() => {
+      setGiftIndex(prev => (prev + 1) % giftSlides.length);
+    }, 3000);
+
     // Floating hearts animation
     const createFloatingHeart = () => {
       const heart = document.createElement('div');
@@ -37,80 +59,42 @@ export default function Home() {
       heart.style.fontSize = (Math.random() * 10 + 15) + 'px';
       heart.style.animationDuration = (Math.random() * 5 + 10) + 's';
       document.body.appendChild(heart);
-      
       setTimeout(() => heart.remove(), 20000);
     };
-
     const heartInterval = setInterval(createFloatingHeart, 3000);
 
     // GSAP Animations
     const ctx = gsap.context(() => {
-      // Hero animation
-      gsap.from('.hero-content', {
-        opacity: 0,
-        x: -50,
-        duration: 1,
-        ease: 'power3.out'
-      });
+      gsap.from('.hero-content', { opacity: 0, x: -50, duration: 1, ease: 'power3.out' });
 
-      // Categories animation
       gsap.from('.category-item', {
-        scrollTrigger: {
-          trigger: categoriesRef.current,
-          start: 'top 80%',
-        },
-        opacity: 0,
-        y: 30,
-        stagger: 0.1,
-        duration: 0.6,
-        ease: 'back.out(1.7)'
+        scrollTrigger: { trigger: categoriesRef.current, start: 'top 80%' },
+        opacity: 0, y: 30, stagger: 0.1, duration: 0.6, ease: 'back.out(1.7)'
       });
 
-      // Products animation
       gsap.from('.product-card', {
-        scrollTrigger: {
-          trigger: productsRef.current,
-          start: 'top 80%',
-        },
-        opacity: 0,
-        y: 50,
-        stagger: 0.1,
-        duration: 0.5,
-        ease: 'power2.out'
+        scrollTrigger: { trigger: productsRef.current, start: 'top 80%' },
+        opacity: 0, y: 50, stagger: 0.1, duration: 0.5, ease: 'power2.out'
       });
 
-      // Promo cards animation
       gsap.from('.promo-card', {
-        scrollTrigger: {
-          trigger: '.promo-banners',
-          start: 'top 80%',
-        },
-        opacity: 0,
-        scale: 0.9,
-        stagger: 0.2,
-        duration: 0.6,
-        ease: 'back.out(1.7)'
+        scrollTrigger: { trigger: '.promo-banners', start: 'top 80%' },
+        opacity: 0, scale: 0.9, stagger: 0.2, duration: 0.6, ease: 'back.out(1.7)'
       });
 
-      // Features animation
       gsap.from('.feature-item', {
-        scrollTrigger: {
-          trigger: '.features-bar',
-          start: 'top 80%',
-        },
-        opacity: 0,
-        y: 30,
-        stagger: 0.15,
-        duration: 0.6,
-        ease: 'power2.out'
+        scrollTrigger: { trigger: '.features-bar', start: 'top 80%' },
+        opacity: 0, y: 30, stagger: 0.15, duration: 0.6, ease: 'power2.out'
       });
     });
 
     return () => {
+      clearInterval(heroTimer);
+      clearInterval(giftTimer);
       clearInterval(heartInterval);
       ctx.revert();
     };
-  }, [activeTab]);
+  }, [activeTab, giftSlides.length]);
 
   return (
     <>
@@ -223,14 +207,38 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA Banner */}
-      <section className="relative h-[280px] md:h-[340px] lg:h-[380px] bg-gradient-to-br from-[#2a2118] via-[#3d3225] to-[#4a3d30] overflow-hidden">
-        <div className="absolute left-0 top-0 w-1/2 h-full bg-gradient-to-br from-[#c9a882] to-[#b8956e] flex items-center justify-center text-[80px] md:text-[100px] lg:text-[120px] opacity-30">
-          🎁
+      {/* CTA Banner with Gift Slider */}
+      <section className="relative h-[320px] md:h-[380px] lg:h-[420px] bg-gradient-to-br from-[#2a2118] via-[#3d3225] to-[#4a3d30] overflow-hidden">
+        <div className="absolute left-0 top-0 w-1/2 h-full bg-gradient-to-br from-[#c9a882] to-[#b8956e] flex items-center justify-center overflow-hidden">
+          {/* Auto-scrolling gift slider */}
+          <div ref={giftSliderRef} className="relative w-full h-full">
+            {giftSlides.map((gift, i) => (
+              <div
+                key={i}
+                className={`absolute inset-0 flex flex-col items-center justify-center transition-all duration-700 ${
+                  i === giftIndex ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
+                }`}
+              >
+                <span className="text-[80px] md:text-[100px] lg:text-[120px] mb-2">{gift.icon}</span>
+                <span className="text-white/80 text-sm md:text-base font-medium text-center px-4">{gift.title}</span>
+                <span className="text-white/60 text-xs md:text-sm mt-1">{gift.price}</span>
+              </div>
+            ))}
+            {/* Slider dots */}
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
+              {giftSlides.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setGiftIndex(i)}
+                  className={`h-1.5 rounded-full transition-all ${i === giftIndex ? 'w-5 bg-white/80' : 'w-1.5 bg-white/30'}`}
+                />
+              ))}
+            </div>
+          </div>
         </div>
         <div className="max-w-6xl mx-auto px-4 md:px-5 h-full flex items-center">
           <div className="ml-[50%] md:ml-[55%] text-white relative z-10">
-            <div className="font-serif text-xs md:text-sm tracking-[2px] md:tracking-[3px] uppercase text-[var(--copper-light)] mb-2 md:mb-3 italic">Valentine's Day Special 💕</div>
+            <div className="font-serif text-xs md:text-sm tracking-[2px] md:tracking-[3px] uppercase text-[var(--copper-light)] mb-2 md:mb-3 italic">Valentine&apos;s Day Special 💕</div>
             <h2 className="font-serif text-2xl md:text-3xl lg:text-4xl font-semibold leading-tight mb-2.5 md:mb-3.5">Celebrate Love with Perfect Gifts</h2>
             <p className="text-xs md:text-sm text-white/70 mb-5 md:mb-7">Watches · Perfumes · Gift Sets</p>
             <Link href="/shop" className="inline-block bg-[var(--copper)] text-white px-6 md:px-8 py-2.5 md:py-3 rounded text-xs md:text-sm font-medium uppercase tracking-wider border-2 border-[var(--copper)] hover:bg-[var(--copper-dark)] hover:border-[var(--copper-dark)] transition-all">

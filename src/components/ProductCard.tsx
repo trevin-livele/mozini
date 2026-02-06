@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import { Product, formatPrice } from '@/lib/data';
 import { useStore } from '@/lib/store';
+import { useRef } from 'react';
+import { gsap } from 'gsap';
 
 interface ProductCardProps {
   product: Product;
@@ -11,11 +13,28 @@ interface ProductCardProps {
 export default function ProductCard({ product }: ProductCardProps) {
   const { addToCart, toggleWishlist, isInWishlist } = useStore();
   const inWishlist = isInWishlist(product.id);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     addToCart(product);
+
+    // GSAP cart animation
+    if (cardRef.current) {
+      const icon = cardRef.current.querySelector('.jewel-icon');
+      if (icon) {
+        gsap.timeline()
+          .to(icon, { scale: 1.3, duration: 0.15, ease: 'power2.out' })
+          .to(icon, { scale: 0.8, y: -20, opacity: 0.5, duration: 0.3, ease: 'power2.in' })
+          .to(icon, { scale: 1, y: 0, opacity: 1, duration: 0.3, ease: 'back.out(1.7)' });
+      }
+      // Flash the card border
+      gsap.fromTo(cardRef.current, 
+        { boxShadow: '0 0 0 2px var(--copper)' },
+        { boxShadow: '0 0 0 0px var(--copper)', duration: 0.6, ease: 'power2.out' }
+      );
+    }
   };
 
   const handleToggleWishlist = (e: React.MouseEvent) => {
@@ -28,8 +47,7 @@ export default function ProductCard({ product }: ProductCardProps) {
     e.preventDefault();
     e.stopPropagation();
     const message = `Hi! I'm interested in this product:\n\n${product.name}\nPrice: ${formatPrice(product.price)}\n\nCan you provide more details?`;
-    const whatsappUrl = `https://wa.me/254115757568?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
+    window.open(`https://wa.me/254115757568?text=${encodeURIComponent(message)}`, '_blank');
   };
 
   const getBadgeClass = () => {
@@ -46,33 +64,33 @@ export default function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <Link href={`/product/${product.id}`} className="block">
-      <div className="bg-white rounded-lg overflow-hidden border border-[var(--border)] relative cursor-pointer transition-all hover:shadow-lg hover:border-transparent hover:-translate-y-1 group">
+    <Link href={`/product/${product.id}`} className="block product-card">
+      <div ref={cardRef} className="bg-white rounded-lg overflow-hidden border border-[var(--border)] relative cursor-pointer transition-all hover:shadow-lg hover:border-transparent hover:-translate-y-1 group">
         {product.badge && (
           <span className={`absolute top-3 left-3 z-10 px-2.5 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wide text-white ${getBadgeClass()}`}>
             {getBadgeText()}
           </span>
         )}
-        
+
         <div className="relative h-[220px] bg-[var(--bg-soft)] flex items-center justify-center overflow-hidden">
-          <span className="text-7xl transition-transform group-hover:scale-110 group-hover:rotate-[5deg]">{product.icon}</span>
-          
-          <div className="absolute bottom-[-50px] left-0 right-0 flex justify-center gap-2 p-2.5 transition-all group-hover:bottom-2.5">
-            <button 
+          <span className="jewel-icon text-7xl transition-transform duration-500 group-hover:scale-125">{product.icon}</span>
+
+          <div className="absolute bottom-[-50px] left-0 right-0 flex justify-center gap-2 p-2.5 transition-all duration-300 group-hover:bottom-2.5">
+            <button
               onClick={handleAddToCart}
               className="w-9 h-9 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-[var(--copper)] hover:text-white hover:scale-110 transition-all"
               title="Add to Cart"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
             </button>
-            <button 
+            <button
               onClick={handleToggleWishlist}
               className={`w-9 h-9 rounded-full flex items-center justify-center shadow-sm hover:scale-110 transition-all ${inWishlist ? 'bg-[var(--red)] text-white' : 'bg-white hover:bg-[var(--copper)] hover:text-white'}`}
               title="Wishlist"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill={inWishlist ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
             </button>
-            <button 
+            <button
               onClick={handleWhatsAppInquiry}
               className="w-9 h-9 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-[#25D366] hover:text-white hover:scale-110 transition-all"
               title="WhatsApp Inquiry"
@@ -81,7 +99,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             </button>
           </div>
         </div>
-        
+
         <div className="p-4">
           <div className="text-[11px] uppercase tracking-wider text-[var(--text-light)] mb-1">{product.brand}</div>
           <div className="text-sm font-medium text-[var(--dark)] mb-2 truncate">{product.name}</div>
