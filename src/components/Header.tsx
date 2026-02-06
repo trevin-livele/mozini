@@ -6,9 +6,12 @@ import { useStore } from '@/lib/store';
 import { formatPrice } from '@/lib/data';
 import { useState, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
+import { useAuth } from '@/components/AuthProvider';
+import { signOut } from '@/lib/actions/auth';
 
 export default function Header() {
   const { getCartCount, getCartTotal, wishlist } = useStore();
+  const { user } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -102,6 +105,23 @@ export default function Header() {
 
           {/* Actions */}
           <div className="flex items-center gap-2 md:gap-4">
+            {/* Auth Links */}
+            {mounted && (
+              user ? (
+                <div className="flex items-center gap-2">
+                  <Link href="/profile" className="p-1.5 rounded-full hover:bg-[var(--bg-soft)] transition-colors" title="Profile">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="md:w-[22px] md:h-[22px]"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  </Link>
+                  <Link href="/orders" className="p-1.5 rounded-full hover:bg-[var(--bg-soft)] transition-colors hidden sm:block" title="Orders">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="md:w-[22px] md:h-[22px]"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                  </Link>
+                </div>
+              ) : (
+                <Link href="/login" className="text-xs md:text-sm font-medium text-[var(--copper)] hover:underline">
+                  Sign In
+                </Link>
+              )
+            )}
             <Link href="/wishlist" className="relative p-1.5 rounded-full hover:bg-[var(--bg-soft)] transition-colors">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="md:w-[22px] md:h-[22px]"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
               <span className="absolute -top-0.5 -right-1 bg-[var(--copper)] text-white text-[9px] w-[18px] h-[18px] rounded-full flex items-center justify-center font-semibold">
@@ -162,6 +182,19 @@ export default function Header() {
                 ].map(link => (
                   <Link key={link.label} href={link.href} onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-sm text-[var(--text)] hover:text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors">{link.label}</Link>
                 ))}
+                <hr className="my-2 border-[var(--border)]" />
+                {user ? (
+                  <>
+                    <Link href="/profile" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-sm text-[var(--text)] hover:text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors">MY PROFILE</Link>
+                    <Link href="/orders" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-sm text-[var(--text)] hover:text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors">MY ORDERS</Link>
+                    <button onClick={() => { setMobileMenuOpen(false); signOut(); }} className="px-4 py-3 text-sm text-left text-[var(--text)] hover:text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors">SIGN OUT</button>
+                  </>
+                ) : (
+                  <>
+                    <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-sm text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors font-medium">SIGN IN</Link>
+                    <Link href="/signup" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-sm text-[var(--text)] hover:text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors">CREATE ACCOUNT</Link>
+                  </>
+                )}
               </nav>
             </div>
           </div>

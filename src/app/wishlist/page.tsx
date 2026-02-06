@@ -1,13 +1,24 @@
 'use client';
 
 import Link from 'next/link';
-import { useStore } from '@/lib/store';
-import { products } from '@/lib/data';
+import { useState, useEffect } from 'react';
+import { useAuth } from '@/components/AuthProvider';
+import { getWishlist } from '@/lib/actions/wishlist';
+import { type Product } from '@/lib/data';
 import ProductCard from '@/components/ProductCard';
 
 export default function WishlistPage() {
-  const { wishlist } = useStore();
-  const wishlistProducts = wishlist.map(id => products.find(p => p.id === id)).filter(Boolean);
+  const { user } = useAuth();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!user) { setLoading(false); return; }
+    getWishlist()
+      .then(setProducts)
+      .catch(() => setProducts([]))
+      .finally(() => setLoading(false));
+  }, [user]);
 
   return (
     <>
@@ -22,9 +33,20 @@ export default function WishlistPage() {
 
       <div className="py-12 pb-20">
         <div className="max-w-6xl mx-auto px-5">
-          {wishlistProducts.length > 0 ? (
+          {loading ? (
+            <div className="text-center py-20 text-[var(--text-light)]">Loading...</div>
+          ) : !user ? (
+            <div className="text-center py-20">
+              <div className="text-6xl mb-5 opacity-60">♡</div>
+              <h2 className="font-serif text-2xl text-[var(--dark)] mb-3">Sign in to view your wishlist</h2>
+              <p className="text-[var(--text-light)] mb-7">Your wishlist is saved to your account.</p>
+              <Link href="/login?redirectTo=/wishlist" className="inline-block bg-[var(--copper)] text-white px-8 py-3 rounded text-sm font-medium uppercase tracking-wider hover:bg-[var(--copper-dark)] transition-colors">
+                Sign In
+              </Link>
+            </div>
+          ) : products.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {wishlistProducts.map(product => product && (
+              {products.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>

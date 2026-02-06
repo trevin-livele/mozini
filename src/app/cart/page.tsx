@@ -2,14 +2,41 @@
 
 import Link from 'next/link';
 import { useStore } from '@/lib/store';
-import { formatPrice, products } from '@/lib/data';
+import { useAuth } from '@/components/AuthProvider';
+import { formatPrice } from '@/lib/data';
 
 export default function CartPage() {
-  const { cart, removeFromCart, updateCartQty, getCartTotal } = useStore();
-  
+  const { cart, removeFromCart, updateCartQty, getCartTotal, loading } = useStore();
+  const { user } = useAuth();
+
   const subtotal = getCartTotal();
   const shipping = subtotal > 10000 ? 0 : 500;
   const total = subtotal + shipping;
+
+  if (!user) {
+    return (
+      <>
+        <div className="bg-[var(--bg-soft)] py-12 text-center">
+          <div className="max-w-6xl mx-auto px-5">
+            <h1 className="font-serif text-4xl text-[var(--dark)] mb-2">Shopping Cart</h1>
+            <div className="text-sm text-[var(--text-light)]">
+              <Link href="/" className="text-[var(--copper)] hover:underline">Home</Link> / Cart
+            </div>
+          </div>
+        </div>
+        <div className="py-12 pb-20">
+          <div className="max-w-6xl mx-auto px-5 text-center py-20">
+            <div className="text-6xl mb-5 opacity-60">🛒</div>
+            <h2 className="font-serif text-2xl text-[var(--dark)] mb-3">Sign in to view your cart</h2>
+            <p className="text-[var(--text-light)] mb-7">Your cart is saved to your account.</p>
+            <Link href="/login?redirectTo=/cart" className="inline-block bg-[var(--copper)] text-white px-8 py-3 rounded text-sm font-medium uppercase tracking-wider hover:bg-[var(--copper-dark)] transition-colors">
+              Sign In
+            </Link>
+          </div>
+        </div>
+      </>
+    );
+  }
 
   if (cart.length === 0) {
     return (
@@ -49,7 +76,7 @@ export default function CartPage() {
 
       <div className="py-12 pb-20">
         <div className="max-w-6xl mx-auto px-4 md:px-5">
-          {/* Cart Table - Desktop */}
+          {/* Desktop Table */}
           <div className="hidden md:block overflow-x-auto mb-8">
             <table className="w-full border-collapse">
               <thead>
@@ -62,13 +89,11 @@ export default function CartPage() {
                 </tr>
               </thead>
               <tbody>
-                {cart.map(item => (
-                  <tr key={item.id} className="border-b border-[var(--border)]">
+                {cart.map((item) => (
+                  <tr key={item.cartItemId} className="border-b border-[var(--border)]">
                     <td className="p-4">
                       <Link href={`/product/${item.id}`} className="flex items-center gap-4">
-                        <div className="w-20 h-20 bg-[var(--bg-soft)] rounded-lg flex items-center justify-center text-4xl flex-shrink-0">
-                          {item.icon}
-                        </div>
+                        <div className="w-20 h-20 bg-[var(--bg-soft)] rounded-lg flex items-center justify-center text-4xl flex-shrink-0">{item.icon}</div>
                         <div>
                           <div className="text-sm font-medium text-[var(--dark)] hover:text-[var(--copper)]">{item.name}</div>
                           <div className="text-[11px] text-[var(--text-light)] uppercase tracking-wide">{item.brand}</div>
@@ -78,14 +103,14 @@ export default function CartPage() {
                     <td className="p-4 text-[15px] font-semibold text-[var(--copper)]">{formatPrice(item.price)}</td>
                     <td className="p-4">
                       <div className="flex items-center border border-[var(--border)] rounded overflow-hidden w-fit">
-                        <button onClick={() => updateCartQty(item.id, -1)} className="w-10 h-10 flex items-center justify-center text-lg hover:bg-[var(--bg-soft)] hover:text-[var(--copper)] transition-colors">−</button>
+                        <button disabled={loading} onClick={() => updateCartQty(item.cartItemId, item.qty - 1)} className="w-10 h-10 flex items-center justify-center text-lg hover:bg-[var(--bg-soft)] hover:text-[var(--copper)] transition-colors disabled:opacity-50">−</button>
                         <input type="text" value={item.qty} readOnly className="w-12 h-10 text-center text-[15px] font-medium border-x border-[var(--border)]" />
-                        <button onClick={() => updateCartQty(item.id, 1)} className="w-10 h-10 flex items-center justify-center text-lg hover:bg-[var(--bg-soft)] hover:text-[var(--copper)] transition-colors">+</button>
+                        <button disabled={loading} onClick={() => updateCartQty(item.cartItemId, item.qty + 1)} className="w-10 h-10 flex items-center justify-center text-lg hover:bg-[var(--bg-soft)] hover:text-[var(--copper)] transition-colors disabled:opacity-50">+</button>
                       </div>
                     </td>
                     <td className="p-4 text-[15px] font-semibold text-[var(--copper)]">{formatPrice(item.price * item.qty)}</td>
                     <td className="p-4">
-                      <button onClick={() => removeFromCart(item.id)} className="text-[var(--red)] text-lg p-1.5 rounded-full hover:bg-red-50 transition-colors">✕</button>
+                      <button disabled={loading} onClick={() => removeFromCart(item.cartItemId)} className="text-[var(--red)] text-lg p-1.5 rounded-full hover:bg-red-50 transition-colors disabled:opacity-50">✕</button>
                     </td>
                   </tr>
                 ))}
@@ -93,26 +118,24 @@ export default function CartPage() {
             </table>
           </div>
 
-          {/* Cart Items - Mobile */}
+          {/* Mobile Cards */}
           <div className="md:hidden space-y-4 mb-8">
-            {cart.map(item => (
-              <div key={item.id} className="bg-white border border-[var(--border)] rounded-lg p-4">
+            {cart.map((item) => (
+              <div key={item.cartItemId} className="bg-white border border-[var(--border)] rounded-lg p-4">
                 <div className="flex gap-3 mb-3">
-                  <Link href={`/product/${item.id}`} className="w-20 h-20 bg-[var(--bg-soft)] rounded-lg flex items-center justify-center text-3xl flex-shrink-0">
-                    {item.icon}
-                  </Link>
+                  <Link href={`/product/${item.id}`} className="w-20 h-20 bg-[var(--bg-soft)] rounded-lg flex items-center justify-center text-3xl flex-shrink-0">{item.icon}</Link>
                   <div className="flex-1 min-w-0">
                     <Link href={`/product/${item.id}`} className="text-sm font-medium text-[var(--dark)] hover:text-[var(--copper)] block truncate">{item.name}</Link>
                     <div className="text-[11px] text-[var(--text-light)] uppercase tracking-wide mb-2">{item.brand}</div>
                     <div className="text-sm font-semibold text-[var(--copper)]">{formatPrice(item.price)}</div>
                   </div>
-                  <button onClick={() => removeFromCart(item.id)} className="text-[var(--red)] text-lg h-fit">✕</button>
+                  <button disabled={loading} onClick={() => removeFromCart(item.cartItemId)} className="text-[var(--red)] text-lg h-fit disabled:opacity-50">✕</button>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center border border-[var(--border)] rounded overflow-hidden">
-                    <button onClick={() => updateCartQty(item.id, -1)} className="w-9 h-9 flex items-center justify-center text-lg hover:bg-[var(--bg-soft)] transition-colors">−</button>
+                    <button disabled={loading} onClick={() => updateCartQty(item.cartItemId, item.qty - 1)} className="w-9 h-9 flex items-center justify-center text-lg hover:bg-[var(--bg-soft)] transition-colors disabled:opacity-50">−</button>
                     <input type="text" value={item.qty} readOnly className="w-10 h-9 text-center text-sm font-medium border-x border-[var(--border)]" />
-                    <button onClick={() => updateCartQty(item.id, 1)} className="w-9 h-9 flex items-center justify-center text-lg hover:bg-[var(--bg-soft)] transition-colors">+</button>
+                    <button disabled={loading} onClick={() => updateCartQty(item.cartItemId, item.qty + 1)} className="w-9 h-9 flex items-center justify-center text-lg hover:bg-[var(--bg-soft)] transition-colors disabled:opacity-50">+</button>
                   </div>
                   <div className="text-sm font-semibold text-[var(--copper)]">Total: {formatPrice(item.price * item.qty)}</div>
                 </div>
@@ -126,7 +149,6 @@ export default function CartPage() {
               <input type="text" placeholder="Coupon code" className="flex-1 px-3 md:px-4 py-2.5 md:py-3 border border-[var(--border)] rounded text-sm" />
               <button className="bg-[var(--copper)] text-white px-4 md:px-6 py-2.5 md:py-3 rounded text-xs md:text-sm font-medium uppercase tracking-wider hover:bg-[var(--copper-dark)] transition-colors whitespace-nowrap">Apply</button>
             </div>
-
             <div className="bg-[var(--bg-soft)] p-6 md:p-8 rounded-xl">
               <h3 className="font-serif text-lg md:text-xl mb-4 md:mb-5 text-[var(--dark)]">Cart Totals</h3>
               <div className="flex justify-between py-3 border-b border-[var(--border)] text-sm">
@@ -137,9 +159,7 @@ export default function CartPage() {
                 <span>Shipping</span>
                 <span className="text-[var(--copper)] font-semibold">{shipping === 0 ? 'Free' : formatPrice(shipping)}</span>
               </div>
-              {shipping === 0 && (
-                <div className="text-xs text-[var(--green)] py-1">✅ Free shipping above KES 10,000</div>
-              )}
+              {shipping === 0 && <div className="text-xs text-[var(--green)] py-1">✅ Free shipping above KES 10,000</div>}
               <div className="flex justify-between py-4 text-base md:text-lg font-bold text-[var(--dark)]">
                 <span>Total</span>
                 <span className="text-[var(--copper)]">{formatPrice(total)}</span>
