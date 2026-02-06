@@ -48,9 +48,9 @@ export default function CartPage() {
       </div>
 
       <div className="py-12 pb-20">
-        <div className="max-w-6xl mx-auto px-5">
-          {/* Cart Table */}
-          <div className="overflow-x-auto mb-8">
+        <div className="max-w-6xl mx-auto px-4 md:px-5">
+          {/* Cart Table - Desktop */}
+          <div className="hidden md:block overflow-x-auto mb-8">
             <table className="w-full border-collapse">
               <thead>
                 <tr className="border-b-2 border-[var(--border)]">
@@ -93,15 +93,42 @@ export default function CartPage() {
             </table>
           </div>
 
+          {/* Cart Items - Mobile */}
+          <div className="md:hidden space-y-4 mb-8">
+            {cart.map(item => (
+              <div key={item.id} className="bg-white border border-[var(--border)] rounded-lg p-4">
+                <div className="flex gap-3 mb-3">
+                  <Link href={`/product/${item.id}`} className="w-20 h-20 bg-[var(--bg-soft)] rounded-lg flex items-center justify-center text-3xl flex-shrink-0">
+                    {item.icon}
+                  </Link>
+                  <div className="flex-1 min-w-0">
+                    <Link href={`/product/${item.id}`} className="text-sm font-medium text-[var(--dark)] hover:text-[var(--copper)] block truncate">{item.name}</Link>
+                    <div className="text-[11px] text-[var(--text-light)] uppercase tracking-wide mb-2">{item.brand}</div>
+                    <div className="text-sm font-semibold text-[var(--copper)]">{formatPrice(item.price)}</div>
+                  </div>
+                  <button onClick={() => removeFromCart(item.id)} className="text-[var(--red)] text-lg h-fit">✕</button>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center border border-[var(--border)] rounded overflow-hidden">
+                    <button onClick={() => updateCartQty(item.id, -1)} className="w-9 h-9 flex items-center justify-center text-lg hover:bg-[var(--bg-soft)] transition-colors">−</button>
+                    <input type="text" value={item.qty} readOnly className="w-10 h-9 text-center text-sm font-medium border-x border-[var(--border)]" />
+                    <button onClick={() => updateCartQty(item.id, 1)} className="w-9 h-9 flex items-center justify-center text-lg hover:bg-[var(--bg-soft)] transition-colors">+</button>
+                  </div>
+                  <div className="text-sm font-semibold text-[var(--copper)]">Total: {formatPrice(item.price * item.qty)}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+
           {/* Summary */}
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-10 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 md:gap-10 items-start">
             <div className="flex gap-2.5">
-              <input type="text" placeholder="Coupon code" className="flex-1 px-4 py-3 border border-[var(--border)] rounded text-sm" />
-              <button className="bg-[var(--copper)] text-white px-6 py-3 rounded text-sm font-medium uppercase tracking-wider hover:bg-[var(--copper-dark)] transition-colors">Apply</button>
+              <input type="text" placeholder="Coupon code" className="flex-1 px-3 md:px-4 py-2.5 md:py-3 border border-[var(--border)] rounded text-sm" />
+              <button className="bg-[var(--copper)] text-white px-4 md:px-6 py-2.5 md:py-3 rounded text-xs md:text-sm font-medium uppercase tracking-wider hover:bg-[var(--copper-dark)] transition-colors whitespace-nowrap">Apply</button>
             </div>
 
-            <div className="bg-[var(--bg-soft)] p-8 rounded-xl">
-              <h3 className="font-serif text-xl mb-5 text-[var(--dark)]">Cart Totals</h3>
+            <div className="bg-[var(--bg-soft)] p-6 md:p-8 rounded-xl">
+              <h3 className="font-serif text-lg md:text-xl mb-4 md:mb-5 text-[var(--dark)]">Cart Totals</h3>
               <div className="flex justify-between py-3 border-b border-[var(--border)] text-sm">
                 <span>Subtotal</span>
                 <span className="text-[var(--copper)] font-semibold">{formatPrice(subtotal)}</span>
@@ -113,7 +140,7 @@ export default function CartPage() {
               {shipping === 0 && (
                 <div className="text-xs text-[var(--green)] py-1">✅ Free shipping above KES 10,000</div>
               )}
-              <div className="flex justify-between py-4 text-lg font-bold text-[var(--dark)]">
+              <div className="flex justify-between py-4 text-base md:text-lg font-bold text-[var(--dark)]">
                 <span>Total</span>
                 <span className="text-[var(--copper)]">{formatPrice(total)}</span>
               </div>
