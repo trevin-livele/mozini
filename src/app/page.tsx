@@ -150,21 +150,21 @@ export default function Home() {
       <section className="promo-banners pb-12 md:pb-16">
         <div className="max-w-6xl mx-auto px-4 md:px-5">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-            <Link href="/shop?category=Men's Watches" className="promo-card relative rounded-lg overflow-hidden h-[160px] md:h-[200px] cursor-pointer transition-transform hover:scale-[1.015] bg-gradient-to-br from-[#3d3225] to-[#2a2118] text-white">
+            <Link href="/shop?category=Gents Watches" className="promo-card relative rounded-lg overflow-hidden h-[160px] md:h-[200px] cursor-pointer transition-transform hover:scale-[1.015] bg-gradient-to-br from-[#3d3225] to-[#2a2118] text-white">
               <div className="relative z-10 p-6 md:p-8 h-full flex flex-col justify-center">
                 <div className="text-[10px] md:text-[11px] uppercase tracking-[2px] mb-2 md:mb-2.5 opacity-70">For Him 💖</div>
-                <h3 className="font-serif text-xl md:text-2xl font-semibold leading-tight mb-3 md:mb-4">Premium Men&apos;s Watches</h3>
+                <h3 className="font-serif text-xl md:text-2xl font-semibold leading-tight mb-3 md:mb-4">Premium Gents Watches</h3>
                 <span className="inline-block text-[11px] md:text-xs font-medium uppercase tracking-wider px-4 md:px-5 py-1.5 md:py-2 border border-current rounded w-fit hover:bg-white hover:text-[var(--dark)] transition-colors">Shop Now</span>
               </div>
               <div className="absolute right-3 md:right-5 top-1/2 -translate-y-1/2 text-[60px] md:text-[80px] opacity-15">⌚</div>
             </Link>
-            <Link href="/shop?category=Women's Perfumes" className="promo-card relative rounded-lg overflow-hidden h-[160px] md:h-[200px] cursor-pointer transition-transform hover:scale-[1.015] bg-gradient-to-br from-[#f5e6d8] to-[#ecddd0] text-[var(--dark)]">
+            <Link href="/shop?category=Gifts" className="promo-card relative rounded-lg overflow-hidden h-[160px] md:h-[200px] cursor-pointer transition-transform hover:scale-[1.015] bg-gradient-to-br from-[#f5e6d8] to-[#ecddd0] text-[var(--dark)]">
               <div className="relative z-10 p-6 md:p-8 h-full flex flex-col justify-center">
-                <div className="text-[10px] md:text-[11px] uppercase tracking-[2px] mb-2 md:mb-2.5 opacity-70">For Her 💕</div>
-                <h3 className="font-serif text-xl md:text-2xl font-semibold leading-tight mb-3 md:mb-4">Luxury Fragrances</h3>
+                <div className="text-[10px] md:text-[11px] uppercase tracking-[2px] mb-2 md:mb-2.5 opacity-70">Perfect Gifts 💕</div>
+                <h3 className="font-serif text-xl md:text-2xl font-semibold leading-tight mb-3 md:mb-4">Curated Gift Collections</h3>
                 <span className="inline-block text-[11px] md:text-xs font-medium uppercase tracking-wider px-4 md:px-5 py-1.5 md:py-2 border border-current rounded w-fit hover:bg-[var(--dark)] hover:text-white hover:border-[var(--dark)] transition-colors">Shop Now</span>
               </div>
-              <div className="absolute right-3 md:right-5 top-1/2 -translate-y-1/2 text-[60px] md:text-[80px] opacity-15">🌸</div>
+              <div className="absolute right-3 md:right-5 top-1/2 -translate-y-1/2 text-[60px] md:text-[80px] opacity-15">🎁</div>
             </Link>
           </div>
         </div>

@@ -155,9 +155,10 @@ export default function Header() {
             {[
               { href: '/', label: 'HOME' },
               { href: '/shop', label: 'SHOP' },
-              { href: '/shop?category=Men\'s Watches', label: 'WATCHES' },
-              { href: '/shop?category=Men\'s Perfumes', label: 'PERFUMES' },
-              { href: '/shop?category=Gift Sets', label: 'GIFT SETS' },
+              { href: '/shop?category=Gents Watches', label: 'GENTS' },
+              { href: '/shop?category=Ladies Watches', label: 'LADIES' },
+              { href: '/shop?category=Gifts', label: 'GIFTS' },
+              { href: '/shop?category=Jewelry', label: 'JEWELRY' },
               { href: '/about', label: 'ABOUT' },
               { href: '/contact', label: 'CONTACT' },
             ].map(link => (
@@ -181,9 +182,12 @@ export default function Header() {
                 {[
                   { href: '/', label: 'HOME' },
                   { href: '/shop', label: 'SHOP' },
-                  { href: '/shop?category=Men\'s Watches', label: 'WATCHES' },
-                  { href: '/shop?category=Men\'s Perfumes', label: 'PERFUMES' },
-                  { href: '/shop?category=Gift Sets', label: 'GIFT SETS' },
+                  { href: '/shop?category=Gents Watches', label: 'GENTS WATCHES' },
+                  { href: '/shop?category=Ladies Watches', label: 'LADIES WATCHES' },
+                  { href: '/shop?category=Kids Watches', label: 'KIDS WATCHES' },
+                  { href: '/shop?category=Gifts', label: 'GIFTS' },
+                  { href: '/shop?category=Jewelry', label: 'JEWELRY' },
+                  { href: '/shop?category=Drinks %26 Candy', label: 'DRINKS & CANDY' },
                   { href: '/about', label: 'ABOUT' },
                   { href: '/contact', label: 'CONTACT' },
                 ].map(link => (
