@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import SocialFloat from "@/components/SocialFloat";
 import { ToastProvider } from "@/components/Toast";
 import { AuthProvider } from "@/components/AuthProvider";
 import { createClient } from "@/lib/supabase/server";
@@ -27,6 +28,7 @@ export default async function RootLayout({
             <Header />
             <main>{children}</main>
             <Footer />
+            <SocialFloat />
           </ToastProvider>
         </AuthProvider>
       </body>
