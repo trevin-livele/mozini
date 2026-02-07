@@ -77,10 +77,7 @@ export default function Header() {
           <span className="text-[11px]">📍 Digital Shopping Mall, F27 · 💬 <a href="https://wa.me/254115757568" target="_blank" className="underline">+254 115 757 568</a></span>
           <div className="flex gap-4 items-center">
             <span>KES</span>
-            <select className="bg-transparent border-none text-white text-xs cursor-pointer">
-              <option className="text-gray-800">English</option>
-              <option className="text-gray-800">Kiswahili</option>
-            </select>
+            <span className="text-xs">English</span>
           </div>
         </div>
       </div>

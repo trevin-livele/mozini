@@ -145,10 +145,7 @@ export default function CartPage() {
 
           {/* Summary */}
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 md:gap-10 items-start">
-            <div className="flex gap-2.5">
-              <input type="text" placeholder="Coupon code" className="flex-1 px-3 md:px-4 py-2.5 md:py-3 border border-[var(--border)] rounded text-sm" />
-              <button className="bg-[var(--copper)] text-white px-4 md:px-6 py-2.5 md:py-3 rounded text-xs md:text-sm font-medium uppercase tracking-wider hover:bg-[var(--copper-dark)] transition-colors whitespace-nowrap">Apply</button>
-            </div>
+            <div></div>
             <div className="bg-[var(--bg-soft)] p-6 md:p-8 rounded-xl">
               <h3 className="font-serif text-lg md:text-xl mb-4 md:mb-5 text-[var(--dark)]">Cart Totals</h3>
               <div className="flex justify-between py-3 border-b border-[var(--border)] text-sm">

@@ -21,6 +21,7 @@ export default function ProductPage() {
   const [qty, setQty] = useState(1);
   const [activeTab, setActiveTab] = useState(0);
   const [adding, setAdding] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(0);
 
   useEffect(() => {
     setLoading(true);
@@ -86,11 +87,15 @@ export default function ProductPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16 items-start">
             <div>
               <div className="w-full h-[300px] md:h-[400px] lg:h-[450px] bg-[var(--bg-soft)] rounded-xl flex items-center justify-center text-[100px] md:text-[120px] lg:text-[140px] mb-3 md:mb-4">
-                {product.icon}
+                {[product.icon, '🔍', '📦', '🎁'][selectedImage]}
               </div>
               <div className="flex gap-2 md:gap-2.5 overflow-x-auto pb-2">
                 {[product.icon, '🔍', '📦', '🎁'].map((icon, i) => (
-                  <div key={i} className={`w-16 h-16 md:w-20 md:h-20 bg-[var(--bg-soft)] rounded-lg flex items-center justify-center text-2xl md:text-3xl border-2 cursor-pointer transition-all flex-shrink-0 ${i === 0 ? 'border-[var(--copper)]' : 'border-transparent hover:border-[var(--copper)]'}`}>
+                  <div 
+                    key={i} 
+                    onClick={() => setSelectedImage(i)}
+                    className={`w-16 h-16 md:w-20 md:h-20 bg-[var(--bg-soft)] rounded-lg flex items-center justify-center text-2xl md:text-3xl border-2 cursor-pointer transition-all flex-shrink-0 ${selectedImage === i ? 'border-[var(--copper)]' : 'border-transparent hover:border-[var(--copper)]'}`}
+                  >
                     {icon}
                   </div>
                 ))}

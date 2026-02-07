@@ -15,7 +15,7 @@ export default function CheckoutPage() {
   const syncCart = useStore((s) => s.syncCart);
   const [serverCart, setServerCart] = useState<CartItemWithProduct[]>([]);
   const [loadingCart, setLoadingCart] = useState(true);
-  const [paymentMethod, setPaymentMethod] = useState('mpesa');
+  const [paymentMethod] = useState('cod');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const idempotencyKeyRef = useRef(crypto.randomUUID());
@@ -150,16 +150,10 @@ export default function CheckoutPage() {
 
                 <h2 className="font-serif text-xl md:text-2xl mb-4 md:mb-5 text-[var(--dark)]">Payment Method</h2>
                 <div className="flex flex-col gap-2 md:gap-2.5 mb-5 md:mb-6">
-                  {[
-                    { value: 'mpesa', label: '📱 M-PESA' },
-                    { value: 'card', label: '💳 Credit/Debit Card' },
-                    { value: 'cod', label: '🚚 Cash on Delivery' },
-                  ].map((option) => (
-                    <label key={option.value} className={`flex items-center gap-2.5 p-3 md:p-3.5 border rounded cursor-pointer transition-all text-sm ${paymentMethod === option.value ? 'border-[var(--copper)] bg-[rgba(44,95,99,0.05)]' : 'border-[var(--border)] hover:border-[var(--copper)]'}`}>
-                      <input type="radio" name="payment" value={option.value} checked={paymentMethod === option.value} onChange={(e) => setPaymentMethod(e.target.value)} className="accent-[var(--copper)]" />
-                      {option.label}
-                    </label>
-                  ))}
+                  <label className={`flex items-center gap-2.5 p-3 md:p-3.5 border rounded cursor-pointer transition-all text-sm border-[var(--copper)] bg-[rgba(44,95,99,0.05)]`}>
+                    <input type="radio" name="payment" value="cod" checked readOnly className="accent-[var(--copper)]" />
+                    🚚 Cash on Delivery
+                  </label>
                 </div>
 
                 <button type="submit" disabled={submitting} className="w-full bg-[var(--copper)] text-white py-3 md:py-3.5 rounded text-xs md:text-sm font-medium uppercase tracking-wider hover:bg-[var(--copper-dark)] transition-colors lg:hidden disabled:opacity-50">
