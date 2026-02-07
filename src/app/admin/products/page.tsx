@@ -1,0 +1,148 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { getAdminProducts, createProduct, updateProduct, deleteProduct } from '@/lib/actions/admin';
+import { formatPrice } from '@/lib/data';
+import type { Product } from '@/lib/supabase/types';
+
+const CATEGORIES = ["Men's Watches", "Women's Watches", "Men's Perfumes", "Women's Perfumes", "Gift Sets", "Accessories"];
+
+export default function AdminProducts() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState<Product | null>(null);
+  const [showForm, setShowForm] = useState(false);
+
+  const loadProducts = async () => {
+    setLoading(true);
+    try {
+      const data = await getAdminProducts();
+      setProducts(data);
+    } catch (e: any) {
+      alert(e.message);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => { loadProducts(); }, []);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    
+    const result = editing 
+      ? await updateProduct(editing.id, formData)
+      : await createProduct(formData);
+    
+    if (result.error) {
+      alert(result.error);
+    } else {
+      setShowForm(false);
+      setEditing(null);
+      loadProducts();
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm('Delete this product?')) return;
+    const result = await deleteProduct(id);
+    if (result.error) alert(result.error);
+    else loadProducts();
+  };
+
+  return (
+    <div>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Products</h1>
+        <button onClick={() => { setEditing(null); setShowForm(true); }} className="bg-[var(--copper)] text-white px-4 py-2 rounded-lg hover:opacity-90">
+          + Add Product
+        </button>
+      </div>
+
+      {showForm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <h2 className="text-xl font-bold mb-4">{editing ? 'Edit Product' : 'New Product'}</h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <input name="name" defaultValue={editing?.name} placeholder="Name" required className="w-full border rounded px-3 py-2" />
+              <input name="brand" defaultValue={editing?.brand || 'Mozini'} placeholder="Brand" className="w-full border rounded px-3 py-2" />
+              <select name="category" defaultValue={editing?.category} required className="w-full border rounded px-3 py-2">
+                <option value="">Select Category</option>
+                {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+              <div className="grid grid-cols-2 gap-4">
+                <input name="price" type="number" defaultValue={editing?.price} placeholder="Price (KES)" required className="border rounded px-3 py-2" />
+                <input name="oldPrice" type="number" defaultValue={editing?.old_price} placeholder="Old Price" className="border rounded px-3 py-2" />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <input name="icon" defaultValue={editing?.icon || '🎁'} placeholder="Icon (emoji)" className="border rounded px-3 py-2" />
+                <input name="stock" type="number" defaultValue={editing?.stock ?? 100} placeholder="Stock" className="border rounded px-3 py-2" />
+              </div>
+              <input name="imageUrl" defaultValue={editing?.image_url || ''} placeholder="Image URL" className="w-full border rounded px-3 py-2" />
+              <div className="grid grid-cols-2 gap-4">
+                <input name="badge" defaultValue={editing?.badge} placeholder="Badge (e.g. NEW)" className="border rounded px-3 py-2" />
+                <input name="tag" defaultValue={editing?.tag} placeholder="Tag (e.g. bestseller)" className="border rounded px-3 py-2" />
+              </div>
+              <textarea name="description" defaultValue={editing?.description} placeholder="Description" rows={3} className="w-full border rounded px-3 py-2" />
+              <label className="flex items-center gap-2">
+                <input type="checkbox" name="isActive" value="true" defaultChecked={editing?.is_active ?? true} />
+                <span>Active</span>
+              </label>
+              <div className="flex gap-3 pt-2">
+                <button type="submit" className="flex-1 bg-[var(--copper)] text-white py-2 rounded-lg hover:opacity-90">Save</button>
+                <button type="button" onClick={() => { setShowForm(false); setEditing(null); }} className="flex-1 border py-2 rounded-lg hover:bg-gray-50">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <div className="bg-white rounded-lg shadow overflow-hidden">
+          <table className="w-full text-sm">
+            <thead className="bg-gray-50 border-b">
+              <tr>
+                <th className="text-left px-4 py-3">Product</th>
+                <th className="text-left px-4 py-3">Category</th>
+                <th className="text-left px-4 py-3">Price</th>
+                <th className="text-left px-4 py-3">Stock</th>
+                <th className="text-left px-4 py-3">Status</th>
+                <th className="text-right px-4 py-3">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {products.map((p) => (
+                <tr key={p.id} className="border-b hover:bg-gray-50">
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xl">{p.icon}</span>
+                      <div>
+                        <p className="font-medium">{p.name}</p>
+                        <p className="text-xs text-gray-500">{p.brand}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-4 py-3">{p.category}</td>
+                  <td className="px-4 py-3">{formatPrice(p.price)}</td>
+                  <td className="px-4 py-3">{p.stock}</td>
+                  <td className="px-4 py-3">
+                    <span className={`px-2 py-1 rounded text-xs ${p.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
+                      {p.is_active ? 'Active' : 'Inactive'}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-right">
+                    <button onClick={() => { setEditing(p); setShowForm(true); }} className="text-blue-600 hover:underline mr-3">Edit</button>
+                    <button onClick={() => handleDelete(p.id)} className="text-red-600 hover:underline">Delete</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}

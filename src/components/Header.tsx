@@ -10,12 +10,17 @@ import { useAuth } from '@/components/AuthProvider';
 import { signOut } from '@/lib/actions/auth';
 
 export default function Header() {
-  const { getCartCount, getCartTotal, wishlist } = useStore();
-  const { user } = useAuth();
+  const cart = useStore((s) => s.cart);
+  const wishlist = useStore((s) => s.wishlist);
+  const { user, isAdmin } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const bannerRef = useRef<HTMLDivElement>(null);
+
+  // Computed values that update when cart changes
+  const cartCount = cart.reduce((sum, i) => sum + i.qty, 0);
+  const cartTotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
 
   useEffect(() => {
     setMounted(true);
@@ -109,6 +114,11 @@ export default function Header() {
             {mounted && (
               user ? (
                 <div className="flex items-center gap-2">
+                  {isAdmin && (
+                    <Link href="/admin" className="p-1.5 rounded-full hover:bg-[var(--bg-soft)] transition-colors text-[var(--copper)]" title="Admin">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="md:w-[22px] md:h-[22px]"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+                    </Link>
+                  )}
                   <Link href="/profile" className="p-1.5 rounded-full hover:bg-[var(--bg-soft)] transition-colors" title="Profile">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="md:w-[22px] md:h-[22px]"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                   </Link>
@@ -131,11 +141,11 @@ export default function Header() {
             <Link href="/cart" className="relative p-1.5 rounded-full hover:bg-[var(--bg-soft)] transition-colors">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="md:w-[22px] md:h-[22px]"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
               <span className="absolute -top-0.5 -right-1 bg-[var(--copper)] text-white text-[9px] w-[18px] h-[18px] rounded-full flex items-center justify-center font-semibold">
-                {mounted ? getCartCount() : 0}
+                {mounted ? cartCount : 0}
               </span>
             </Link>
             <span className="text-xs md:text-sm font-medium text-[var(--dark)] hidden sm:inline">
-              {mounted ? formatPrice(getCartTotal()) : 'KES 0'}
+              {mounted ? formatPrice(cartTotal) : 'KES 0'}
             </span>
           </div>
         </div>
@@ -185,6 +195,9 @@ export default function Header() {
                 <hr className="my-2 border-[var(--border)]" />
                 {user ? (
                   <>
+                    {isAdmin && (
+                      <Link href="/admin" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-sm text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors font-medium">⚙️ ADMIN PANEL</Link>
+                    )}
                     <Link href="/profile" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-sm text-[var(--text)] hover:text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors">MY PROFILE</Link>
                     <Link href="/orders" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-sm text-[var(--text)] hover:text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors">MY ORDERS</Link>
                     <button onClick={() => { setMobileMenuOpen(false); signOut(); }} className="px-4 py-3 text-sm text-left text-[var(--text)] hover:text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors">SIGN OUT</button>
