@@ -134,6 +134,23 @@ create table public.wishlists (
 create index idx_wishlists_user on public.wishlists(user_id);
 
 -- ============================================
+-- 8. CONTACT MESSAGES
+-- ============================================
+create table public.contact_messages (
+  id uuid default uuid_generate_v4() primary key,
+  name text not null,
+  email text not null,
+  phone text,
+  subject text,
+  message text not null,
+  is_read boolean not null default false,
+  created_at timestamptz not null default now()
+);
+
+create index idx_contact_messages_read on public.contact_messages(is_read);
+create index idx_contact_messages_created on public.contact_messages(created_at desc);
+
+-- ============================================
 -- 7. UPDATED_AT TRIGGER
 -- ============================================
 create or replace function public.update_updated_at()

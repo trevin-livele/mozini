@@ -140,6 +140,27 @@ create policy "Users can remove from own wishlist"
   using (auth.uid() = user_id);
 
 -- ============================================
+-- CONTACT MESSAGES (anyone can insert, admins can read/update)
+-- ============================================
+alter table public.contact_messages enable row level security;
+
+create policy "Anyone can submit a contact message"
+  on public.contact_messages for insert
+  with check (true);
+
+create policy "Admins can view all contact messages"
+  on public.contact_messages for select
+  using (public.is_admin());
+
+create policy "Admins can update contact messages"
+  on public.contact_messages for update
+  using (public.is_admin());
+
+create policy "Admins can delete contact messages"
+  on public.contact_messages for delete
+  using (public.is_admin());
+
+-- ============================================
 -- STORAGE: Product Images Bucket
 -- ============================================
 -- Run in Supabase Dashboard > Storage > Create bucket "product-images" (public)

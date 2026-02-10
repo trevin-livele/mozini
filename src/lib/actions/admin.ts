@@ -2,23 +2,31 @@
 
 import { createClient } from '@/lib/supabase/server';
 import { isAdmin } from './auth';
-import type { Product, Order, Profile } from '@/lib/supabase/types';
+import type { Product, Order, Profile, ContactMessage } from '@/lib/supabase/types';
 
 // ============================================
 // PRODUCTS MANAGEMENT
 // ============================================
 
-export async function getAdminProducts(): Promise<Product[]> {
+export async function getAdminProducts(options?: {
+  page?: number;
+  limit?: number;
+}): Promise<{ products: Product[]; total: number }> {
   if (!(await isAdmin())) throw new Error('Unauthorized');
   
+  const page = options?.page || 1;
+  const limit = options?.limit || 10;
+  const from = (page - 1) * limit;
+
   const supabase = await createClient();
-  const { data, error } = await supabase
+  const { data, error, count } = await supabase
     .from('products')
-    .select('*')
-    .order('created_at', { ascending: false });
+    .select('*', { count: 'exact' })
+    .order('created_at', { ascending: false })
+    .range(from, from + limit - 1);
 
   if (error) throw new Error(error.message);
-  return data || [];
+  return { products: data || [], total: count || 0 };
 }
 
 export async function createProduct(formData: FormData) {
@@ -149,10 +157,11 @@ export async function getAdminStats() {
   
   const supabase = await createClient();
   
-  const [products, orders, users] = await Promise.all([
+  const [products, orders, users, messages] = await Promise.all([
     supabase.from('products').select('id', { count: 'exact', head: true }),
     supabase.from('orders').select('id, total, status'),
     supabase.from('profiles').select('id', { count: 'exact', head: true }),
+    supabase.from('contact_messages').select('id, is_read', { count: 'exact' }),
   ]);
 
   const ordersData = orders.data || [];
@@ -160,6 +169,7 @@ export async function getAdminStats() {
     .filter((o) => o.status !== 'cancelled')
     .reduce((sum, o) => sum + o.total, 0);
   const pendingOrders = ordersData.filter((o) => o.status === 'pending').length;
+  const unreadMessages = (messages.data || []).filter((m) => !m.is_read).length;
 
   return {
     totalProducts: products.count || 0,
@@ -167,5 +177,58 @@ export async function getAdminStats() {
     totalUsers: users.count || 0,
     totalRevenue,
     pendingOrders,
+    totalMessages: messages.count || 0,
+    unreadMessages,
   };
+}
+
+// ============================================
+// CONTACT MESSAGES MANAGEMENT
+// ============================================
+
+export async function getAdminMessages(options?: {
+  page?: number;
+  limit?: number;
+}): Promise<{ messages: ContactMessage[]; total: number }> {
+  if (!(await isAdmin())) throw new Error('Unauthorized');
+
+  const page = options?.page || 1;
+  const limit = options?.limit || 10;
+  const from = (page - 1) * limit;
+
+  const supabase = await createClient();
+  const { data, error, count } = await supabase
+    .from('contact_messages')
+    .select('*', { count: 'exact' })
+    .order('created_at', { ascending: false })
+    .range(from, from + limit - 1);
+
+  if (error) throw new Error(error.message);
+  return { messages: data || [], total: count || 0 };
+}
+
+export async function markMessageRead(id: string, isRead: boolean) {
+  if (!(await isAdmin())) return { error: 'Unauthorized' };
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from('contact_messages')
+    .update({ is_read: isRead })
+    .eq('id', id);
+
+  if (error) return { error: error.message };
+  return { success: true };
+}
+
+export async function deleteMessage(id: string) {
+  if (!(await isAdmin())) return { error: 'Unauthorized' };
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from('contact_messages')
+    .delete()
+    .eq('id', id);
+
+  if (error) return { error: error.message };
+  return { success: true };
 }

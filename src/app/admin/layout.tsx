@@ -17,6 +17,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
               <Link href="/admin/products" className="hover:text-[var(--copper)] transition-colors">Products</Link>
               <Link href="/admin/orders" className="hover:text-[var(--copper)] transition-colors">Orders</Link>
               <Link href="/admin/users" className="hover:text-[var(--copper)] transition-colors">Users</Link>
+              <Link href="/admin/messages" className="hover:text-[var(--copper)] transition-colors">Messages</Link>
             </div>
           </div>
           <Link href="/" className="text-sm hover:text-[var(--copper)] transition-colors">← Back to Store</Link>
