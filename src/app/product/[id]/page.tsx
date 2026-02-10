@@ -86,9 +86,14 @@ export default function ProductPage() {
         <div className="max-w-6xl mx-auto px-4 md:px-5">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16 items-start">
             <div>
-              <div className="w-full h-[300px] md:h-[400px] lg:h-[450px] bg-[var(--bg-soft)] rounded-xl flex items-center justify-center text-[100px] md:text-[120px] lg:text-[140px] mb-3 md:mb-4">
-                {[product.icon, '🔍', '📦', '🎁'][selectedImage]}
+              <div className="w-full h-[300px] md:h-[400px] lg:h-[450px] bg-[var(--bg-soft)] rounded-xl flex items-center justify-center overflow-hidden mb-3 md:mb-4">
+                {product.image_url ? (
+                  <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-[100px] md:text-[120px] lg:text-[140px]">{[product.icon, '🔍', '📦', '🎁'][selectedImage]}</span>
+                )}
               </div>
+              {!product.image_url && (
               <div className="flex gap-2 md:gap-2.5 overflow-x-auto pb-2">
                 {[product.icon, '🔍', '📦', '🎁'].map((icon, i) => (
                   <div 
@@ -100,6 +105,7 @@ export default function ProductPage() {
                   </div>
                 ))}
               </div>
+              )}
             </div>
 
             <div>

@@ -157,12 +157,14 @@ export default function Header() {
               { href: '/shop', label: 'SHOP' },
               { href: '/shop?category=Gents Watches', label: 'GENTS' },
               { href: '/shop?category=Ladies Watches', label: 'LADIES' },
+              { href: '/shop?category=Hannah Martin', label: 'HANNAH MARTIN' },
+              { href: '/shop?category=Kids Watches', label: 'KIDS' },
               { href: '/shop?category=Gifts', label: 'GIFTS' },
               { href: '/shop?category=Jewelry', label: 'JEWELRY' },
-              { href: '/about', label: 'ABOUT' },
+              { href: '/shop?category=Drinks %26 Candy', label: 'DRINKS' },
               { href: '/contact', label: 'CONTACT' },
             ].map(link => (
-              <Link key={link.label} href={link.href} className="px-4 xl:px-5 py-3.5 text-sm text-[var(--text)] hover:text-[var(--copper)] transition-colors">{link.label}</Link>
+              <Link key={link.label} href={link.href} className="px-3 xl:px-4 py-3.5 text-[13px] text-[var(--text)] hover:text-[var(--copper)] transition-colors">{link.label}</Link>
             ))}
           </div>
         </div>
@@ -184,6 +186,7 @@ export default function Header() {
                   { href: '/shop', label: 'SHOP' },
                   { href: '/shop?category=Gents Watches', label: 'GENTS WATCHES' },
                   { href: '/shop?category=Ladies Watches', label: 'LADIES WATCHES' },
+                  { href: '/shop?category=Hannah Martin', label: 'HANNAH MARTIN' },
                   { href: '/shop?category=Kids Watches', label: 'KIDS WATCHES' },
                   { href: '/shop?category=Gifts', label: 'GIFTS' },
                   { href: '/shop?category=Jewelry', label: 'JEWELRY' },

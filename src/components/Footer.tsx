@@ -61,15 +61,19 @@ export default function Footer() {
                 <span className="text-[10px] font-normal tracking-wider text-white/50 uppercase">Watches &amp; Gifts</span>
               </span>
             </Link>
-            <p className="text-sm leading-relaxed mb-5">Kenya&apos;s finest watches &amp; gifts collection. Premium timepieces and fragrances crafted with precision and love.</p>
+            <p className="text-sm leading-relaxed mb-5">Kenya&apos;s finest watches &amp; gifts collection. Premium timepieces, jewelry, and personalized gifts crafted with precision and love.</p>
           </div>
 
           {/* Quick Links */}
           <div>
             <h4 className="text-white text-sm font-semibold mb-5 uppercase tracking-wider">Quick Links</h4>
             <ul className="space-y-2.5">
-              <li><Link href="/about" className="text-sm hover:text-[var(--copper-light)] hover:pl-1 transition-all">About Us</Link></li>
-              <li><Link href="/shop" className="text-sm hover:text-[var(--copper-light)] hover:pl-1 transition-all">Shop</Link></li>
+              <li><Link href="/shop" className="text-sm hover:text-[var(--copper-light)] hover:pl-1 transition-all">Shop All</Link></li>
+              <li><Link href="/shop?category=Gents Watches" className="text-sm hover:text-[var(--copper-light)] hover:pl-1 transition-all">Gents Watches</Link></li>
+              <li><Link href="/shop?category=Ladies Watches" className="text-sm hover:text-[var(--copper-light)] hover:pl-1 transition-all">Ladies Watches</Link></li>
+              <li><Link href="/shop?category=Hannah Martin" className="text-sm hover:text-[var(--copper-light)] hover:pl-1 transition-all">Hannah Martin</Link></li>
+              <li><Link href="/shop?category=Gifts" className="text-sm hover:text-[var(--copper-light)] hover:pl-1 transition-all">Gifts</Link></li>
+              <li><Link href="/shop?category=Jewelry" className="text-sm hover:text-[var(--copper-light)] hover:pl-1 transition-all">Jewelry</Link></li>
               <li><Link href="/contact" className="text-sm hover:text-[var(--copper-light)] hover:pl-1 transition-all">Contact</Link></li>
             </ul>
           </div>

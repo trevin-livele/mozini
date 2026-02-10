@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { type Product, formatPrice, getCategoryIcon } from '@/lib/data';
+import { type Product, formatPrice, getCategoryIcon, getCategoryImage } from '@/lib/data';
 import ProductCard from '@/components/ProductCard';
 import { useState, useEffect, useRef } from 'react';
 import { getProducts, getCategories } from '@/lib/actions/products';
@@ -21,9 +21,9 @@ export default function Home() {
   const productsRef = useRef<HTMLDivElement>(null);
 
   const heroSlides = [
-    { label: 'Valentine\'s Special 💝', title: 'Perfect Gifts for Your Loved One', desc: 'Watches · Perfumes · Gift Sets · Express Your Love', icon: '⌚', bg: 'linear-gradient(135deg,#f0dcc8,#e4ccb5,#d4b89e)' },
-    { label: 'Love Collection 💕', title: 'Romantic Fragrances & Timepieces', desc: 'Premium quality · Beautiful packaging · Made with love', icon: '🧴', bg: 'linear-gradient(135deg,#e8d5c4,#dcc7b5,#c9b19e)' },
-    { label: 'Special Offers ❤️', title: 'Valentine\'s Day Gift Sets', desc: 'Perfect combinations · Romantic packaging · Great value', icon: '🎁', bg: 'linear-gradient(135deg,#d8c8b8,#c9b5a2,#b8a18e)' },
+    { label: 'Valentine\'s Special 💝', title: 'Perfect Gifts for Your Loved One', desc: 'Watches · Jewelry · Gifts · Express Your Love', icon: '⌚', bg: 'linear-gradient(135deg,#f0dcc8,#e4ccb5,#d4b89e)' },
+    { label: 'Hannah Martin 💕', title: 'Elegant Ladies Watch Collection', desc: 'Premium quality · Beautiful designs · Made with love', icon: '⌚', bg: 'linear-gradient(135deg,#e8d5c4,#dcc7b5,#c9b19e)' },
+    { label: 'Special Offers ❤️', title: 'Curated Gift Collections', desc: 'Flowers · Personalized Gifts · Great value', icon: '🎁', bg: 'linear-gradient(135deg,#d8c8b8,#c9b5a2,#b8a18e)' },
   ];
 
   const [giftIndex, setGiftIndex] = useState(0);
@@ -46,6 +46,7 @@ export default function Home() {
   // Gift slides from first 6 products
   const giftSlides = products.slice(0, 6).map((p) => ({
     icon: p.icon,
+    image_url: p.image_url,
     title: p.name,
     price: formatPrice(p.price),
   }));
@@ -135,8 +136,12 @@ export default function Home() {
           <div className="flex justify-center gap-6 md:gap-9 flex-wrap">
             {categories.map((cat) => (
               <Link key={cat.name} href={`/shop?category=${encodeURIComponent(cat.name)}`} className="category-item text-center cursor-pointer transition-transform hover:-translate-y-1.5 group">
-                <div className="w-[85px] h-[85px] md:w-[105px] md:h-[105px] rounded-full border-2 border-[var(--border)] flex items-center justify-center mx-auto mb-2.5 md:mb-3.5 bg-white text-[36px] md:text-[42px] transition-all group-hover:border-[var(--copper)] group-hover:shadow-[0_0_0_4px_rgba(44,95,99,0.1)]">
-                  {getCategoryIcon(cat.name)}
+                <div className="w-[85px] h-[85px] md:w-[105px] md:h-[105px] rounded-full border-2 border-[var(--border)] flex items-center justify-center mx-auto mb-2.5 md:mb-3.5 bg-white overflow-hidden transition-all group-hover:border-[var(--copper)] group-hover:shadow-[0_0_0_4px_rgba(44,95,99,0.1)]">
+                  {getCategoryImage(cat.name) ? (
+                    <img src={getCategoryImage(cat.name)} alt={cat.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-[36px] md:text-[42px]">{getCategoryIcon(cat.name)}</span>
+                  )}
                 </div>
                 <div className="text-[11px] md:text-xs font-semibold uppercase tracking-wider text-[var(--dark)] mb-0.5">{cat.name}</div>
                 <div className="text-[10px] md:text-[11px] text-[var(--text-light)]">({cat.count} Items)</div>
@@ -156,15 +161,23 @@ export default function Home() {
                 <h3 className="font-serif text-xl md:text-2xl font-semibold leading-tight mb-3 md:mb-4">Premium Gents Watches</h3>
                 <span className="inline-block text-[11px] md:text-xs font-medium uppercase tracking-wider px-4 md:px-5 py-1.5 md:py-2 border border-current rounded w-fit hover:bg-white hover:text-[var(--dark)] transition-colors">Shop Now</span>
               </div>
-              <div className="absolute right-3 md:right-5 top-1/2 -translate-y-1/2 text-[60px] md:text-[80px] opacity-15">⌚</div>
+              {getCategoryImage('Gents Watches') ? (
+                <img src={getCategoryImage('Gents Watches')} alt="Gents Watches" className="absolute right-0 top-0 h-full w-[45%] object-cover opacity-30" />
+              ) : (
+                <div className="absolute right-3 md:right-5 top-1/2 -translate-y-1/2 text-[60px] md:text-[80px] opacity-15">⌚</div>
+              )}
             </Link>
-            <Link href="/shop?category=Gifts" className="promo-card relative rounded-lg overflow-hidden h-[160px] md:h-[200px] cursor-pointer transition-transform hover:scale-[1.015] bg-gradient-to-br from-[#f5e6d8] to-[#ecddd0] text-[var(--dark)]">
+            <Link href="/shop?category=Hannah Martin" className="promo-card relative rounded-lg overflow-hidden h-[160px] md:h-[200px] cursor-pointer transition-transform hover:scale-[1.015] bg-gradient-to-br from-[#f5e6d8] to-[#ecddd0] text-[var(--dark)]">
               <div className="relative z-10 p-6 md:p-8 h-full flex flex-col justify-center">
-                <div className="text-[10px] md:text-[11px] uppercase tracking-[2px] mb-2 md:mb-2.5 opacity-70">Perfect Gifts 💕</div>
-                <h3 className="font-serif text-xl md:text-2xl font-semibold leading-tight mb-3 md:mb-4">Curated Gift Collections</h3>
+                <div className="text-[10px] md:text-[11px] uppercase tracking-[2px] mb-2 md:mb-2.5 opacity-70">For Her 💕</div>
+                <h3 className="font-serif text-xl md:text-2xl font-semibold leading-tight mb-3 md:mb-4">Hannah Martin Collection</h3>
                 <span className="inline-block text-[11px] md:text-xs font-medium uppercase tracking-wider px-4 md:px-5 py-1.5 md:py-2 border border-current rounded w-fit hover:bg-[var(--dark)] hover:text-white hover:border-[var(--dark)] transition-colors">Shop Now</span>
               </div>
-              <div className="absolute right-3 md:right-5 top-1/2 -translate-y-1/2 text-[60px] md:text-[80px] opacity-15">🎁</div>
+              {getCategoryImage('Hannah Martin') ? (
+                <img src={getCategoryImage('Hannah Martin')} alt="Hannah Martin" className="absolute right-0 top-0 h-full w-[45%] object-cover opacity-30" />
+              ) : (
+                <div className="absolute right-3 md:right-5 top-1/2 -translate-y-1/2 text-[60px] md:text-[80px] opacity-15">⌚</div>
+              )}
             </Link>
           </div>
         </div>
@@ -200,7 +213,13 @@ export default function Home() {
           <div ref={giftSliderRef} className="relative w-full h-full">
             {giftSlides.map((gift, i) => (
               <div key={i} className={`absolute inset-0 flex flex-col items-center justify-center transition-all duration-700 ${i === giftIndex ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}>
-                <span className="text-[80px] md:text-[100px] lg:text-[120px] mb-2">{gift.icon}</span>
+                <span className="text-[80px] md:text-[100px] lg:text-[120px] mb-2">
+                  {gift.image_url ? (
+                    <img src={gift.image_url} alt={gift.title} className="w-[120px] h-[120px] md:w-[150px] md:h-[150px] object-contain rounded-lg" />
+                  ) : (
+                    gift.icon
+                  )}
+                </span>
                 <span className="text-white/80 text-sm md:text-base font-medium text-center px-4">{gift.title}</span>
                 <span className="text-white/60 text-xs md:text-sm mt-1">{gift.price}</span>
               </div>
@@ -216,7 +235,7 @@ export default function Home() {
           <div className="ml-[50%] md:ml-[55%] text-white relative z-10">
             <div className="font-serif text-xs md:text-sm tracking-[2px] md:tracking-[3px] uppercase text-[var(--copper-light)] mb-2 md:mb-3 italic">Valentine&apos;s Day Special 💕</div>
             <h2 className="font-serif text-2xl md:text-3xl lg:text-4xl font-semibold leading-tight mb-2.5 md:mb-3.5">Celebrate Love with Perfect Gifts</h2>
-            <p className="text-xs md:text-sm text-white/70 mb-5 md:mb-7">Watches · Perfumes · Gift Sets</p>
+            <p className="text-xs md:text-sm text-white/70 mb-5 md:mb-7">Watches · Jewelry · Flowers · Personalized Gifts</p>
             <Link href="/shop" className="inline-block bg-[var(--copper)] text-white px-6 md:px-8 py-2.5 md:py-3 rounded text-xs md:text-sm font-medium uppercase tracking-wider border-2 border-[var(--copper)] hover:bg-[var(--copper-dark)] hover:border-[var(--copper-dark)] transition-all">Shop Now</Link>
           </div>
         </div>

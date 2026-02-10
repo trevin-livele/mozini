@@ -12,6 +12,7 @@ export interface CartItem {
   brand: string;
   price: number;
   icon: string;
+  image_url?: string | null;
   qty: number;
 }
 
@@ -51,6 +52,7 @@ export const useStore = create<StoreState>()((set, get) => ({
           brand: item.product.brand,
           price: item.product.price,
           icon: item.product.icon,
+          image_url: item.product.image_url,
           qty: item.quantity,
         })),
       });

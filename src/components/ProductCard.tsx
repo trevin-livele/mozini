@@ -79,7 +79,11 @@ export default function ProductCard({ product }: ProductCardProps) {
         )}
 
         <div className="relative h-[220px] bg-[var(--bg-soft)] flex items-center justify-center overflow-hidden">
-          <span className="jewel-icon text-7xl transition-transform duration-500 group-hover:scale-125">{product.icon}</span>
+          {product.image_url ? (
+            <img src={product.image_url} alt={product.name} className="jewel-icon w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+          ) : (
+            <span className="jewel-icon text-7xl transition-transform duration-500 group-hover:scale-125">{product.icon}</span>
+          )}
 
           <div className="absolute bottom-[-50px] left-0 right-0 flex justify-center gap-2 p-2.5 transition-all duration-300 group-hover:bottom-2.5">
             <button onClick={handleAddToCart} className="w-9 h-9 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-[var(--copper)] hover:text-white hover:scale-110 transition-all" title="Add to Cart">

@@ -93,7 +93,9 @@ export default function CartPage() {
                   <tr key={item.cartItemId} className="border-b border-[var(--border)]">
                     <td className="p-4">
                       <Link href={`/product/${item.id}`} className="flex items-center gap-4">
-                        <div className="w-20 h-20 bg-[var(--bg-soft)] rounded-lg flex items-center justify-center text-4xl flex-shrink-0">{item.icon}</div>
+                        <div className="w-20 h-20 bg-[var(--bg-soft)] rounded-lg flex items-center justify-center text-4xl flex-shrink-0 overflow-hidden">
+                          {item.image_url ? <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" /> : item.icon}
+                        </div>
                         <div>
                           <div className="text-sm font-medium text-[var(--dark)] hover:text-[var(--copper)]">{item.name}</div>
                           <div className="text-[11px] text-[var(--text-light)] uppercase tracking-wide">{item.brand}</div>
@@ -123,7 +125,9 @@ export default function CartPage() {
             {cart.map((item) => (
               <div key={item.cartItemId} className="bg-white border border-[var(--border)] rounded-lg p-4">
                 <div className="flex gap-3 mb-3">
-                  <Link href={`/product/${item.id}`} className="w-20 h-20 bg-[var(--bg-soft)] rounded-lg flex items-center justify-center text-3xl flex-shrink-0">{item.icon}</Link>
+                  <Link href={`/product/${item.id}`} className="w-20 h-20 bg-[var(--bg-soft)] rounded-lg flex items-center justify-center text-3xl flex-shrink-0 overflow-hidden">
+                    {item.image_url ? <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" /> : item.icon}
+                  </Link>
                   <div className="flex-1 min-w-0">
                     <Link href={`/product/${item.id}`} className="text-sm font-medium text-[var(--dark)] hover:text-[var(--copper)] block truncate">{item.name}</Link>
                     <div className="text-[11px] text-[var(--text-light)] uppercase tracking-wide mb-2">{item.brand}</div>
