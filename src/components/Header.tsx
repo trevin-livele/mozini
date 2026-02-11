@@ -148,7 +148,7 @@ export default function Header() {
             {logoError ? (
               <span className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-[var(--copper)] flex items-center justify-center text-white font-serif font-bold text-lg md:text-xl shadow-sm">M</span>
             ) : (
-              <Image src="/images/1.png" alt="Mozini Logo" width={40} height={40} className="h-8 md:h-10 w-auto" onError={() => setLogoError(true)} />
+              <Image src="/images/logo.png" alt="Mozini Logo" width={40} height={40} className="h-8 md:h-10 w-auto" onError={() => setLogoError(true)} />
             )}
             <span className="font-serif text-lg md:text-xl font-bold text-[var(--dark)] leading-tight">
               Mozini<br className="hidden md:block" />
@@ -347,7 +347,7 @@ export default function Header() {
                 {logoError ? (
                   <span className="w-8 h-8 rounded-xl bg-[var(--copper)] flex items-center justify-center text-white font-serif font-bold text-lg shadow-sm">M</span>
                 ) : (
-                  <Image src="/images/1.png" alt="Mozini" width={32} height={32} className="h-8 w-auto" onError={() => setLogoError(true)} />
+                  <Image src="/images/logo.png" alt="Mozini" width={32} height={32} className="h-8 w-auto" onError={() => setLogoError(true)} />
                 )}
                 <button onClick={() => setMobileMenuOpen(false)} className="text-2xl">&times;</button>
               </div>

@@ -59,7 +59,7 @@ export default function Footer() {
               {logoError ? (
                 <span className="w-10 h-10 rounded-xl bg-[var(--copper)] flex items-center justify-center text-white font-serif font-bold text-xl shadow-sm">M</span>
               ) : (
-                <Image src="/images/1.png" alt="Mozini Logo" width={40} height={40} className="h-10 w-auto" onError={() => setLogoError(true)} />
+                <Image src="/images/logodark.png" alt="Mozini Logo" width={40} height={40} className="h-10 w-auto" onError={() => setLogoError(true)} />
               )}
               <span className="font-serif text-xl font-bold text-white leading-tight">
                 Mozini<br />
