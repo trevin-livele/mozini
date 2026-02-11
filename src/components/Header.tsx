@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useStore } from '@/lib/store';
 import { formatPrice, CATEGORIES } from '@/lib/data';
 import { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { gsap } from 'gsap';
 import { useAuth } from '@/components/AuthProvider';
 import { signOut } from '@/lib/actions/auth';
@@ -13,13 +14,20 @@ export default function Header() {
   const cart = useStore((s) => s.cart);
   const wishlist = useStore((s) => s.wishlist);
   const { user, isAdmin } = useAuth();
+  const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [giftsOpen, setGiftsOpen] = useState(false);
   const [mobileGiftsOpen, setMobileGiftsOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchCategory, setSearchCategory] = useState('');
+  const [searchBudget, setSearchBudget] = useState('');
+  const [logoError, setLogoError] = useState(false);
   const bannerRef = useRef<HTMLDivElement>(null);
   const giftsRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLDivElement>(null);
 
   const cartCount = cart.reduce((sum, i) => sum + i.qty, 0);
   const cartTotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
@@ -57,6 +65,9 @@ export default function Header() {
       if (giftsRef.current && !giftsRef.current.contains(e.target as Node)) {
         setGiftsOpen(false);
       }
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setSearchOpen(false);
+      }
     };
     document.addEventListener('mousedown', handleClickOutside);
 
@@ -65,6 +76,32 @@ export default function Header() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const params = new URLSearchParams();
+    if (searchQuery.trim()) params.set('search', searchQuery.trim());
+    if (searchCategory) params.set('category', searchCategory);
+    if (searchBudget) {
+      const [min, max] = searchBudget.split('-');
+      if (min) params.set('minPrice', min);
+      if (max) params.set('maxPrice', max);
+    }
+    const qs = params.toString();
+    if (qs) {
+      router.push(`/shop?${qs}`);
+      setSearchQuery('');
+      setSearchCategory('');
+      setSearchBudget('');
+      setSearchOpen(false);
+    }
+  };
+
+  const clearFilters = () => {
+    setSearchQuery('');
+    setSearchCategory('');
+    setSearchBudget('');
+  };
 
   return (
     <>
@@ -108,7 +145,11 @@ export default function Header() {
 
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group shrink-0">
-            <Image src="/images/1.png" alt="Mozini Logo" width={40} height={40} className="h-8 md:h-10 w-auto" />
+            {logoError ? (
+              <span className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-[var(--copper)] flex items-center justify-center text-white font-serif font-bold text-lg md:text-xl shadow-sm">M</span>
+            ) : (
+              <Image src="/images/1.png" alt="Mozini Logo" width={40} height={40} className="h-8 md:h-10 w-auto" onError={() => setLogoError(true)} />
+            )}
             <span className="font-serif text-lg md:text-xl font-bold text-[var(--dark)] leading-tight">
               Mozini<br className="hidden md:block" />
               <span className="text-[10px] md:text-xs font-normal tracking-wider text-[var(--text-light)] uppercase">Watches &amp; Gifts</span>
@@ -160,6 +201,110 @@ export default function Header() {
 
           {/* Actions */}
           <div className="flex items-center gap-2 md:gap-4">
+            {/* Search & Filter */}
+            <div ref={searchRef} className="relative">
+              <button onClick={() => setSearchOpen(!searchOpen)} className={`p-1.5 rounded-full hover:bg-[var(--bg-soft)] transition-colors ${searchOpen ? 'bg-[var(--bg-soft)] text-[var(--copper)]' : ''}`} title="Search & Filter">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="md:w-[22px] md:h-[22px]"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              </button>
+              {searchOpen && (
+                <div className="absolute right-0 md:right-auto md:left-1/2 md:-translate-x-1/2 top-full mt-3 bg-white border border-[var(--border)] rounded-2xl shadow-2xl w-[calc(100vw-2rem)] max-w-[400px] z-50 overflow-hidden">
+                  <form onSubmit={handleSearchSubmit}>
+                    {/* Header */}
+                    <div className="flex items-center justify-between px-5 pt-4 pb-2">
+                      <span className="text-sm font-semibold text-[var(--dark)]">Find Your Perfect Gift</span>
+                      {(searchQuery || searchCategory || searchBudget) && (
+                        <button type="button" onClick={clearFilters} className="text-[11px] text-[var(--copper)] hover:underline">Clear all</button>
+                      )}
+                    </div>
+
+                    <div className="px-5 pb-4 space-y-3">
+                      {/* Product search */}
+                      <div>
+                        <label className="block text-[11px] font-medium text-[var(--text-light)] uppercase tracking-wider mb-1.5">Product</label>
+                        <div className="relative">
+                          <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-light)]" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                          <input
+                            type="text"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            placeholder="Search watches, gifts, jewelry..."
+                            autoFocus
+                            className="w-full pl-9 pr-3 py-2.5 bg-[var(--bg-soft)] border border-transparent rounded-xl text-sm focus:border-[var(--copper)] focus:bg-white focus:outline-none transition-all"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Occasion / Category */}
+                      <div>
+                        <label className="block text-[11px] font-medium text-[var(--text-light)] uppercase tracking-wider mb-1.5">Occasion</label>
+                        <div className="flex flex-wrap gap-1.5">
+                          {[
+                            { value: '', label: 'All' },
+                            { value: 'Gents Watches', label: '⌚ Gents' },
+                            { value: 'Ladies Watches', label: '⌚ Ladies' },
+                            { value: 'Kids Watches', label: '👶 Kids' },
+                            { value: 'Gifts', label: '🎁 Gifts' },
+                            { value: 'Jewelry', label: '💎 Jewelry' },
+                          ].map((opt) => (
+                            <button
+                              key={opt.value}
+                              type="button"
+                              onClick={() => setSearchCategory(opt.value)}
+                              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+                                searchCategory === opt.value
+                                  ? 'bg-[var(--copper)] text-white shadow-sm'
+                                  : 'bg-[var(--bg-soft)] text-[var(--text)] hover:bg-[var(--border)]'
+                              }`}
+                            >
+                              {opt.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Budget */}
+                      <div>
+                        <label className="block text-[11px] font-medium text-[var(--text-light)] uppercase tracking-wider mb-1.5">Budget</label>
+                        <div className="flex flex-wrap gap-1.5">
+                          {[
+                            { value: '', label: 'Any' },
+                            { value: '0-2000', label: 'Under 2K' },
+                            { value: '2000-5000', label: '2K – 5K' },
+                            { value: '5000-10000', label: '5K – 10K' },
+                            { value: '10000-', label: '10K+' },
+                          ].map((opt) => (
+                            <button
+                              key={opt.value}
+                              type="button"
+                              onClick={() => setSearchBudget(opt.value)}
+                              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+                                searchBudget === opt.value
+                                  ? 'bg-[var(--copper)] text-white shadow-sm'
+                                  : 'bg-[var(--bg-soft)] text-[var(--text)] hover:bg-[var(--border)]'
+                              }`}
+                            >
+                              {opt.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Submit */}
+                    <div className="px-5 pb-4">
+                      <button
+                        type="submit"
+                        className="w-full py-2.5 bg-[var(--copper)] text-white rounded-xl text-sm font-medium hover:bg-[var(--copper-dark)] transition-colors flex items-center justify-center gap-2"
+                      >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                        Search
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              )}
+            </div>
+
             {mounted && (
               user ? (
                 <div className="flex items-center gap-2">
@@ -199,7 +344,11 @@ export default function Header() {
           <div className="fixed top-0 left-0 w-[280px] h-full bg-white z-50 shadow-lg lg:hidden overflow-y-auto">
             <div className="p-6">
               <div className="flex items-center justify-between mb-8">
-                <Image src="/images/1.png" alt="Mozini" width={32} height={32} className="h-8 w-auto" />
+                {logoError ? (
+                  <span className="w-8 h-8 rounded-xl bg-[var(--copper)] flex items-center justify-center text-white font-serif font-bold text-lg shadow-sm">M</span>
+                ) : (
+                  <Image src="/images/1.png" alt="Mozini" width={32} height={32} className="h-8 w-auto" onError={() => setLogoError(true)} />
+                )}
                 <button onClick={() => setMobileMenuOpen(false)} className="text-2xl">&times;</button>
               </div>
               <nav className="flex flex-col gap-1">

@@ -7,7 +7,6 @@ import { useState, useEffect, useRef } from 'react';
 import { getProducts, getCategories } from '@/lib/actions/products';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useRouter } from 'next/navigation';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -15,11 +14,11 @@ gsap.registerPlugin(ScrollTrigger);
 const heroSlides = [
   {
     image: '/images/curren/image00001.jpeg',
-    label: "Valentine's Special 💝",
-    title: 'Premium Watches for Him',
-    desc: 'Curren · Naviforce · Poedagar — Bold timepieces that make a statement',
-    cta: 'Shop Gents Watches',
-    href: '/shop?category=Gents Watches',
+    label: '🎁 Welcome',
+    title: 'Mozini Watches & Gifts',
+    desc: 'Where the perfect gift exists — Watches, Jewelry, Flowers & Personalized Gifts for every occasion',
+    cta: 'Shop Now',
+    href: '/shop',
     overlay: 'from-black/70 via-black/40 to-transparent',
   },
   {
@@ -128,7 +127,6 @@ function TrendingCarousel({ products }: { products: Product[] }) {
 
 /* ─── Main Page ─── */
 export default function Home() {
-  const router = useRouter();
   const [heroIndex, setHeroIndex] = useState(0);
   const [activeTab, setActiveTab] = useState('featured');
   const [products, setProducts] = useState<Product[]>([]);
@@ -139,22 +137,6 @@ export default function Home() {
   const productsRef = useRef<HTMLDivElement>(null);
   const [giftIndex, setGiftIndex] = useState(0);
   const giftSliderRef = useRef<HTMLDivElement>(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchBudget, setSearchBudget] = useState('');
-  const [searchOccasion, setSearchOccasion] = useState('');
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    const params = new URLSearchParams();
-    if (searchQuery) params.set('search', searchQuery);
-    if (searchOccasion) params.set('category', searchOccasion);
-    if (searchBudget) {
-      const [min, max] = searchBudget.split('-');
-      if (min) params.set('minPrice', min);
-      if (max) params.set('maxPrice', max);
-    }
-    router.push(`/shop?${params.toString()}`);
-  };
 
   // Hero auto-advance
   useEffect(() => {
@@ -300,74 +282,30 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ═══════ SEARCH / FILTER BAR ═══════ */}
-      <section className="bg-white border-b border-[var(--border)] py-5 md:py-6">
-        <div className="max-w-6xl mx-auto px-4 md:px-5">
-          <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3">
-            <div className="flex-1 relative">
-              <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-light)]" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search watches, gifts, jewelry..."
-                className="w-full pl-9 pr-4 py-2.5 border border-[var(--border)] rounded-lg text-sm focus:border-[var(--copper)] focus:outline-none transition-colors"
-              />
-            </div>
-            <select
-              value={searchOccasion}
-              onChange={(e) => setSearchOccasion(e.target.value)}
-              className="px-3 py-2.5 border border-[var(--border)] rounded-lg text-sm text-[var(--text)] focus:border-[var(--copper)] focus:outline-none transition-colors"
-            >
-              <option value="">All Categories</option>
-              <option value="Gents Watches">Gents Watches</option>
-              <option value="Ladies Watches">Ladies Watches</option>
-              <option value="Kids Watches">Kids Watches</option>
-              <option value="Gifts">Gifts & Occasions</option>
-              <option value="Jewelry">Jewelry</option>
-              <option value="Drinks & Candy">Drinks & Candy</option>
-            </select>
-            <select
-              value={searchBudget}
-              onChange={(e) => setSearchBudget(e.target.value)}
-              className="px-3 py-2.5 border border-[var(--border)] rounded-lg text-sm text-[var(--text)] focus:border-[var(--copper)] focus:outline-none transition-colors"
-            >
-              <option value="">Any Budget</option>
-              <option value="0-2000">Under KES 2,000</option>
-              <option value="2000-5000">KES 2,000 – 5,000</option>
-              <option value="5000-10000">KES 5,000 – 10,000</option>
-              <option value="10000-">Above KES 10,000</option>
-            </select>
-            <button
-              type="submit"
-              className="px-6 py-2.5 bg-[var(--copper)] text-white rounded-lg text-sm font-medium hover:bg-[var(--copper-dark)] transition-colors whitespace-nowrap"
-            >
-              Search
-            </button>
-          </form>
-        </div>
-      </section>
-
       {/* ═══════ TRENDING NOW — Product carousel ═══════ */}
       <TrendingCarousel products={carouselProducts} />
 
       {/* Categories */}
-      <section ref={categoriesRef} className="py-12 md:py-16 text-center">
+      <section ref={categoriesRef} className="pt-16 md:pt-20 pb-12 md:pb-16 text-center">
         <div className="max-w-6xl mx-auto px-4 md:px-5">
           <h2 className="font-serif text-2xl md:text-3xl font-semibold text-[var(--dark)] mb-2 relative">Perfect Valentine&apos;s Gifts 💝</h2>
           <p className="text-sm text-[var(--text-light)] mb-8 md:mb-10">Show your love with our curated collection</p>
-          <div className="flex justify-center gap-6 md:gap-9 flex-wrap">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-5">
             {categories.map((cat) => (
-              <Link key={cat.name} href={`/shop?category=${encodeURIComponent(cat.name)}`} className="category-item text-center cursor-pointer transition-transform hover:-translate-y-1.5 group">
-                <div className="w-[85px] h-[85px] md:w-[105px] md:h-[105px] rounded-full border-2 border-[var(--border)] flex items-center justify-center mx-auto mb-2.5 md:mb-3.5 bg-white overflow-hidden transition-all group-hover:border-[var(--copper)] group-hover:shadow-[0_0_0_4px_rgba(44,95,99,0.1)]">
-                  {getCategoryImage(cat.name) ? (
-                    <img src={getCategoryImage(cat.name)} alt={cat.name} className="w-full h-full object-cover" />
-                  ) : (
-                    <span className="text-[36px] md:text-[42px]">{getCategoryIcon(cat.name)}</span>
-                  )}
+              <Link key={cat.name} href={`/shop?category=${encodeURIComponent(cat.name)}`} className="category-item group">
+                <div className="bg-white rounded-2xl border border-[var(--border)] p-4 pb-5 transition-all hover:shadow-lg hover:border-[var(--copper)]/30 hover:-translate-y-1">
+                  <div className="relative mx-auto mb-4 -mt-8">
+                    <div className="w-[90px] h-[90px] md:w-[110px] md:h-[110px] rounded-2xl overflow-hidden mx-auto shadow-md border-2 border-white group-hover:shadow-xl group-hover:scale-105 transition-all duration-300 bg-[var(--bg-soft)]">
+                      {getCategoryImage(cat.name) ? (
+                        <img src={getCategoryImage(cat.name)} alt={cat.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="w-full h-full flex items-center justify-center text-[36px] md:text-[42px]">{getCategoryIcon(cat.name)}</span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="text-[11px] md:text-xs font-semibold uppercase tracking-wider text-[var(--dark)] mb-0.5">{cat.name}</div>
+                  <div className="text-[10px] md:text-[11px] text-[var(--text-light)]">({cat.count} Items)</div>
                 </div>
-                <div className="text-[11px] md:text-xs font-semibold uppercase tracking-wider text-[var(--dark)] mb-0.5">{cat.name}</div>
-                <div className="text-[10px] md:text-[11px] text-[var(--text-light)]">({cat.count} Items)</div>
               </Link>
             ))}
           </div>
@@ -431,35 +369,39 @@ export default function Home() {
       </section>
 
       {/* CTA Banner with Gift Slider */}
-      <section className="relative h-[320px] md:h-[380px] lg:h-[420px] bg-gradient-to-br from-[#2a2118] via-[#3d3225] to-[#4a3d30] overflow-hidden">
-        <div className="absolute left-0 top-0 w-1/2 h-full bg-gradient-to-br from-[#c9a882] to-[#b8956e] flex items-center justify-center overflow-hidden">
-          <div ref={giftSliderRef} className="relative w-full h-full">
-            {giftSlides.map((gift, i) => (
-              <div key={i} className={`absolute inset-0 flex flex-col items-center justify-center transition-all duration-700 ${i === giftIndex ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}>
-                <span className="text-[80px] md:text-[100px] lg:text-[120px] mb-2">
-                  {gift.image_url ? (
-                    <img src={gift.image_url} alt={gift.title} className="w-[120px] h-[120px] md:w-[150px] md:h-[150px] object-contain rounded-lg" />
-                  ) : (
-                    gift.icon
-                  )}
-                </span>
-                <span className="text-white/80 text-sm md:text-base font-medium text-center px-4">{gift.title}</span>
-                <span className="text-white/60 text-xs md:text-sm mt-1">{gift.price}</span>
-              </div>
-            ))}
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
-              {giftSlides.map((_, i) => (
-                <button key={i} onClick={() => setGiftIndex(i)} className={`h-1.5 rounded-full transition-all ${i === giftIndex ? 'w-5 bg-white/80' : 'w-1.5 bg-white/30'}`} />
+      <section className="relative bg-gradient-to-br from-[#2a2118] via-[#3d3225] to-[#4a3d30] overflow-hidden">
+        <div className="flex flex-col md:flex-row">
+          {/* Gift slider — full width on mobile, half on desktop */}
+          <div className="w-full md:w-1/2 h-[260px] md:h-[380px] lg:h-[420px] bg-gradient-to-br from-[#c9a882] to-[#b8956e] flex items-center justify-center overflow-hidden relative">
+            <div ref={giftSliderRef} className="relative w-full h-full">
+              {giftSlides.map((gift, i) => (
+                <div key={i} className={`absolute inset-0 flex flex-col items-center justify-center transition-all duration-700 ${i === giftIndex ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}>
+                  <span className="text-[80px] md:text-[100px] lg:text-[120px] mb-2">
+                    {gift.image_url ? (
+                      <img src={gift.image_url} alt={gift.title} className="w-[120px] h-[120px] md:w-[150px] md:h-[150px] object-contain rounded-lg" />
+                    ) : (
+                      gift.icon
+                    )}
+                  </span>
+                  <span className="text-white/80 text-sm md:text-base font-medium text-center px-4">{gift.title}</span>
+                  <span className="text-white/60 text-xs md:text-sm mt-1">{gift.price}</span>
+                </div>
               ))}
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
+                {giftSlides.map((_, i) => (
+                  <button key={i} onClick={() => setGiftIndex(i)} className={`h-1.5 rounded-full transition-all ${i === giftIndex ? 'w-5 bg-white/80' : 'w-1.5 bg-white/30'}`} />
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-        <div className="max-w-6xl mx-auto px-4 md:px-5 h-full flex items-center">
-          <div className="ml-[50%] md:ml-[55%] text-white relative z-10">
-            <div className="font-serif text-xs md:text-sm tracking-[2px] md:tracking-[3px] uppercase text-[var(--copper-light)] mb-2 md:mb-3 italic">Valentine&apos;s Day Special 💕</div>
-            <h2 className="font-serif text-2xl md:text-3xl lg:text-4xl font-semibold leading-tight mb-2.5 md:mb-3.5">Celebrate Love with Perfect Gifts</h2>
-            <p className="text-xs md:text-sm text-white/70 mb-5 md:mb-7">Watches · Jewelry · Flowers · Personalized Gifts</p>
-            <Link href="/shop" className="inline-block bg-[var(--copper)] text-white px-6 md:px-8 py-2.5 md:py-3 rounded text-xs md:text-sm font-medium uppercase tracking-wider border-2 border-[var(--copper)] hover:bg-[var(--copper-dark)] hover:border-[var(--copper-dark)] transition-all">Shop Now</Link>
+          {/* Text content — full width on mobile, half on desktop */}
+          <div className="w-full md:w-1/2 flex items-center px-6 md:px-10 lg:px-14 py-8 md:py-0">
+            <div className="text-white">
+              <div className="font-serif text-xs md:text-sm tracking-[2px] md:tracking-[3px] uppercase text-[#FF6B6B] mb-2 md:mb-3 italic font-semibold">Valentine&apos;s Day Special 💕</div>
+              <h2 className="font-serif text-2xl md:text-3xl lg:text-4xl font-semibold leading-tight mb-2.5 md:mb-3.5">Celebrate Love with Perfect Gifts</h2>
+              <p className="text-xs md:text-sm text-white/70 mb-5 md:mb-7">Watches · Jewelry · Flowers · Personalized Gifts</p>
+              <Link href="/shop" className="inline-block bg-[var(--copper)] text-white px-6 md:px-8 py-2.5 md:py-3 rounded text-xs md:text-sm font-medium uppercase tracking-wider border-2 border-[var(--copper)] hover:bg-[var(--copper-dark)] hover:border-[var(--copper-dark)] transition-all">Shop Now</Link>
+            </div>
           </div>
         </div>
       </section>

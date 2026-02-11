@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { gsap } from 'gsap';
 
 function SocialButton({ href, icon, label, color }: { href: string; icon: string; label: string; color: string }) {
@@ -37,6 +37,7 @@ function SocialButton({ href, icon, label, color }: { href: string; icon: string
 }
 
 export default function Footer() {
+  const [logoError, setLogoError] = useState(false);
   return (
     <footer className="bg-[var(--dark)] text-white/70 pt-16 pb-8">
       <div className="max-w-6xl mx-auto px-5">
@@ -55,7 +56,11 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <Link href="/" className="flex items-center gap-2 mb-4">
-              <Image src="/images/1.png" alt="Mozini Logo" width={40} height={40} className="h-10 w-auto" />
+              {logoError ? (
+                <span className="w-10 h-10 rounded-xl bg-[var(--copper)] flex items-center justify-center text-white font-serif font-bold text-xl shadow-sm">M</span>
+              ) : (
+                <Image src="/images/1.png" alt="Mozini Logo" width={40} height={40} className="h-10 w-auto" onError={() => setLogoError(true)} />
+              )}
               <span className="font-serif text-xl font-bold text-white leading-tight">
                 Mozini<br />
                 <span className="text-[10px] font-normal tracking-wider text-white/50 uppercase">Watches &amp; Gifts</span>
