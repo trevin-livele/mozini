@@ -151,7 +151,24 @@ create index idx_contact_messages_read on public.contact_messages(is_read);
 create index idx_contact_messages_created on public.contact_messages(created_at desc);
 
 -- ============================================
--- 7. UPDATED_AT TRIGGER
+-- 8. SITE SETTINGS (key-value config)
+-- ============================================
+create table public.site_settings (
+  key text primary key,
+  value text not null,
+  label text not null default '',
+  updated_at timestamptz not null default now()
+);
+
+-- Seed default delivery settings
+insert into public.site_settings (key, value, label) values
+  ('delivery_fee_rider', '500', 'Our Rider delivery fee (KES)'),
+  ('delivery_fee_pickup_mtaani', '200', 'Pickup Mtaani fee (KES)'),
+  ('delivery_fee_self_pickup', '0', 'Self Pickup fee (KES)'),
+  ('free_delivery_threshold', '0', 'Free delivery threshold (KES, 0 = never free)');
+
+-- ============================================
+-- 9. UPDATED_AT TRIGGER
 -- ============================================
 create or replace function public.update_updated_at()
 returns trigger as $$

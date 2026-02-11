@@ -76,7 +76,31 @@ export async function createOrder(
     (sum, item) => sum + (stockMap.get(item.product_id)!.price * item.quantity),
     0
   );
-  const shipping = subtotal > 10000 ? 0 : 500;
+
+  // Fetch delivery settings from DB
+  const { data: settingsRows } = await supabase
+    .from('site_settings')
+    .select('key, value')
+    .in('key', ['delivery_fee_rider', 'delivery_fee_pickup_mtaani', 'delivery_fee_self_pickup', 'free_delivery_threshold']);
+
+  const settingsMap: Record<string, number> = {};
+  for (const row of settingsRows || []) {
+    settingsMap[row.key] = parseInt(row.value) || 0;
+  }
+  const riderFee = settingsMap['delivery_fee_rider'] ?? 500;
+  const pickupMtaaniFee = settingsMap['delivery_fee_pickup_mtaani'] ?? 200;
+  const selfPickupFee = settingsMap['delivery_fee_self_pickup'] ?? 0;
+  const freeThreshold = settingsMap['free_delivery_threshold'] ?? 0;
+
+  // Determine delivery method from notes
+  let shipping = riderFee; // default to rider
+  if (input.notes?.includes('Delivery: pickup-mtaani')) {
+    shipping = pickupMtaaniFee;
+  } else if (input.notes?.includes('Delivery: self-pickup')) {
+    shipping = selfPickupFee;
+  } else if (freeThreshold > 0 && subtotal >= freeThreshold) {
+    shipping = 0;
+  }
   const total = subtotal + shipping;
 
   // Create order

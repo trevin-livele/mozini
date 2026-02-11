@@ -115,7 +115,32 @@ export async function updateOrderStatus(orderId: string, status: string) {
     .eq('id', orderId);
 
   if (error) return { error: error.message };
-  return { success: true };
+
+  // Fetch order details for notification
+  const { data: order } = await supabase
+    .from('orders')
+    .select('shipping_name, shipping_phone, shipping_email, total, id')
+    .eq('id', orderId)
+    .single();
+
+  // Build notification link for admin to send
+  let notifyLink = '';
+  if (order?.shipping_phone) {
+    const statusMessages: Record<string, string> = {
+      confirmed: `Hi ${order.shipping_name}! ✅ Your Mozini order #${orderId.slice(0, 8)} has been *confirmed*. We're preparing it now!`,
+      processing: `Hi ${order.shipping_name}! 📦 Your Mozini order #${orderId.slice(0, 8)} is being *processed* and will be shipped soon.`,
+      shipped: `Hi ${order.shipping_name}! 🚚 Great news! Your Mozini order #${orderId.slice(0, 8)} has been *shipped*. It's on its way to you!`,
+      delivered: `Hi ${order.shipping_name}! 🎉 Your Mozini order #${orderId.slice(0, 8)} has been *delivered*. Enjoy your purchase! Thank you for shopping with us 💝`,
+      cancelled: `Hi ${order.shipping_name}, your Mozini order #${orderId.slice(0, 8)} has been *cancelled*. If you have questions, please reach out to us.`,
+    };
+    const msg = statusMessages[status];
+    if (msg) {
+      const phone = order.shipping_phone.replace(/\D/g, '');
+      notifyLink = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+    }
+  }
+
+  return { success: true, notifyLink };
 }
 
 // ============================================

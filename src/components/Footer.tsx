@@ -84,8 +84,9 @@ export default function Footer() {
             <ul className="space-y-2.5">
               <li><Link href="/cart" className="text-sm hover:text-[var(--copper-light)] hover:pl-1 transition-all">Shopping Cart</Link></li>
               <li><Link href="/wishlist" className="text-sm hover:text-[var(--copper-light)] hover:pl-1 transition-all">Wishlist</Link></li>
-              <li><span className="text-sm">Order Tracking</span></li>
-              <li><span className="text-sm">Returns</span></li>
+              <li><Link href="/faqs" className="text-sm hover:text-[var(--copper-light)] hover:pl-1 transition-all">FAQs</Link></li>
+              <li><Link href="/terms" className="text-sm hover:text-[var(--copper-light)] hover:pl-1 transition-all">Terms &amp; Conditions</Link></li>
+              <li><Link href="/privacy" className="text-sm hover:text-[var(--copper-light)] hover:pl-1 transition-all">Privacy Policy</Link></li>
             </ul>
           </div>
 

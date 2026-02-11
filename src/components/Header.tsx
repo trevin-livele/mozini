@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useStore } from '@/lib/store';
-import { formatPrice } from '@/lib/data';
+import { formatPrice, CATEGORIES } from '@/lib/data';
 import { useState, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { useAuth } from '@/components/AuthProvider';
@@ -16,40 +16,54 @@ export default function Header() {
   const [mounted, setMounted] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [giftsOpen, setGiftsOpen] = useState(false);
+  const [mobileGiftsOpen, setMobileGiftsOpen] = useState(false);
   const bannerRef = useRef<HTMLDivElement>(null);
+  const giftsRef = useRef<HTMLDivElement>(null);
 
-  // Computed values that update when cart changes
   const cartCount = cart.reduce((sum, i) => sum + i.qty, 0);
   const cartTotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+
+  // All gift-related categories for the dropdown
+  const giftCategories = CATEGORIES.flatMap((c) => {
+    const items: { name: string; href: string }[] = [];
+    items.push({ name: c.name, href: `/shop?category=${encodeURIComponent(c.name)}` });
+    if (c.subcategories) {
+      c.subcategories.forEach((sub) => {
+        items.push({ name: sub.name, href: `/shop?category=${encodeURIComponent(sub.name)}` });
+      });
+    }
+    return items;
+  });
 
   useEffect(() => {
     setMounted(true);
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
 
-    // Animated Valentine banner
     if (bannerRef.current) {
       const tl = gsap.timeline({ repeat: -1 });
       tl.to(bannerRef.current.querySelector('.banner-text'), {
-        scale: 1.03,
-        duration: 0.8,
-        ease: 'power1.inOut',
-        yoyo: true,
-        repeat: 1,
+        scale: 1.03, duration: 0.8, ease: 'power1.inOut', yoyo: true, repeat: 1,
       })
       .to(bannerRef.current.querySelectorAll('.banner-heart'), {
-        y: -4,
-        rotation: 15,
-        duration: 0.4,
-        stagger: 0.1,
-        ease: 'power1.inOut',
-        yoyo: true,
-        repeat: 1,
+        y: -4, rotation: 15, duration: 0.4, stagger: 0.1, ease: 'power1.inOut', yoyo: true, repeat: 1,
       }, 0)
-      .to({}, { duration: 2 }); // pause between loops
+      .to({}, { duration: 2 });
     }
 
-    return () => window.removeEventListener('scroll', handleScroll);
+    // Close gifts dropdown on outside click
+    const handleClickOutside = (e: MouseEvent) => {
+      if (giftsRef.current && !giftsRef.current.contains(e.target as Node)) {
+        setGiftsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
 
   return (
@@ -86,11 +100,7 @@ export default function Header() {
       <header className={`bg-white py-2.5 md:py-3 border-b border-[var(--border)] sticky top-0 z-50 transition-shadow ${scrolled ? 'shadow-md' : ''}`}>
         <div className="max-w-6xl mx-auto px-4 md:px-5 flex items-center justify-between gap-3">
           {/* Mobile Menu Toggle */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden flex flex-col gap-1 p-2"
-            aria-label="Menu"
-          >
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden flex flex-col gap-1 p-2" aria-label="Menu">
             <span className={`w-5 h-0.5 bg-[var(--dark)] transition-transform ${mobileMenuOpen ? 'rotate-45 translate-y-1.5' : ''}`}></span>
             <span className={`w-5 h-0.5 bg-[var(--dark)] transition-opacity ${mobileMenuOpen ? 'opacity-0' : ''}`}></span>
             <span className={`w-5 h-0.5 bg-[var(--dark)] transition-transform ${mobileMenuOpen ? '-rotate-45 -translate-y-1.5' : ''}`}></span>
@@ -105,9 +115,51 @@ export default function Header() {
             </span>
           </Link>
 
+          {/* Desktop Nav - Inline */}
+          <nav className="hidden lg:flex items-center gap-1">
+            <Link href="/" className="px-3 py-2 text-[13px] text-[var(--text)] hover:text-[var(--copper)] transition-colors">HOME</Link>
+            <Link href="/shop" className="px-3 py-2 text-[13px] text-[var(--text)] hover:text-[var(--copper)] transition-colors">SHOP</Link>
+            {/* Gifts Dropdown */}
+            <div ref={giftsRef} className="relative">
+              <button
+                onClick={() => setGiftsOpen(!giftsOpen)}
+                className="px-3 py-2 text-[13px] text-[var(--text)] hover:text-[var(--copper)] transition-colors flex items-center gap-1"
+              >
+                GIFTS
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={`transition-transform ${giftsOpen ? 'rotate-180' : ''}`}><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+              {giftsOpen && (
+                <div className="absolute top-full left-0 mt-1 bg-white border border-[var(--border)] rounded-lg shadow-xl py-2 min-w-[220px] z-50 max-h-[400px] overflow-y-auto">
+                  {CATEGORIES.map((cat) => (
+                    <div key={cat.name}>
+                      <Link
+                        href={`/shop?category=${encodeURIComponent(cat.name)}`}
+                        onClick={() => setGiftsOpen(false)}
+                        className="block px-4 py-2 text-sm font-semibold text-[var(--dark)] hover:bg-[var(--bg-soft)] hover:text-[var(--copper)] transition-colors"
+                      >
+                        {cat.icon} {cat.name}
+                      </Link>
+                      {cat.subcategories?.map((sub) => (
+                        <Link
+                          key={sub.name}
+                          href={`/shop?category=${encodeURIComponent(sub.name)}`}
+                          onClick={() => setGiftsOpen(false)}
+                          className="block px-8 py-1.5 text-xs text-[var(--text-light)] hover:bg-[var(--bg-soft)] hover:text-[var(--copper)] transition-colors"
+                        >
+                          {sub.name}
+                        </Link>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            <Link href="/contact" className="px-3 py-2 text-[13px] text-[var(--text)] hover:text-[var(--copper)] transition-colors">CONTACT</Link>
+            <Link href="/faqs" className="px-3 py-2 text-[13px] text-[var(--text)] hover:text-[var(--copper)] transition-colors">FAQs</Link>
+          </nav>
+
           {/* Actions */}
           <div className="flex items-center gap-2 md:gap-4">
-            {/* Auth Links */}
             {mounted && (
               user ? (
                 <div className="flex items-center gap-2">
@@ -124,51 +176,21 @@ export default function Header() {
                   </Link>
                 </div>
               ) : (
-                <Link href="/login" className="text-xs md:text-sm font-medium text-[var(--copper)] hover:underline">
-                  Sign In
-                </Link>
+                <Link href="/login" className="text-xs md:text-sm font-medium text-[var(--copper)] hover:underline">Sign In</Link>
               )
             )}
             <Link href="/wishlist" className="relative p-1.5 rounded-full hover:bg-[var(--bg-soft)] transition-colors">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="md:w-[22px] md:h-[22px]"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-              <span className="absolute -top-0.5 -right-1 bg-[var(--copper)] text-white text-[9px] w-[18px] h-[18px] rounded-full flex items-center justify-center font-semibold">
-                {mounted ? wishlist.length : 0}
-              </span>
+              <span className="absolute -top-0.5 -right-1 bg-[var(--copper)] text-white text-[9px] w-[18px] h-[18px] rounded-full flex items-center justify-center font-semibold">{mounted ? wishlist.length : 0}</span>
             </Link>
             <Link href="/cart" className="relative p-1.5 rounded-full hover:bg-[var(--bg-soft)] transition-colors">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="md:w-[22px] md:h-[22px]"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-              <span className="absolute -top-0.5 -right-1 bg-[var(--copper)] text-white text-[9px] w-[18px] h-[18px] rounded-full flex items-center justify-center font-semibold">
-                {mounted ? cartCount : 0}
-              </span>
+              <span className="absolute -top-0.5 -right-1 bg-[var(--copper)] text-white text-[9px] w-[18px] h-[18px] rounded-full flex items-center justify-center font-semibold">{mounted ? cartCount : 0}</span>
             </Link>
-            <span className="text-xs md:text-sm font-medium text-[var(--dark)] hidden sm:inline">
-              {mounted ? formatPrice(cartTotal) : 'KES 0'}
-            </span>
+            <span className="text-xs md:text-sm font-medium text-[var(--dark)] hidden sm:inline">{mounted ? formatPrice(cartTotal) : 'KES 0'}</span>
           </div>
         </div>
       </header>
-
-      {/* Navigation - Desktop */}
-      <nav className="bg-white border-b border-[var(--border)] hidden lg:block">
-        <div className="max-w-6xl mx-auto px-5 flex items-center justify-center">
-          <div className="flex items-center">
-            {[
-              { href: '/', label: 'HOME' },
-              { href: '/shop', label: 'SHOP' },
-              { href: '/shop?category=Gents Watches', label: 'GENTS' },
-              { href: '/shop?category=Ladies Watches', label: 'LADIES' },
-              { href: '/shop?category=Hannah Martin', label: 'HANNAH MARTIN' },
-              { href: '/shop?category=Kids Watches', label: 'KIDS' },
-              { href: '/shop?category=Gifts', label: 'GIFTS' },
-              { href: '/shop?category=Jewelry', label: 'JEWELRY' },
-              { href: '/shop?category=Drinks %26 Candy', label: 'DRINKS' },
-              { href: '/contact', label: 'CONTACT' },
-            ].map(link => (
-              <Link key={link.label} href={link.href} className="px-3 xl:px-4 py-3.5 text-[13px] text-[var(--text)] hover:text-[var(--copper)] transition-colors">{link.label}</Link>
-            ))}
-          </div>
-        </div>
-      </nav>
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
@@ -181,21 +203,33 @@ export default function Header() {
                 <button onClick={() => setMobileMenuOpen(false)} className="text-2xl">&times;</button>
               </div>
               <nav className="flex flex-col gap-1">
-                {[
-                  { href: '/', label: 'HOME' },
-                  { href: '/shop', label: 'SHOP' },
-                  { href: '/shop?category=Gents Watches', label: 'GENTS WATCHES' },
-                  { href: '/shop?category=Ladies Watches', label: 'LADIES WATCHES' },
-                  { href: '/shop?category=Hannah Martin', label: 'HANNAH MARTIN' },
-                  { href: '/shop?category=Kids Watches', label: 'KIDS WATCHES' },
-                  { href: '/shop?category=Gifts', label: 'GIFTS' },
-                  { href: '/shop?category=Jewelry', label: 'JEWELRY' },
-                  { href: '/shop?category=Drinks %26 Candy', label: 'DRINKS & CANDY' },
-                  { href: '/about', label: 'ABOUT' },
-                  { href: '/contact', label: 'CONTACT' },
-                ].map(link => (
-                  <Link key={link.label} href={link.href} onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-sm text-[var(--text)] hover:text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors">{link.label}</Link>
-                ))}
+                <Link href="/" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-sm text-[var(--text)] hover:text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors">HOME</Link>
+                <Link href="/shop" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-sm text-[var(--text)] hover:text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors">SHOP</Link>
+
+                {/* Mobile Gifts Accordion */}
+                <button onClick={() => setMobileGiftsOpen(!mobileGiftsOpen)} className="px-4 py-3 text-sm text-[var(--text)] hover:text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors flex items-center justify-between">
+                  GIFTS
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={`transition-transform ${mobileGiftsOpen ? 'rotate-180' : ''}`}><path d="M6 9l6 6 6-6"/></svg>
+                </button>
+                {mobileGiftsOpen && (
+                  <div className="ml-2 border-l-2 border-[var(--border)]">
+                    {CATEGORIES.map((cat) => (
+                      <div key={cat.name}>
+                        <Link href={`/shop?category=${encodeURIComponent(cat.name)}`} onClick={() => setMobileMenuOpen(false)} className="block px-4 py-2 text-sm font-medium text-[var(--dark)] hover:text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors">
+                          {cat.icon} {cat.name}
+                        </Link>
+                        {cat.subcategories?.map((sub) => (
+                          <Link key={sub.name} href={`/shop?category=${encodeURIComponent(sub.name)}`} onClick={() => setMobileMenuOpen(false)} className="block px-8 py-1.5 text-xs text-[var(--text-light)] hover:text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors">
+                            {sub.name}
+                          </Link>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-sm text-[var(--text)] hover:text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors">CONTACT</Link>
+                <Link href="/faqs" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-sm text-[var(--text)] hover:text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors">FAQs</Link>
                 <hr className="my-2 border-[var(--border)]" />
                 {user ? (
                   <>

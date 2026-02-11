@@ -1,12 +1,13 @@
 'use client';
 
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, Suspense } from 'react';
 import { signIn } from '@/lib/actions/auth';
 
 function LoginForm() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const redirectTo = searchParams.get('redirectTo') || '/';
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -23,6 +24,10 @@ function LoginForm() {
     if (result?.error) {
       setError(result.error);
       setLoading(false);
+    } else if (result?.success) {
+      // Refresh server components so AuthProvider picks up the new session
+      router.refresh();
+      router.push(result.redirectTo || '/');
     }
   }
 

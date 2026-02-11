@@ -1,16 +1,26 @@
 'use client';
 
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
 import { useStore } from '@/lib/store';
 import { useAuth } from '@/components/AuthProvider';
 import { formatPrice } from '@/lib/data';
+import { getDeliverySettings } from '@/lib/actions/settings';
+import type { DeliverySettings } from '@/lib/supabase/types';
 
 export default function CartPage() {
   const { cart, removeFromCart, updateCartQty, getCartTotal, loading } = useStore();
   const { user } = useAuth();
+  const [fees, setFees] = useState<DeliverySettings | null>(null);
+
+  useEffect(() => {
+    getDeliverySettings().then(setFees).catch(() => {});
+  }, []);
 
   const subtotal = getCartTotal();
-  const shipping = subtotal > 10000 ? 0 : 500;
+  const riderFee = fees?.delivery_fee_rider ?? 500;
+  const freeThreshold = fees?.free_delivery_threshold ?? 0;
+  const shipping = freeThreshold > 0 && subtotal >= freeThreshold ? 0 : riderFee;
   const total = subtotal + shipping;
 
   if (!user) {
@@ -157,10 +167,10 @@ export default function CartPage() {
                 <span className="text-[var(--copper)] font-semibold">{formatPrice(subtotal)}</span>
               </div>
               <div className="flex justify-between py-3 border-b border-[var(--border)] text-sm">
-                <span>Shipping</span>
+                <span>Shipping (Our Rider)</span>
                 <span className="text-[var(--copper)] font-semibold">{shipping === 0 ? 'Free' : formatPrice(shipping)}</span>
               </div>
-              {shipping === 0 && <div className="text-xs text-[var(--green)] py-1">✅ Free shipping above KES 10,000</div>}
+              {shipping === 0 && freeThreshold > 0 && <div className="text-xs text-[var(--green)] py-1">✅ Free shipping above {formatPrice(freeThreshold)}</div>}
               <div className="flex justify-between py-4 text-base md:text-lg font-bold text-[var(--dark)]">
                 <span>Total</span>
                 <span className="text-[var(--copper)]">{formatPrice(total)}</span>

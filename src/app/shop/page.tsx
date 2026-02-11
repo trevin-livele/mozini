@@ -10,14 +10,18 @@ import ProductCard from '@/components/ProductCard';
 function ShopContent() {
   const searchParams = useSearchParams();
   const categoryParam = searchParams.get('category');
+  const searchParam = searchParams.get('search');
+  const minPriceParam = searchParams.get('minPrice');
+  const maxPriceParam = searchParams.get('maxPrice');
 
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<{ name: string; count: number }[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [selectedCategories, setSelectedCategories] = useState<string[]>(categoryParam ? [categoryParam] : []);
-  const [priceMin, setPriceMin] = useState('');
-  const [priceMax, setPriceMax] = useState('');
+  const [priceMin, setPriceMin] = useState(minPriceParam || '');
+  const [priceMax, setPriceMax] = useState(maxPriceParam || '');
+  const [searchText, setSearchText] = useState(searchParam || '');
   const [sortBy, setSortBy] = useState('default');
   const [page, setPage] = useState(1);
   const PAGE_SIZE = 12;
@@ -25,6 +29,15 @@ function ShopContent() {
   useEffect(() => {
     if (categoryParam) setSelectedCategories([categoryParam]);
   }, [categoryParam]);
+
+  useEffect(() => {
+    if (searchParam) setSearchText(searchParam);
+  }, [searchParam]);
+
+  useEffect(() => {
+    if (minPriceParam) setPriceMin(minPriceParam);
+    if (maxPriceParam) setPriceMax(maxPriceParam);
+  }, [minPriceParam, maxPriceParam]);
 
   // Fetch categories once
   useEffect(() => {
@@ -35,7 +48,7 @@ function ShopContent() {
   useEffect(() => {
     setLoading(true);
     const category = selectedCategories.length === 1 ? selectedCategories[0] : undefined;
-    getProducts({ category, sortBy, page, limit: PAGE_SIZE })
+    getProducts({ category, search: searchText || undefined, sortBy, page, limit: PAGE_SIZE })
       .then(({ products: p, total: t }) => {
         let filtered = p;
         // Client-side multi-category + price filtering
@@ -50,7 +63,7 @@ function ShopContent() {
       })
       .catch(() => { setProducts([]); setTotal(0); })
       .finally(() => setLoading(false));
-  }, [selectedCategories, sortBy, page, priceMin, priceMax]);
+  }, [selectedCategories, sortBy, page, priceMin, priceMax, searchText]);
 
   const toggleCategory = (cat: string) => {
     setSelectedCategories((prev) =>
@@ -65,6 +78,16 @@ function ShopContent() {
     <div className="grid grid-cols-1 lg:grid-cols-[250px_1fr] gap-10">
       {/* Sidebar */}
       <aside className="hidden lg:block">
+        <div className="mb-8">
+          <h3 className="text-[15px] font-semibold text-[var(--dark)] mb-4 pb-2.5 border-b-2 border-[var(--copper)]">Search</h3>
+          <input
+            type="text"
+            placeholder="Search products..."
+            value={searchText}
+            onChange={(e) => { setSearchText(e.target.value); setPage(1); }}
+            className="w-full px-3 py-2 border border-[var(--border)] rounded text-sm focus:border-[var(--copper)] focus:outline-none transition-colors"
+          />
+        </div>
         <div className="mb-8">
           <h3 className="text-[15px] font-semibold text-[var(--dark)] mb-4 pb-2.5 border-b-2 border-[var(--copper)]">Categories</h3>
           {categories.map((cat) => (
@@ -132,7 +155,7 @@ function ShopContent() {
             <div className="text-6xl mb-5 opacity-60">🔍</div>
             <h2 className="font-serif text-2xl text-[var(--dark)] mb-3">No Products Found</h2>
             <p className="text-[var(--text-light)] mb-7">Try adjusting your filters</p>
-            <button onClick={() => { setSelectedCategories([]); setPriceMin(''); setPriceMax(''); setPage(1); }} className="bg-[var(--copper)] text-white px-8 py-3 rounded text-sm font-medium uppercase tracking-wider hover:bg-[var(--copper-dark)] transition-colors">
+            <button onClick={() => { setSelectedCategories([]); setPriceMin(''); setPriceMax(''); setSearchText(''); setPage(1); }} className="bg-[var(--copper)] text-white px-8 py-3 rounded text-sm font-medium uppercase tracking-wider hover:bg-[var(--copper-dark)] transition-colors">
               Clear Filters
             </button>
           </div>

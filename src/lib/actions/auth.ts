@@ -45,7 +45,8 @@ export async function signIn(formData: FormData) {
 
   if (error) return { error: error.message };
 
-  redirect(redirectTo || '/');
+  // Return success so the client can handle navigation with router.refresh()
+  return { success: true, redirectTo: redirectTo || '/' };
 }
 
 export async function signOut() {

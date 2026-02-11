@@ -64,8 +64,11 @@ export default function ProductPage() {
   };
 
   const handleShare = () => {
-    const message = `Check out this item from Mozini Watches & Gifts:\n\n${product.name}\nPrice: ${formatPrice(product.price)}\n\nVisit: ${window.location.href}`;
-    window.open(`https://wa.me/254115757568?text=${encodeURIComponent(message)}`, '_blank');
+    const imageUrl = product.image_url
+      ? (product.image_url.startsWith('http') ? product.image_url : `${window.location.origin}${product.image_url}`)
+      : '';
+    const message = `Check out this item from Mozini Watches & Gifts:\n\n*${product.name}*\nPrice: ${formatPrice(product.price)}\n${imageUrl ? `\n📸 ${imageUrl}` : ''}\n\n🛒 Shop now: ${window.location.href}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
   };
 
   return (

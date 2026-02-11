@@ -255,6 +255,25 @@ export type Database = {
           }
         ];
       };
+      site_settings: {
+        Row: {
+          key: string;
+          value: string;
+          label: string;
+          updated_at: string;
+        };
+        Insert: {
+          key: string;
+          value: string;
+          label?: string;
+        };
+        Update: {
+          key?: string;
+          value?: string;
+          label?: string;
+        };
+        Relationships: [];
+      };
       contact_messages: {
         Row: {
           id: string;
@@ -306,6 +325,14 @@ export type CartItem = Database['public']['Tables']['cart_items']['Row'];
 export type Order = Database['public']['Tables']['orders']['Row'];
 export type OrderItem = Database['public']['Tables']['order_items']['Row'];
 export type ContactMessage = Database['public']['Tables']['contact_messages']['Row'];
+export type SiteSetting = Database['public']['Tables']['site_settings']['Row'];
+
+export interface DeliverySettings {
+  delivery_fee_rider: number;
+  delivery_fee_pickup_mtaani: number;
+  delivery_fee_self_pickup: number;
+  free_delivery_threshold: number;
+}
 
 // Product with old field names for backward compatibility with existing UI
 export type ProductCompat = Product & {

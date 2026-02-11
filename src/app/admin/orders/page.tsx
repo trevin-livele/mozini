@@ -34,8 +34,15 @@ export default function AdminOrders() {
 
   const handleStatusChange = async (orderId: string, status: string) => {
     const result = await updateOrderStatus(orderId, status);
-    if (result.error) alert(result.error);
-    else loadOrders();
+    if (result.error) {
+      alert(result.error);
+    } else {
+      // Open WhatsApp notification to customer
+      if (result.notifyLink) {
+        window.open(result.notifyLink, '_blank');
+      }
+      loadOrders();
+    }
   };
 
   return (
