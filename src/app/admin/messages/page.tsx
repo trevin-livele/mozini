@@ -105,7 +105,7 @@ export default function AdminMessages() {
                       {msg.phone && <p className="text-sm text-gray-600">📞 {msg.phone}</p>}
                       <p className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">{msg.message}</p>
                     </div>
-                    <div className="flex gap-2 mt-4 pt-3 border-t border-gray-100">
+                    <div className="flex flex-wrap gap-2 mt-4 pt-3 border-t border-gray-100">
                       <a
                         href={`https://wa.me/${msg.phone?.replace(/\D/g, '') || '254115757568'}?text=${encodeURIComponent(`Hi ${msg.name}, thanks for reaching out to Mozini! Regarding your message: "${msg.subject || msg.message.slice(0, 50)}..."`)}`}
                         target="_blank"

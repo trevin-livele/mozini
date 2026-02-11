@@ -55,7 +55,8 @@ export default function AdminOrders() {
         <p className="text-gray-500">No orders yet.</p>
       ) : (
         <div className="bg-white rounded-lg shadow overflow-hidden">
-          <table className="w-full text-sm">
+          {/* Desktop table */}
+          <table className="w-full text-sm hidden md:table">
             <thead className="bg-gray-50 border-b">
               <tr>
                 <th className="text-left px-4 py-3">Order ID</th>
@@ -92,6 +93,36 @@ export default function AdminOrders() {
               ))}
             </tbody>
           </table>
+
+          {/* Mobile cards */}
+          <div className="md:hidden divide-y">
+            {orders.map((o) => (
+              <div key={o.id} className="p-4">
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <div className="min-w-0">
+                    <p className="font-medium text-sm">{o.shipping_name}</p>
+                    <p className="text-xs text-gray-500 truncate">{o.shipping_email}</p>
+                  </div>
+                  <span className="text-sm font-semibold whitespace-nowrap">{formatPrice(o.total)}</span>
+                </div>
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-[10px] text-gray-400">#{o.id.slice(0, 8)}</span>
+                    <span className="text-xs text-gray-400">{new Date(o.created_at).toLocaleDateString()}</span>
+                  </div>
+                  <select
+                    value={o.status}
+                    onChange={(e) => handleStatusChange(o.id, e.target.value)}
+                    className={`px-2 py-1 rounded text-xs border-0 cursor-pointer ${STATUS_COLORS[o.status] || 'bg-gray-100'}`}
+                  >
+                    {STATUSES.map((s) => (
+                      <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>

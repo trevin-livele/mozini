@@ -110,7 +110,8 @@ export default function AdminProducts() {
       ) : (
         <>
           <div className="bg-white rounded-lg shadow overflow-hidden">
-            <table className="w-full text-sm">
+            {/* Desktop table */}
+            <table className="w-full text-sm hidden md:table">
               <thead className="bg-gray-50 border-b">
                 <tr>
                   <th className="text-left px-4 py-3">Product</th>
@@ -155,6 +156,38 @@ export default function AdminProducts() {
                 ))}
               </tbody>
             </table>
+
+            {/* Mobile cards */}
+            <div className="md:hidden divide-y">
+              {products.map((p) => (
+                <div key={p.id} className="p-4">
+                  <div className="flex items-start gap-3">
+                    <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0">
+                      {p.image_url ? (
+                        <img src={p.image_url} alt={p.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-2xl">{p.icon}</span>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm truncate">{p.name}</p>
+                      <p className="text-xs text-gray-500">{p.brand} · {p.category}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-sm font-semibold">{formatPrice(p.price)}</span>
+                        <span className="text-xs text-gray-400">Stock: {p.stock}</span>
+                        <span className={`px-1.5 py-0.5 rounded text-[10px] ${p.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
+                          {p.is_active ? 'Active' : 'Off'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex gap-3 mt-3 pt-2 border-t border-gray-100">
+                    <button onClick={() => { setEditing(p); setShowForm(true); }} className="text-blue-600 text-xs font-medium">Edit</button>
+                    <button onClick={() => handleDelete(p.id)} className="text-red-600 text-xs font-medium">Delete</button>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
           {totalPages > 1 && (

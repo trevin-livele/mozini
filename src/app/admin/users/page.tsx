@@ -36,7 +36,8 @@ export default function AdminUsers() {
         <p>Loading...</p>
       ) : (
         <div className="bg-white rounded-lg shadow overflow-hidden">
-          <table className="w-full text-sm">
+          {/* Desktop table */}
+          <table className="w-full text-sm hidden md:table">
             <thead className="bg-gray-50 border-b">
               <tr>
                 <th className="text-left px-4 py-3">User</th>
@@ -72,6 +73,33 @@ export default function AdminUsers() {
               ))}
             </tbody>
           </table>
+
+          {/* Mobile cards */}
+          <div className="md:hidden divide-y">
+            {users.map((u) => (
+              <div key={u.id} className="p-4">
+                <div className="flex items-start justify-between gap-2 mb-1">
+                  <div className="min-w-0">
+                    <p className="font-medium text-sm">{u.full_name || 'No name'}</p>
+                    <p className="text-xs text-gray-500 truncate">{u.email}</p>
+                  </div>
+                  <select
+                    value={u.role}
+                    onChange={(e) => handleRoleChange(u.id, e.target.value as 'customer' | 'admin')}
+                    className={`px-2 py-1 rounded text-xs border-0 cursor-pointer shrink-0 ${u.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-700'}`}
+                  >
+                    <option value="customer">Customer</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                </div>
+                <div className="flex items-center gap-3 text-xs text-gray-400 mt-1">
+                  {u.phone && <span>📞 {u.phone}</span>}
+                  {u.city && <span>📍 {u.city}</span>}
+                  <span>{new Date(u.created_at).toLocaleDateString()}</span>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>
