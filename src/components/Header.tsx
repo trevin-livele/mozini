@@ -144,15 +144,15 @@ export default function Header() {
           </button>
 
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group shrink-0">
+          <Link href="/" className="flex items-center gap-1.5 md:gap-2 group shrink-0 min-w-0">
             {logoError ? (
-              <span className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-[var(--copper)] flex items-center justify-center text-white font-serif font-bold text-lg md:text-xl shadow-sm">M</span>
+              <span className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-[var(--copper)] flex items-center justify-center text-white font-serif font-bold text-lg md:text-xl shadow-sm shrink-0">M</span>
             ) : (
-              <Image src="/images/logo.png" alt="Mozini Logo" width={40} height={40} className="h-8 md:h-10 w-auto" onError={() => setLogoError(true)} />
+              <Image src="/images/logo.png" alt="Mozini Logo" width={40} height={40} className="h-8 md:h-10 w-auto shrink-0" onError={() => setLogoError(true)} />
             )}
-            <span className="font-serif text-lg md:text-xl font-bold text-[var(--dark)] leading-tight">
-              Mozini<br className="hidden md:block" />
-              <span className="text-[10px] md:text-xs font-normal tracking-wider text-[var(--text-light)] uppercase">Watches &amp; Gifts</span>
+            <span className="font-serif text-base md:text-xl font-bold text-[var(--dark)] leading-tight truncate">
+              Mozini
+              <span className="hidden md:inline"><br /><span className="text-xs font-normal tracking-wider text-[var(--text-light)] uppercase">Watches &amp; Gifts</span></span>
             </span>
           </Link>
 
@@ -200,14 +200,14 @@ export default function Header() {
           </nav>
 
           {/* Actions */}
-          <div className="flex items-center gap-2 md:gap-4">
+          <div className="flex items-center gap-1 sm:gap-2 md:gap-4 shrink-0">
             {/* Search & Filter */}
             <div ref={searchRef} className="relative">
-              <button onClick={() => setSearchOpen(!searchOpen)} className={`p-1.5 rounded-full hover:bg-[var(--bg-soft)] transition-colors ${searchOpen ? 'bg-[var(--bg-soft)] text-[var(--copper)]' : ''}`} title="Search & Filter">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="md:w-[22px] md:h-[22px]"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <button onClick={() => setSearchOpen(!searchOpen)} className={`p-1 sm:p-1.5 rounded-full hover:bg-[var(--bg-soft)] transition-colors ${searchOpen ? 'bg-[var(--bg-soft)] text-[var(--copper)]' : ''}`} title="Search & Filter">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="sm:w-5 sm:h-5 md:w-[22px] md:h-[22px]"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
               </button>
               {searchOpen && (
-                <div className="absolute right-0 md:right-auto md:left-1/2 md:-translate-x-1/2 top-full mt-3 bg-white border border-[var(--border)] rounded-2xl shadow-2xl w-[calc(100vw-2rem)] max-w-[400px] z-50 overflow-hidden">
+                <div className="fixed left-4 right-4 sm:absolute sm:left-auto sm:right-0 md:right-auto md:left-1/2 md:-translate-x-1/2 top-[60px] sm:top-full sm:mt-3 bg-white border border-[var(--border)] rounded-2xl shadow-2xl sm:w-[380px] md:w-[400px] z-50 overflow-hidden">
                   <form onSubmit={handleSearchSubmit}>
                     {/* Header */}
                     <div className="flex items-center justify-between px-5 pt-4 pb-2">
@@ -307,32 +307,32 @@ export default function Header() {
 
             {mounted && (
               user ? (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 sm:gap-2">
                   {isAdmin && (
-                    <Link href="/admin" className="p-1.5 rounded-full hover:bg-[var(--bg-soft)] transition-colors text-[var(--copper)]" title="Admin">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="md:w-[22px] md:h-[22px]"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+                    <Link href="/admin" className="p-1 sm:p-1.5 rounded-full hover:bg-[var(--bg-soft)] transition-colors text-[var(--copper)]" title="Admin">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="sm:w-5 sm:h-5 md:w-[22px] md:h-[22px]"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
                     </Link>
                   )}
-                  <Link href="/profile" className="p-1.5 rounded-full hover:bg-[var(--bg-soft)] transition-colors" title="Profile">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="md:w-[22px] md:h-[22px]"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  <Link href="/profile" className="p-1 sm:p-1.5 rounded-full hover:bg-[var(--bg-soft)] transition-colors" title="Profile">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="sm:w-5 sm:h-5 md:w-[22px] md:h-[22px]"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                   </Link>
-                  <Link href="/orders" className="p-1.5 rounded-full hover:bg-[var(--bg-soft)] transition-colors hidden sm:block" title="Orders">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="md:w-[22px] md:h-[22px]"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                  <Link href="/orders" className="p-1 sm:p-1.5 rounded-full hover:bg-[var(--bg-soft)] transition-colors hidden sm:block" title="Orders">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="sm:w-5 sm:h-5 md:w-[22px] md:h-[22px]"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
                   </Link>
                 </div>
               ) : (
-                <Link href="/login" className="text-xs md:text-sm font-medium text-[var(--copper)] hover:underline">Sign In</Link>
+                <Link href="/login" className="text-xs md:text-sm font-medium text-[var(--copper)] hover:underline whitespace-nowrap">Sign In</Link>
               )
             )}
-            <Link href="/wishlist" className="relative p-1.5 rounded-full hover:bg-[var(--bg-soft)] transition-colors">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="md:w-[22px] md:h-[22px]"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-              <span className="absolute -top-0.5 -right-1 bg-[var(--copper)] text-white text-[9px] w-[18px] h-[18px] rounded-full flex items-center justify-center font-semibold">{mounted ? wishlist.length : 0}</span>
+            <Link href="/wishlist" className="relative p-1 sm:p-1.5 rounded-full hover:bg-[var(--bg-soft)] transition-colors">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="sm:w-5 sm:h-5 md:w-[22px] md:h-[22px]"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              <span className="absolute -top-0.5 -right-1 bg-[var(--copper)] text-white text-[9px] w-4 h-4 sm:w-[18px] sm:h-[18px] rounded-full flex items-center justify-center font-semibold">{mounted ? wishlist.length : 0}</span>
             </Link>
-            <Link href="/cart" className="relative p-1.5 rounded-full hover:bg-[var(--bg-soft)] transition-colors">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="md:w-[22px] md:h-[22px]"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-              <span className="absolute -top-0.5 -right-1 bg-[var(--copper)] text-white text-[9px] w-[18px] h-[18px] rounded-full flex items-center justify-center font-semibold">{mounted ? cartCount : 0}</span>
+            <Link href="/cart" className="relative p-1 sm:p-1.5 rounded-full hover:bg-[var(--bg-soft)] transition-colors">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="sm:w-5 sm:h-5 md:w-[22px] md:h-[22px]"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+              <span className="absolute -top-0.5 -right-1 bg-[var(--copper)] text-white text-[9px] w-4 h-4 sm:w-[18px] sm:h-[18px] rounded-full flex items-center justify-center font-semibold">{mounted ? cartCount : 0}</span>
             </Link>
-            <span className="text-xs md:text-sm font-medium text-[var(--dark)] hidden sm:inline">{mounted ? formatPrice(cartTotal) : 'KES 0'}</span>
+            <span className="text-xs md:text-sm font-medium text-[var(--dark)] hidden md:inline">{mounted ? formatPrice(cartTotal) : 'KES 0'}</span>
           </div>
         </div>
       </header>

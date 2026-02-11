@@ -42,6 +42,18 @@ export function AuthProvider({ children, initialUser }: { children: ReactNode; i
   useEffect(() => {
     const supabase = createClient();
 
+    // Check current session immediately (handles page refresh / SSR mismatch)
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      const currentUser = session?.user ?? null;
+      if (currentUser && !user) {
+        setUser(currentUser);
+        syncCart();
+        syncWishlist();
+        checkAdminRole(currentUser.id);
+      }
+      setLoading(false);
+    });
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       const newUser = session?.user ?? null;
       setUser(newUser);
