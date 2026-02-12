@@ -11,65 +11,54 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-/* ─── Trending Now Product Carousel ─── */
-function TrendingCarousel({ products }: { products: Product[] }) {
-  const [index, setIndex] = useState(0);
-  const [perView, setPerView] = useState(4);
-  const maxIndex = Math.max(0, products.length - perView);
-
-  useEffect(() => {
-    const update = () => setPerView(window.innerWidth < 640 ? 2 : window.innerWidth < 1024 ? 3 : 4);
-    update();
-    window.addEventListener('resize', update);
-    return () => window.removeEventListener('resize', update);
-  }, []);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setIndex((i) => (i >= maxIndex ? 0 : i + 1));
-    }, 4000);
-    return () => clearInterval(timer);
-  }, [maxIndex]);
-
-  if (!products.length) return null;
-
+/* ─── Highlight of the Month ─── */
+function HighlightOfTheMonth() {
   return (
-    <section className="py-8 md:py-10 overflow-hidden border-b border-[var(--border)]">
+    <section className="py-12 md:py-16 border-b border-[var(--border)]">
       <div className="max-w-6xl mx-auto px-4 md:px-5">
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="font-serif text-xl md:text-2xl font-semibold text-[var(--dark)]">🔥 Trending Now</h2>
-          <div className="flex gap-2">
-            <button onClick={() => setIndex((i) => Math.max(i - 1, 0))} disabled={index === 0} className="w-8 h-8 rounded-full border border-[var(--border)] flex items-center justify-center hover:border-[var(--copper)] hover:text-[var(--copper)] transition-colors disabled:opacity-30">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
-            </button>
-            <button onClick={() => setIndex((i) => Math.min(i + 1, maxIndex))} disabled={index >= maxIndex} className="w-8 h-8 rounded-full border border-[var(--border)] flex items-center justify-center hover:border-[var(--copper)] hover:text-[var(--copper)] transition-colors disabled:opacity-30">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
-            </button>
-          </div>
-        </div>
-        <div className="overflow-hidden">
-          <div className="flex transition-transform duration-500 ease-out" style={{ transform: `translateX(-${index * (100 / perView)}%)` }}>
-            {products.map((product) => (
-              <div key={product.id} className="flex-shrink-0 px-2" style={{ width: `${100 / perView}%` }}>
-                <Link href={`/product/${product.id}`} className="block bg-white rounded-lg overflow-hidden border border-[var(--border)] hover:shadow-md transition-shadow group">
-                  <div className="aspect-square bg-[var(--bg-soft)] flex items-center justify-center overflow-hidden">
-                    {product.image_url ? (
-                      <img src={product.image_url} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                    ) : (
-                      <span className="text-5xl">{product.icon}</span>
-                    )}
-                  </div>
-                  <div className="p-3">
-                    <p className="text-xs text-[var(--text-light)] truncate">{product.brand}</p>
-                    <p className="text-sm font-medium text-[var(--dark)] truncate">{product.name}</p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-sm font-bold text-[var(--copper)]">{formatPrice(product.price)}</span>
-                      {product.oldPrice > 0 && <span className="text-xs text-[var(--text-light)] line-through">{formatPrice(product.oldPrice)}</span>}
-                    </div>
-                  </div>
+        <div className="bg-gradient-to-br from-[var(--copper-pale)] to-white rounded-2xl overflow-hidden shadow-lg border border-[var(--border)]">
+          <div className="grid md:grid-cols-2 gap-0">
+            {/* Text Content - Left Side */}
+            <div className="flex flex-col justify-center p-8 md:p-12 lg:p-16">
+              <div className="inline-block bg-[var(--copper)] text-white text-xs font-semibold px-4 py-1.5 rounded-full mb-4 w-fit uppercase tracking-wider">
+                🎁 Highlight of the Month
+              </div>
+              <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-[var(--dark)] mb-4 leading-tight">
+                Free 2026 Desktop Calendar
+              </h2>
+              <p className="text-base md:text-lg text-[var(--text)] mb-6 leading-relaxed">
+                Get a beautiful desktop calendar with every order this month! Stay organized in style while enjoying your favorite watches and gifts.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link
+                  href="/shop"
+                  className="inline-block bg-[var(--copper)] text-white px-8 py-3.5 rounded-lg text-sm font-semibold uppercase tracking-wider hover:bg-[var(--copper-dark)] transition-all text-center"
+                >
+                  Shop Now
+                </Link>
+                <Link
+                  href="/faqs"
+                  className="inline-block bg-white text-[var(--copper)] border-2 border-[var(--copper)] px-8 py-3.5 rounded-lg text-sm font-semibold uppercase tracking-wider hover:bg-[var(--copper-pale)] transition-all text-center"
+                >
+                  Learn More
                 </Link>
               </div>
-            ))}
+            </div>
+
+            {/* Image - Right Side */}
+            <div className="relative h-[300px] md:h-auto min-h-[400px] bg-gradient-to-br from-[var(--copper-light)] to-[var(--copper)]">
+              <div className="absolute inset-0 flex items-center justify-center p-8">
+                <div className="relative">
+                  {/* Calendar Icon/Illustration */}
+                  <div className="text-[120px] md:text-[150px] lg:text-[180px] opacity-90">
+                    📅
+                  </div>
+                  {/* Decorative elements */}
+                  <div className="absolute -top-4 -right-4 text-4xl animate-bounce">✨</div>
+                  <div className="absolute -bottom-2 -left-2 text-3xl animate-pulse">🎁</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -81,20 +70,12 @@ function TrendingCarousel({ products }: { products: Product[] }) {
 export default function Home() {
   const [activeTab, setActiveTab] = useState('featured');
   const [products, setProducts] = useState<Product[]>([]);
-  const [carouselProducts, setCarouselProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<{ name: string; count: number }[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const categoriesRef = useRef<HTMLDivElement>(null);
   const productsRef = useRef<HTMLDivElement>(null);
   const [giftIndex, setGiftIndex] = useState(0);
   const giftSliderRef = useRef<HTMLDivElement>(null);
-
-  // Fetch carousel products on mount
-  useEffect(() => {
-    getProducts({ tag: 'best', limit: 12 })
-      .then(({ products: p }) => setCarouselProducts(p))
-      .catch(() => {});
-  }, []);
 
   // Fetch categories on mount
   useEffect(() => {
@@ -161,8 +142,8 @@ export default function Home() {
       {/* ═══════ HERO CAROUSEL ═══════ */}
       <HeroCarousel />
 
-      {/* ═══════ TRENDING NOW — Product carousel ═══════ */}
-      <TrendingCarousel products={carouselProducts} />
+      {/* ═══════ HIGHLIGHT OF THE MONTH ═══════ */}
+      <HighlightOfTheMonth />
 
       {/* Categories */}
       <section ref={categoriesRef} className="pt-16 md:pt-20 pb-12 md:pb-16 text-center">
