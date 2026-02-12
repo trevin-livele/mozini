@@ -16,7 +16,7 @@ function HighlightOfTheMonth() {
   return (
     <section className="py-12 md:py-16 border-b border-[var(--border)]">
       <div className="max-w-6xl mx-auto px-4 md:px-5">
-        <div className="bg-gradient-to-br from-[var(--copper-pale)] to-white rounded-2xl overflow-hidden shadow-lg border border-[var(--border)]">
+        <div className="bg-gradient-to-br from-[var(--copper-pale)] to-white rounded-2xl overflow-hidden shadow-lg">
           <div className="grid md:grid-cols-2 gap-0">
             {/* Text Content - Left Side */}
             <div className="flex flex-col justify-center p-8 md:p-12 lg:p-16">
@@ -48,15 +48,11 @@ function HighlightOfTheMonth() {
             {/* Image - Right Side */}
             <div className="relative h-[300px] md:h-auto min-h-[400px] bg-gradient-to-br from-[var(--copper-light)] to-[var(--copper)]">
               <div className="absolute inset-0 flex items-center justify-center p-8">
-                <div className="relative">
-                  {/* Calendar Icon/Illustration */}
-                  <div className="text-[120px] md:text-[150px] lg:text-[180px] opacity-90">
-                    📅
-                  </div>
-                  {/* Decorative elements */}
-                  <div className="absolute -top-4 -right-4 text-4xl animate-bounce">✨</div>
-                  <div className="absolute -bottom-2 -left-2 text-3xl animate-pulse">🎁</div>
-                </div>
+                <img 
+                  src="/images/calender.PNG" 
+                  alt="2026 Desktop Calendar" 
+                  className="w-full h-full object-contain drop-shadow-2xl"
+                />
               </div>
             </div>
           </div>
