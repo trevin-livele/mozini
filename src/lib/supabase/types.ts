@@ -334,6 +334,17 @@ export interface DeliverySettings {
   free_delivery_threshold: number;
 }
 
+export interface DeliveryZone {
+  id: number;
+  zone_name: string;
+  zone_label: string;
+  area_name: string;
+  fee: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 // Product with old field names for backward compatibility with existing UI
 export type ProductCompat = Product & {
   oldPrice: number;

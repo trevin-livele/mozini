@@ -17,6 +17,7 @@ interface CheckoutInput {
   paymentMethod: string;
   notes?: string;
   idempotencyKey: string;
+  deliveryAreaId?: number;
 }
 
 export async function createOrder(
@@ -98,6 +99,17 @@ export async function createOrder(
     shipping = pickupMtaaniFee;
   } else if (input.notes?.includes('Delivery: self-pickup')) {
     shipping = selfPickupFee;
+  } else if (input.deliveryAreaId) {
+    // Zone-based delivery fee — validate from DB
+    const { data: zoneRow } = await supabase
+      .from('delivery_zones')
+      .select('fee')
+      .eq('id', input.deliveryAreaId)
+      .eq('is_active', true)
+      .single();
+    if (zoneRow) {
+      shipping = freeThreshold > 0 && subtotal >= freeThreshold ? 0 : zoneRow.fee;
+    }
   } else if (freeThreshold > 0 && subtotal >= freeThreshold) {
     shipping = 0;
   }

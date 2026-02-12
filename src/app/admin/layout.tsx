@@ -12,6 +12,7 @@ const NAV_ITEMS = [
   { href: '/admin/users', label: 'Users', icon: '👥' },
   { href: '/admin/messages', label: 'Messages', icon: '💬' },
   { href: '/admin/broadcast', label: 'Broadcast', icon: '📢' },
+  { href: '/admin/delivery-zones', label: 'Delivery Zones', icon: '🗺️' },
   { href: '/admin/settings', label: 'Settings', icon: '⚙️' },
 ];
 

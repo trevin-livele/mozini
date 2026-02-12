@@ -9,6 +9,7 @@ import { formatPrice } from '@/lib/data';
 import { getCart, type CartItemWithProduct } from '@/lib/actions/cart';
 import { createOrder } from '@/lib/actions/orders';
 import { getDeliverySettings } from '@/lib/actions/settings';
+import { getDeliveryZones, type DeliveryZoneGrouped } from '@/lib/actions/delivery-zones';
 import type { DeliverySettings } from '@/lib/supabase/types';
 
 const WATCH_CATEGORIES = ['Gents Watches', 'Ladies Watches', 'Kids Watches', 'Curren', 'Naviforce', 'Poedagar', 'Hannah Martin'];
@@ -39,6 +40,10 @@ export default function CheckoutPage() {
   const [paymentOption, setPaymentOption] = useState<PaymentOption>('full');
   const idempotencyKeyRef = useRef(crypto.randomUUID());
   const [fees, setFees] = useState<DeliverySettings | null>(null);
+  const [deliveryZones, setDeliveryZones] = useState<DeliveryZoneGrouped[]>([]);
+  const [selectedAreaId, setSelectedAreaId] = useState<number | null>(null);
+  const [areaSearch, setAreaSearch] = useState('');
+  const [showAreaDropdown, setShowAreaDropdown] = useState(false);
 
   useEffect(() => {
     if (!user) { router.push('/login?redirectTo=/checkout'); return; }
@@ -46,6 +51,7 @@ export default function CheckoutPage() {
     Promise.all([
       getCart().then(setServerCart).catch(() => setServerCart([])),
       getDeliverySettings().then(setFees).catch(() => {}),
+      getDeliveryZones().then(setDeliveryZones).catch(() => {}),
     ]).finally(() => setLoadingCart(false));
   }, [user, router]);
 
@@ -62,10 +68,31 @@ export default function CheckoutPage() {
   const selfPickupFee = fees?.delivery_fee_self_pickup ?? 0;
   const freeThreshold = fees?.free_delivery_threshold ?? 0;
 
+  // Find selected area's fee from delivery zones
+  const selectedArea = deliveryZones
+    .flatMap((z) => z.areas.map((a) => ({ ...a, zone_name: z.zone_name, zone_label: z.zone_label })))
+    .find((a) => a.id === selectedAreaId);
+  const zoneFee = selectedArea?.fee ?? null;
+
   const deliveryFee = delivery === 'rider'
-    ? (freeThreshold > 0 && subtotal >= freeThreshold ? 0 : riderFee)
+    ? (zoneFee !== null
+        ? (freeThreshold > 0 && subtotal >= freeThreshold ? 0 : zoneFee)
+        : (freeThreshold > 0 && subtotal >= freeThreshold ? 0 : riderFee))
     : delivery === 'pickup-mtaani' ? pickupMtaaniFee
     : selfPickupFee;
+
+  // All areas flattened for search
+  const allAreas = deliveryZones.flatMap((z) =>
+    z.areas.map((a) => ({ ...a, zone_name: z.zone_name, zone_label: z.zone_label }))
+  );
+  const filteredAreas = areaSearch.trim()
+    ? allAreas.filter(
+        (a) =>
+          a.area_name.toLowerCase().includes(areaSearch.toLowerCase()) ||
+          a.zone_label.toLowerCase().includes(areaSearch.toLowerCase()) ||
+          a.zone_name.toLowerCase().includes(areaSearch.toLowerCase())
+      )
+    : allAreas;
 
   const total = subtotal + deliveryFee;
 
@@ -84,6 +111,13 @@ export default function CheckoutPage() {
     e.preventDefault();
     if (serverCart.length === 0 || submitting) return;
     setError('');
+
+    // Validate area selection for rider delivery
+    if (delivery === 'rider' && deliveryZones.length > 0 && !selectedAreaId) {
+      setError('Please select your delivery area to proceed.');
+      return;
+    }
+
     setSubmitting(true);
 
     try {
@@ -100,8 +134,9 @@ export default function CheckoutPage() {
           ? 'Nairobi'
           : formData.get('city') as string,
         paymentMethod: `mpesa${paymentOption === 'delivery-only' ? '-partial' : ''}`,
-        notes: `Delivery: ${delivery}${delivery === 'self-pickup' ? ` (Ready by ${pickupReadyTime})` : ''}${paymentOption === 'delivery-only' ? ` | Balance on delivery: ${formatPrice(balanceOnDelivery)}` : ''}${formData.get('notes') ? ` | ${formData.get('notes')}` : ''}`,
+        notes: `Delivery: ${delivery}${selectedArea ? ` | Area: ${selectedArea.area_name} (${selectedArea.zone_name} - ${selectedArea.zone_label}) | Zone Fee: KES ${selectedArea.fee}` : ''}${delivery === 'self-pickup' ? ` (Ready by ${pickupReadyTime})` : ''}${paymentOption === 'delivery-only' ? ` | Balance on delivery: ${formatPrice(balanceOnDelivery)}` : ''}${formData.get('notes') ? ` | ${formData.get('notes')}` : ''}`,
         idempotencyKey: idempotencyKeyRef.current,
+        deliveryAreaId: selectedAreaId ?? undefined,
       });
 
       await syncCart();
@@ -179,11 +214,11 @@ export default function CheckoutPage() {
                     <input type="radio" name="delivery" value="rider" checked={delivery === 'rider'} readOnly className="accent-[var(--copper)] mt-0.5" />
                     <div>
                       <div className="text-sm font-medium text-[var(--dark)]">🏍️ Our Rider</div>
-                      <div className="text-xs text-[var(--text-light)] mt-0.5">We deliver to your doorstep within Nairobi (1–2 hrs) or nationwide (1–3 days). {freeThreshold > 0 && subtotal >= freeThreshold ? 'Free delivery!' : `KES ${riderFee} delivery fee.`}</div>
+                      <div className="text-xs text-[var(--text-light)] mt-0.5">We deliver to your doorstep within Nairobi & surroundings. {freeThreshold > 0 && subtotal >= freeThreshold ? 'Free delivery!' : selectedArea ? `KES ${selectedArea.fee} to ${selectedArea.area_name}.` : 'Select your area below to see the delivery fee.'}</div>
                     </div>
                   </label>
                   <label
-                    onClick={() => setDelivery('pickup-mtaani')}
+                    onClick={() => { setDelivery('pickup-mtaani'); setSelectedAreaId(null); setAreaSearch(''); }}
                     className={`flex items-start gap-3 p-4 border rounded-lg cursor-pointer transition-all ${delivery === 'pickup-mtaani' ? 'border-[var(--copper)] bg-[rgba(44,95,99,0.05)]' : 'border-[var(--border)] hover:border-[var(--copper)]'}`}
                   >
                     <input type="radio" name="delivery" value="pickup-mtaani" checked={delivery === 'pickup-mtaani'} readOnly className="accent-[var(--copper)] mt-0.5" />
@@ -193,7 +228,7 @@ export default function CheckoutPage() {
                     </div>
                   </label>
                   <label
-                    onClick={() => setDelivery('self-pickup')}
+                    onClick={() => { setDelivery('self-pickup'); setSelectedAreaId(null); setAreaSearch(''); }}
                     className={`flex items-start gap-3 p-4 border rounded-lg cursor-pointer transition-all ${delivery === 'self-pickup' ? 'border-[var(--copper)] bg-[rgba(44,95,99,0.05)]' : 'border-[var(--border)] hover:border-[var(--copper)]'}`}
                   >
                     <input type="radio" name="delivery" value="self-pickup" checked={delivery === 'self-pickup'} readOnly className="accent-[var(--copper)] mt-0.5" />
@@ -205,6 +240,85 @@ export default function CheckoutPage() {
                     </div>
                   </label>
                 </div>
+
+                {/* Area selector for rider delivery */}
+                {delivery === 'rider' && deliveryZones.length > 0 && (
+                  <div className="mb-6">
+                    <label className="block text-xs md:text-sm font-medium text-[var(--dark)] mb-1.5">
+                      Select Your Delivery Area *
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        placeholder="Search area e.g. Westlands, Buruburu, Langata..."
+                        value={areaSearch}
+                        onChange={(e) => { setAreaSearch(e.target.value); setShowAreaDropdown(true); }}
+                        onFocus={() => setShowAreaDropdown(true)}
+                        className="w-full px-3 md:px-4 py-2.5 md:py-3 border border-[var(--border)] rounded text-sm focus:border-[var(--copper)] transition-colors"
+                      />
+                      {selectedArea && !showAreaDropdown && (
+                        <div className="mt-2 flex items-center gap-2 text-sm">
+                          <span className="bg-[rgba(44,95,99,0.1)] text-[var(--copper)] px-3 py-1.5 rounded-full text-xs font-medium">
+                            📍 {selectedArea.area_name} — {selectedArea.zone_label} ({selectedArea.zone_name}) — KES {selectedArea.fee}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => { setSelectedAreaId(null); setAreaSearch(''); }}
+                            className="text-xs text-red-500 hover:text-red-700"
+                          >
+                            Change
+                          </button>
+                        </div>
+                      )}
+                      {showAreaDropdown && (
+                        <div className="absolute z-20 top-full left-0 right-0 mt-1 bg-white border border-[var(--border)] rounded-lg shadow-lg max-h-64 overflow-y-auto">
+                          {filteredAreas.length === 0 ? (
+                            <div className="px-4 py-3 text-xs text-[var(--text-light)]">No areas found. Try a different search.</div>
+                          ) : (
+                            <>
+                              {deliveryZones
+                                .filter((z) => filteredAreas.some((a) => a.zone_name === z.zone_name))
+                                .map((zone) => (
+                                  <div key={zone.zone_name}>
+                                    <div className="px-3 py-1.5 bg-gray-50 text-xs font-semibold text-gray-500 uppercase tracking-wide sticky top-0">
+                                      {zone.zone_name} — {zone.zone_label}
+                                    </div>
+                                    {filteredAreas
+                                      .filter((a) => a.zone_name === zone.zone_name)
+                                      .map((area) => (
+                                        <button
+                                          key={area.id}
+                                          type="button"
+                                          onClick={() => {
+                                            setSelectedAreaId(area.id);
+                                            setAreaSearch('');
+                                            setShowAreaDropdown(false);
+                                          }}
+                                          className={`w-full text-left px-4 py-2.5 text-sm hover:bg-[rgba(44,95,99,0.05)] flex justify-between items-center transition-colors ${selectedAreaId === area.id ? 'bg-[rgba(44,95,99,0.08)]' : ''}`}
+                                        >
+                                          <span className="text-[var(--dark)]">{area.area_name}</span>
+                                          <span className="text-xs font-semibold text-[var(--copper)]">KES {area.fee}</span>
+                                        </button>
+                                      ))}
+                                  </div>
+                                ))}
+                              <button
+                                type="button"
+                                onClick={() => setShowAreaDropdown(false)}
+                                className="w-full text-center py-2 text-xs text-[var(--text-light)] hover:bg-gray-50 border-t border-[var(--border)]"
+                              >
+                                Close
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    {delivery === 'rider' && !selectedArea && (
+                      <p className="text-xs text-amber-600 mt-1.5">Please select your delivery area to see the exact delivery fee.</p>
+                    )}
+                  </div>
+                )}
 
                 {/* Address fields (hidden for self-pickup) */}
                 {delivery !== 'self-pickup' && (
@@ -323,8 +437,8 @@ export default function CheckoutPage() {
                   <span className="font-semibold">{formatPrice(subtotal)}</span>
                 </div>
                 <div className="flex justify-between py-2.5 border-b border-[var(--border)] text-xs md:text-sm">
-                  <span>Delivery ({delivery === 'rider' ? 'Our Rider' : delivery === 'pickup-mtaani' ? 'Pickup Mtaani' : 'Self Pickup'})</span>
-                  <span className="font-semibold">{deliveryFee === 0 ? 'Free' : formatPrice(deliveryFee)}</span>
+                  <span>Delivery ({delivery === 'rider' ? (selectedArea ? selectedArea.area_name : 'Our Rider') : delivery === 'pickup-mtaani' ? 'Pickup Mtaani' : 'Self Pickup'})</span>
+                  <span className="font-semibold">{deliveryFee === 0 ? 'Free' : delivery === 'rider' && !selectedArea && deliveryZones.length > 0 ? '—' : formatPrice(deliveryFee)}</span>
                 </div>
                 <div className="flex justify-between py-3 text-base md:text-lg font-bold text-[var(--dark)]">
                   <span>Total</span>
