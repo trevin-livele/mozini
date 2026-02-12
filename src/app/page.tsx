@@ -3,61 +3,13 @@
 import Link from 'next/link';
 import { type Product, formatPrice, getCategoryIcon, getCategoryImage } from '@/lib/data';
 import ProductCard from '@/components/ProductCard';
+import HeroCarousel from '@/components/HeroCarousel';
 import { useState, useEffect, useRef } from 'react';
 import { getProducts, getCategories } from '@/lib/actions/products';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
-
-/* ─── Hero Carousel Slides (main banner) ─── */
-const heroSlides = [
-  {
-    image: '/images/curren/image00001.jpeg',
-    label: '🎁 Welcome',
-    title: 'Mozini Watches & Gifts',
-    desc: 'Where the perfect gift exists — Watches, Jewelry, Flowers & Personalized Gifts for every occasion',
-    cta: 'Shop Now',
-    href: '/shop',
-    overlay: 'from-black/70 via-black/40 to-transparent',
-  },
-  {
-    image: '/images/hannah-martin/image00001.jpeg',
-    label: 'For Her 💕',
-    title: 'Hannah Martin Collection',
-    desc: 'Elegant ladies watches — the perfect Valentine\'s gift she\'ll treasure',
-    cta: 'Shop Ladies Watches',
-    href: '/shop?category=Hannah Martin',
-    overlay: 'from-black/70 via-black/40 to-transparent',
-  },
-  {
-    image: '/images/necklaces/image00001.jpeg',
-    label: 'Jewelry ✨',
-    title: 'Necklaces & Jewelry',
-    desc: 'Beautiful necklaces, bracelets & accessories to express your love',
-    cta: 'Shop Jewelry',
-    href: '/shop?category=Jewelry',
-    overlay: 'from-black/70 via-black/40 to-transparent',
-  },
-  {
-    image: '/images/gift-cards/image00001.jpeg',
-    label: 'Gift Ideas 🎁',
-    title: 'His & Hers Gift Sets',
-    desc: 'Curated Valentine\'s gift cards, personalized boxes & flower bouquets',
-    cta: 'Shop Gifts',
-    href: '/shop?category=Gifts',
-    overlay: 'from-black/70 via-black/40 to-transparent',
-  },
-  {
-    image: '/images/naviforce/image00001.jpeg',
-    label: 'New Arrivals 🔥',
-    title: 'Naviforce Watches',
-    desc: 'Rugged, stylish & affordable — the watch brand everyone\'s talking about',
-    cta: 'Shop Naviforce',
-    href: '/shop?category=Naviforce',
-    overlay: 'from-black/70 via-black/40 to-transparent',
-  },
-];
 
 /* ─── Trending Now Product Carousel ─── */
 function TrendingCarousel({ products }: { products: Product[] }) {
@@ -127,7 +79,6 @@ function TrendingCarousel({ products }: { products: Product[] }) {
 
 /* ─── Main Page ─── */
 export default function Home() {
-  const [heroIndex, setHeroIndex] = useState(0);
   const [activeTab, setActiveTab] = useState('featured');
   const [products, setProducts] = useState<Product[]>([]);
   const [carouselProducts, setCarouselProducts] = useState<Product[]>([]);
@@ -137,12 +88,6 @@ export default function Home() {
   const productsRef = useRef<HTMLDivElement>(null);
   const [giftIndex, setGiftIndex] = useState(0);
   const giftSliderRef = useRef<HTMLDivElement>(null);
-
-  // Hero auto-advance
-  useEffect(() => {
-    const timer = setInterval(() => setHeroIndex((i) => (i + 1) % heroSlides.length), 5000);
-    return () => clearInterval(timer);
-  }, []);
 
   // Fetch carousel products on mount
   useEffect(() => {
@@ -209,78 +154,12 @@ export default function Home() {
     return () => { clearInterval(giftTimer); clearInterval(heartInterval); ctx.revert(); };
   }, [activeTab, giftSlides.length]);
 
-  const nextHero = () => setHeroIndex((i) => (i + 1) % heroSlides.length);
-  const prevHero = () => setHeroIndex((i) => (i - 1 + heroSlides.length) % heroSlides.length);
-
   return (
     <>
       <div className="floating-hearts" />
 
-      {/* ═══════ HERO CAROUSEL — Full-width image slides ═══════ */}
-      <section className="relative h-[420px] md:h-[500px] lg:h-[580px] overflow-hidden">
-        {heroSlides.map((slide, i) => (
-          <div
-            key={i}
-            className={`absolute inset-0 transition-opacity duration-700 ${i === heroIndex ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
-          >
-            {/* Background image */}
-            <img
-              src={slide.image}
-              alt={slide.title}
-              className="absolute inset-0 w-full h-full object-cover"
-            />
-            {/* Overlay gradient */}
-            <div className={`absolute inset-0 bg-gradient-to-r ${slide.overlay}`} />
-
-            {/* Content */}
-            <div className="relative z-10 h-full flex items-center">
-              <div className="max-w-6xl mx-auto px-5 md:px-8 w-full">
-                <div className="max-w-lg">
-                  <span className="inline-block bg-white/15 backdrop-blur-sm text-white text-xs md:text-sm font-semibold px-4 py-1.5 rounded-full mb-4 tracking-wide">
-                    {slide.label}
-                  </span>
-                  <h1 className="font-serif text-3xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-4 drop-shadow-lg">
-                    {slide.title}
-                  </h1>
-                  <p className="text-sm md:text-base text-white/80 mb-6 md:mb-8 leading-relaxed max-w-md">
-                    {slide.desc}
-                  </p>
-                  <Link
-                    href={slide.href}
-                    className="inline-block bg-[var(--copper)] text-white px-7 md:px-9 py-3 md:py-3.5 rounded-lg text-sm md:text-base font-medium uppercase tracking-wider hover:bg-[var(--copper-dark)] hover:-translate-y-0.5 hover:shadow-xl transition-all"
-                  >
-                    {slide.cta}
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-
-        {/* Nav arrows */}
-        <button onClick={prevHero} className="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/40 transition-all">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 18l-6-6 6-6"/></svg>
-        </button>
-        <button onClick={nextHero} className="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/40 transition-all">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 18l6-6-6-6"/></svg>
-        </button>
-
-        {/* Dots */}
-        <div className="absolute bottom-5 md:bottom-7 left-1/2 -translate-x-1/2 flex gap-2.5 z-20">
-          {heroSlides.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setHeroIndex(i)}
-              className={`h-2.5 rounded-full transition-all ${i === heroIndex ? 'w-8 bg-white' : 'w-2.5 bg-white/40'}`}
-            />
-          ))}
-        </div>
-
-        {/* Slide counter */}
-        <div className="absolute top-5 right-5 md:top-7 md:right-8 z-20 bg-black/30 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-full">
-          {heroIndex + 1} / {heroSlides.length}
-        </div>
-      </section>
+      {/* ═══════ HERO CAROUSEL ═══════ */}
+      <HeroCarousel />
 
       {/* ═══════ TRENDING NOW — Product carousel ═══════ */}
       <TrendingCarousel products={carouselProducts} />
@@ -288,7 +167,7 @@ export default function Home() {
       {/* Categories */}
       <section ref={categoriesRef} className="pt-16 md:pt-20 pb-12 md:pb-16 text-center">
         <div className="max-w-6xl mx-auto px-4 md:px-5">
-          <h2 className="font-serif text-2xl md:text-3xl font-semibold text-[var(--dark)] mb-2 relative">Perfect Valentine&apos;s Gifts 💝</h2>
+          <h2 className="font-serif text-2xl md:text-3xl font-semibold text-[var(--dark)] mb-2 relative">Shop With Us</h2>
           <p className="text-sm text-[var(--text-light)] mb-8 md:mb-10">Show your love with our curated collection</p>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-5">
             {categories.map((cat) => (
@@ -316,11 +195,11 @@ export default function Home() {
       <section className="promo-banners pb-12 md:pb-16">
         <div className="max-w-6xl mx-auto px-4 md:px-5">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-            <Link href="/shop?category=Gents Watches" className="promo-card relative rounded-lg overflow-hidden h-[160px] md:h-[200px] cursor-pointer transition-transform hover:scale-[1.015] bg-gradient-to-br from-[#3d3225] to-[#2a2118] text-white">
+            <Link href="/shop?category=Gents Watches" className="promo-card relative rounded-lg overflow-hidden h-[160px] md:h-[200px] cursor-pointer transition-transform hover:scale-[1.015] bg-gradient-to-br from-[var(--copper)] to-[var(--copper-dark)] text-white">
               <div className="relative z-10 p-6 md:p-8 h-full flex flex-col justify-center">
                 <div className="text-[10px] md:text-[11px] uppercase tracking-[2px] mb-2 md:mb-2.5 opacity-70">For Him 💖</div>
                 <h3 className="font-serif text-xl md:text-2xl font-semibold leading-tight mb-3 md:mb-4">Premium Gents Watches</h3>
-                <span className="inline-block text-[11px] md:text-xs font-medium uppercase tracking-wider px-4 md:px-5 py-1.5 md:py-2 border border-current rounded w-fit hover:bg-white hover:text-[var(--dark)] transition-colors">Shop Now</span>
+                <span className="inline-block text-[11px] md:text-xs font-medium uppercase tracking-wider px-4 md:px-5 py-1.5 md:py-2 border border-current rounded w-fit hover:bg-white hover:text-[var(--copper)] transition-colors">Shop Now</span>
               </div>
               {getCategoryImage('Gents Watches') ? (
                 <img src={getCategoryImage('Gents Watches')} alt="Gents Watches" className="absolute right-0 top-0 h-full w-[45%] object-cover opacity-30" />
@@ -328,11 +207,11 @@ export default function Home() {
                 <div className="absolute right-3 md:right-5 top-1/2 -translate-y-1/2 text-[60px] md:text-[80px] opacity-15">⌚</div>
               )}
             </Link>
-            <Link href="/shop?category=Hannah Martin" className="promo-card relative rounded-lg overflow-hidden h-[160px] md:h-[200px] cursor-pointer transition-transform hover:scale-[1.015] bg-gradient-to-br from-[#f5e6d8] to-[#ecddd0] text-[var(--dark)]">
+            <Link href="/shop?category=Hannah Martin" className="promo-card relative rounded-lg overflow-hidden h-[160px] md:h-[200px] cursor-pointer transition-transform hover:scale-[1.015] bg-gradient-to-br from-[var(--copper-pale)] to-[var(--bg-soft)] text-[var(--dark)]">
               <div className="relative z-10 p-6 md:p-8 h-full flex flex-col justify-center">
                 <div className="text-[10px] md:text-[11px] uppercase tracking-[2px] mb-2 md:mb-2.5 opacity-70">For Her 💕</div>
                 <h3 className="font-serif text-xl md:text-2xl font-semibold leading-tight mb-3 md:mb-4">Hannah Martin Collection</h3>
-                <span className="inline-block text-[11px] md:text-xs font-medium uppercase tracking-wider px-4 md:px-5 py-1.5 md:py-2 border border-current rounded w-fit hover:bg-[var(--dark)] hover:text-white hover:border-[var(--dark)] transition-colors">Shop Now</span>
+                <span className="inline-block text-[11px] md:text-xs font-medium uppercase tracking-wider px-4 md:px-5 py-1.5 md:py-2 border border-current rounded w-fit hover:bg-[var(--copper)] hover:text-white hover:border-[var(--copper)] transition-colors">Shop Now</span>
               </div>
               {getCategoryImage('Hannah Martin') ? (
                 <img src={getCategoryImage('Hannah Martin')} alt="Hannah Martin" className="absolute right-0 top-0 h-full w-[45%] object-cover opacity-30" />
@@ -369,10 +248,10 @@ export default function Home() {
       </section>
 
       {/* CTA Banner with Gift Slider */}
-      <section className="relative bg-gradient-to-br from-[#2a2118] via-[#3d3225] to-[#4a3d30] overflow-hidden">
+      <section className="relative bg-gradient-to-br from-[var(--copper-dark)] via-[var(--copper)] to-[var(--copper-light)] overflow-hidden">
         <div className="flex flex-col md:flex-row">
           {/* Gift slider — full width on mobile, half on desktop */}
-          <div className="w-full md:w-1/2 h-[260px] md:h-[380px] lg:h-[420px] bg-gradient-to-br from-[#c9a882] to-[#b8956e] flex items-center justify-center overflow-hidden relative">
+          <div className="w-full md:w-1/2 h-[260px] md:h-[380px] lg:h-[420px] bg-gradient-to-br from-[var(--copper-light)] to-[var(--copper)] flex items-center justify-center overflow-hidden relative">
             <div ref={giftSliderRef} className="relative w-full h-full">
               {giftSlides.map((gift, i) => (
                 <div key={i} className={`absolute inset-0 flex flex-col items-center justify-center transition-all duration-700 ${i === giftIndex ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}>
@@ -400,7 +279,7 @@ export default function Home() {
               <div className="font-serif text-xs md:text-sm tracking-[2px] md:tracking-[3px] uppercase text-[#FF6B6B] mb-2 md:mb-3 italic font-semibold">Valentine&apos;s Day Special 💕</div>
               <h2 className="font-serif text-2xl md:text-3xl lg:text-4xl font-semibold leading-tight mb-2.5 md:mb-3.5">Celebrate Love with Perfect Gifts</h2>
               <p className="text-xs md:text-sm text-white/70 mb-5 md:mb-7">Watches · Jewelry · Flowers · Personalized Gifts</p>
-              <Link href="/shop" className="inline-block bg-[var(--copper)] text-white px-6 md:px-8 py-2.5 md:py-3 rounded text-xs md:text-sm font-medium uppercase tracking-wider border-2 border-[var(--copper)] hover:bg-[var(--copper-dark)] hover:border-[var(--copper-dark)] transition-all">Shop Now</Link>
+              <Link href="/shop" className="inline-block bg-white text-[var(--copper)] px-6 md:px-8 py-2.5 md:py-3 rounded text-xs md:text-sm font-medium uppercase tracking-wider border-2 border-white hover:bg-[var(--copper-pale)] hover:text-[var(--copper-dark)] transition-all">Shop Now</Link>
             </div>
           </div>
         </div>
