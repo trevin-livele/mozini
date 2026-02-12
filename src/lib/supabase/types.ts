@@ -297,6 +297,35 @@ export type Database = {
           }
         ];
       };
+      delivery_zones: {
+        Row: {
+          id: number;
+          zone_name: string;
+          zone_label: string;
+          area_name: string;
+          fee: number;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: number;
+          zone_name: string;
+          zone_label: string;
+          area_name: string;
+          fee: number;
+          is_active?: boolean;
+        };
+        Update: {
+          id?: number;
+          zone_name?: string;
+          zone_label?: string;
+          area_name?: string;
+          fee?: number;
+          is_active?: boolean;
+        };
+        Relationships: [];
+      };
       site_settings: {
         Row: {
           key: string;
