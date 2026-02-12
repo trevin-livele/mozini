@@ -5,7 +5,8 @@ import { type Product, formatPrice, getCategoryIcon, getCategoryImage } from '@/
 import ProductCard from '@/components/ProductCard';
 import HeroCarousel from '@/components/HeroCarousel';
 import { useState, useEffect, useRef } from 'react';
-import { getProducts, getCategories } from '@/lib/actions/products';
+import { getProducts } from '@/lib/actions/products';
+import { getCategoryTree, getTopLevelCategoriesWithCounts, type CategoryTree } from '@/lib/actions/categories';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -66,7 +67,8 @@ function HighlightOfTheMonth() {
 export default function Home() {
   const [activeTab, setActiveTab] = useState('featured');
   const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<{ name: string; count: number }[]>([]);
+  const [categories, setCategories] = useState<{ id: number; name: string; slug: string; icon: string; image_url: string | null; count: number }[]>([]);
+  const [categoryTree, setCategoryTree] = useState<CategoryTree[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const categoriesRef = useRef<HTMLDivElement>(null);
   const productsRef = useRef<HTMLDivElement>(null);
@@ -75,8 +77,24 @@ export default function Home() {
 
   // Fetch categories on mount
   useEffect(() => {
-    getCategories().then(setCategories).catch(() => {});
+    getTopLevelCategoriesWithCounts().then(setCategories).catch(() => {});
+    getCategoryTree().then(setCategoryTree).catch(() => {});
   }, []);
+
+  // Build lookup maps from dynamic category tree
+  const catImageMap: Record<string, string> = {};
+  const catIconMap: Record<string, string> = {};
+  const walkTree = (nodes: CategoryTree[]) => {
+    for (const n of nodes) {
+      if (n.image_url) catImageMap[n.name] = n.image_url;
+      catIconMap[n.name] = n.icon;
+      walkTree(n.children);
+    }
+  };
+  walkTree(categoryTree);
+
+  const dynGetImage = (name: string) => catImageMap[name] || getCategoryImage(name);
+  const dynGetIcon = (name: string) => catIconMap[name] || getCategoryIcon(name);
 
   // Fetch products when tab changes
   useEffect(() => {
@@ -146,16 +164,16 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-4 md:px-5">
           <h2 className="font-serif text-2xl md:text-3xl font-semibold text-[var(--dark)] mb-2 relative">Shop With Us</h2>
           <p className="text-sm text-[var(--text-light)] mb-8 md:mb-10">Show your love with our curated collection</p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
             {categories.map((cat) => (
-              <Link key={cat.name} href={`/shop?category=${encodeURIComponent(cat.name)}`} className="category-item group">
+              <Link key={cat.id} href={`/shop?category=${encodeURIComponent(cat.name)}`} className="category-item group">
                 <div className="bg-white rounded-2xl border border-[var(--border)] p-4 pb-5 transition-all hover:shadow-lg hover:border-[var(--copper)]/30 hover:-translate-y-1">
                   <div className="relative mx-auto mb-4 -mt-8">
                     <div className="w-[90px] h-[90px] md:w-[110px] md:h-[110px] rounded-2xl overflow-hidden mx-auto shadow-md border-2 border-white group-hover:shadow-xl group-hover:scale-105 transition-all duration-300 bg-[var(--bg-soft)]">
-                      {getCategoryImage(cat.name) ? (
-                        <img src={getCategoryImage(cat.name)} alt={cat.name} className="w-full h-full object-cover" />
+                      {(cat.image_url || dynGetImage(cat.name)) ? (
+                        <img src={cat.image_url || dynGetImage(cat.name)!} alt={cat.name} className="w-full h-full object-cover" />
                       ) : (
-                        <span className="w-full h-full flex items-center justify-center text-[36px] md:text-[42px]">{getCategoryIcon(cat.name)}</span>
+                        <span className="w-full h-full flex items-center justify-center text-[36px] md:text-[42px]">{cat.icon || dynGetIcon(cat.name)}</span>
                       )}
                     </div>
                   </div>
@@ -178,8 +196,8 @@ export default function Home() {
                 <h3 className="font-serif text-xl md:text-2xl font-semibold leading-tight mb-3 md:mb-4">Premium Gents Watches</h3>
                 <span className="inline-block text-[11px] md:text-xs font-medium uppercase tracking-wider px-4 md:px-5 py-1.5 md:py-2 border border-current rounded w-fit hover:bg-white hover:text-[var(--copper)] transition-colors">Shop Now</span>
               </div>
-              {getCategoryImage('Gents Watches') ? (
-                <img src={getCategoryImage('Gents Watches')} alt="Gents Watches" className="absolute right-0 top-0 h-full w-[45%] object-cover opacity-30" />
+              {dynGetImage('Gents Watches') ? (
+                <img src={dynGetImage('Gents Watches')} alt="Gents Watches" className="absolute right-0 top-0 h-full w-[45%] object-cover opacity-30" />
               ) : (
                 <div className="absolute right-3 md:right-5 top-1/2 -translate-y-1/2 text-[60px] md:text-[80px] opacity-15">⌚</div>
               )}
@@ -190,8 +208,8 @@ export default function Home() {
                 <h3 className="font-serif text-xl md:text-2xl font-semibold leading-tight mb-3 md:mb-4">Hannah Martin Collection</h3>
                 <span className="inline-block text-[11px] md:text-xs font-medium uppercase tracking-wider px-4 md:px-5 py-1.5 md:py-2 border border-current rounded w-fit hover:bg-[var(--copper)] hover:text-white hover:border-[var(--copper)] transition-colors">Shop Now</span>
               </div>
-              {getCategoryImage('Hannah Martin') ? (
-                <img src={getCategoryImage('Hannah Martin')} alt="Hannah Martin" className="absolute right-0 top-0 h-full w-[45%] object-cover opacity-30" />
+              {dynGetImage('Hannah Martin') ? (
+                <img src={dynGetImage('Hannah Martin')} alt="Hannah Martin" className="absolute right-0 top-0 h-full w-[45%] object-cover opacity-30" />
               ) : (
                 <div className="absolute right-3 md:right-5 top-1/2 -translate-y-1/2 text-[60px] md:text-[80px] opacity-15">⌚</div>
               )}

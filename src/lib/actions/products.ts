@@ -2,23 +2,9 @@
 
 import { createClient } from '@/lib/supabase/server';
 import { toProductCompat, type ProductCompat } from '@/lib/supabase/types';
-import { CATEGORIES } from '@/lib/data';
+import { resolveCategoryNames } from './categories';
 
 const PAGE_SIZE = 12;
-
-/**
- * Resolve a parent category to all its subcategory names.
- * e.g. "Gifts" → ["Gifts","Flower Bouquet","Watch Gift Sets",…]
- * e.g. "Ladies Watches" → ["Ladies Watches","Hannah Martin"]
- * If the name is already a leaf category, returns just [name].
- */
-function resolveCategory(name: string): string[] {
-  const parent = CATEGORIES.find((c) => c.name === name);
-  if (parent?.subcategories) {
-    return [parent.name, ...parent.subcategories.map((s) => s.name)];
-  }
-  return [name];
-}
 
 export async function getProducts(options?: {
   category?: string;
@@ -37,7 +23,7 @@ export async function getProducts(options?: {
     .eq('is_active', true);
 
   if (category) {
-    const resolved = resolveCategory(category);
+    const resolved = await resolveCategoryNames(category);
     if (resolved.length === 1) {
       query = query.eq('category', resolved[0]);
     } else {

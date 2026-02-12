@@ -3,12 +3,13 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useStore } from '@/lib/store';
-import { formatPrice, CATEGORIES } from '@/lib/data';
+import { formatPrice, CATEGORIES as FALLBACK_CATEGORIES } from '@/lib/data';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { gsap } from 'gsap';
 import { useAuth } from '@/components/AuthProvider';
 import { signOut } from '@/lib/actions/auth';
+import { getCategoryTree, type CategoryTree } from '@/lib/actions/categories';
 
 export default function Header() {
   const cart = useStore((s) => s.cart);
@@ -28,21 +29,21 @@ export default function Header() {
   const bannerRef = useRef<HTMLDivElement>(null);
   const giftsRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
+  const [categoryTree, setCategoryTree] = useState<CategoryTree[]>([]);
 
   const cartCount = cart.reduce((sum, i) => sum + i.qty, 0);
   const cartTotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
 
-  // All gift-related categories for the dropdown
-  const giftCategories = CATEGORIES.flatMap((c) => {
-    const items: { name: string; href: string }[] = [];
-    items.push({ name: c.name, href: `/shop?category=${encodeURIComponent(c.name)}` });
-    if (c.subcategories) {
-      c.subcategories.forEach((sub) => {
-        items.push({ name: sub.name, href: `/shop?category=${encodeURIComponent(sub.name)}` });
-      });
-    }
-    return items;
-  });
+  // Fetch dynamic categories
+  useEffect(() => {
+    getCategoryTree().then(setCategoryTree).catch(() => {});
+  }, []);
+
+  // Build nav items from dynamic tree (fallback to hardcoded)
+  const navCategories = categoryTree.length > 0 ? categoryTree : FALLBACK_CATEGORIES.map((c) => ({
+    id: 0, name: c.name, slug: c.name, icon: c.icon, image_url: c.image || null, sort_order: 0,
+    children: c.subcategories?.map((s) => ({ id: 0, name: s.name, slug: s.name, icon: c.icon, image_url: s.image || null, sort_order: 0, children: [] })) || [],
+  }));
 
   useEffect(() => {
     setMounted(true);
@@ -171,7 +172,7 @@ export default function Header() {
               </button>
               {giftsOpen && (
                 <div className="absolute top-full left-0 mt-1 bg-white border border-[var(--border)] rounded-lg shadow-xl py-2 min-w-[220px] z-50 max-h-[400px] overflow-y-auto">
-                  {CATEGORIES.map((cat) => (
+                  {navCategories.map((cat) => (
                     <div key={cat.name}>
                       <Link
                         href={`/shop?category=${encodeURIComponent(cat.name)}`}
@@ -180,7 +181,7 @@ export default function Header() {
                       >
                         {cat.icon} {cat.name}
                       </Link>
-                      {cat.subcategories?.map((sub) => (
+                      {cat.children?.map((sub) => (
                         <Link
                           key={sub.name}
                           href={`/shop?category=${encodeURIComponent(sub.name)}`}
@@ -362,12 +363,12 @@ export default function Header() {
                 </button>
                 {mobileGiftsOpen && (
                   <div className="ml-2 border-l-2 border-[var(--border)]">
-                    {CATEGORIES.map((cat) => (
+                    {navCategories.map((cat) => (
                       <div key={cat.name}>
                         <Link href={`/shop?category=${encodeURIComponent(cat.name)}`} onClick={() => setMobileMenuOpen(false)} className="block px-4 py-2 text-sm font-medium text-[var(--dark)] hover:text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors">
                           {cat.icon} {cat.name}
                         </Link>
-                        {cat.subcategories?.map((sub) => (
+                        {cat.children?.map((sub) => (
                           <Link key={sub.name} href={`/shop?category=${encodeURIComponent(sub.name)}`} onClick={() => setMobileMenuOpen(false)} className="block px-8 py-1.5 text-xs text-[var(--text-light)] hover:text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors">
                             {sub.name}
                           </Link>

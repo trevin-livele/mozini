@@ -22,7 +22,8 @@ export interface Category {
 export const formatPrice = (n: number) => 'KES ' + n.toLocaleString();
 
 // ============================================
-// CATEGORIES — single source of truth
+// CATEGORIES — kept as fallback, dynamic data
+// comes from the categories table via server actions
 // ============================================
 export interface CategoryDef {
   name: string;
@@ -50,10 +51,7 @@ export const CATEGORIES: CategoryDef[] = [
       { name: 'Hannah Martin', image: '/images/hannah-martin/image00001.jpeg' },
     ],
   },
-  {
-    name: 'Kids Watches',
-    icon: '⌚',
-  },
+  { name: 'Kids Watches', icon: '⌚' },
   {
     name: 'Gifts',
     icon: '🎁',
@@ -61,39 +59,21 @@ export const CATEGORIES: CategoryDef[] = [
     subcategories: [
       { name: 'Flower Bouquet' },
       { name: 'Watch Gift Sets' },
-      { name: 'Hoodie' },
-      { name: 'Sweatshirts' },
-      { name: 'Engraved Keychain' },
-      { name: 'Personalized Mugs' },
       { name: 'Gift Cards', image: '/images/gift-cards/image00001.jpeg' },
-      { name: 'Personalized Box' },
     ],
   },
-  {
-    name: 'Jewelry',
-    icon: '💍',
-    image: '/images/necklaces/image00001.jpeg',
-  },
-  {
-    name: 'Drinks & Candy',
-    icon: '🍫',
-    subcategories: [
-      { name: 'Wine Stickers' },
-      { name: 'Wine with Personalized Wine Sticker' },
-      { name: 'Chocolate with Personalized Message' },
-    ],
-  },
+  { name: 'Jewelry', icon: '💍', image: '/images/necklaces/image00001.jpeg' },
+  { name: 'Drinks & Candy', icon: '🍫' },
 ];
 
-// Flat list of all category names (top-level + subcategories)
+// Flat list of all category names (top-level + subcategories) — fallback
 export const CATEGORY_NAMES: string[] = CATEGORIES.flatMap((c) =>
   c.subcategories ? [c.name, ...c.subcategories.map((s) => s.name)] : [c.name]
 );
 
-// Just the top-level names
 export const TOP_LEVEL_CATEGORIES: string[] = CATEGORIES.map((c) => c.name);
 
-// Icon lookup
+// Icon lookup from fallback
 const categoryIconMap: Record<string, string> = {};
 CATEGORIES.forEach((c) => {
   categoryIconMap[c.name] = c.icon;
@@ -106,7 +86,7 @@ export function getCategoryIcon(name: string): string {
   return categoryIconMap[name] || '🛍️';
 }
 
-// Image lookup
+// Image lookup from fallback
 const categoryImageMap: Record<string, string> = {};
 CATEGORIES.forEach((c) => {
   if (c.image) categoryImageMap[c.name] = c.image;

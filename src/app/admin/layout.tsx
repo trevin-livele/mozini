@@ -8,6 +8,7 @@ import { useAuth } from '@/components/AuthProvider';
 const NAV_ITEMS = [
   { href: '/admin', label: 'Dashboard', icon: '📊' },
   { href: '/admin/products', label: 'Products', icon: '📦' },
+  { href: '/admin/categories', label: 'Categories', icon: '📂' },
   { href: '/admin/orders', label: 'Orders', icon: '🛒' },
   { href: '/admin/users', label: 'Users', icon: '👥' },
   { href: '/admin/messages', label: 'Messages', icon: '💬' },

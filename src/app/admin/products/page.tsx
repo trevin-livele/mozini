@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { getAdminProducts, createProduct, updateProduct, deleteProduct } from '@/lib/actions/admin';
-import { formatPrice, CATEGORY_NAMES } from '@/lib/data';
+import { formatPrice } from '@/lib/data';
+import { getCategoryNames } from '@/lib/actions/categories';
 import type { Product } from '@/lib/supabase/types';
 
 const PAGE_SIZE = 10;
@@ -14,6 +15,7 @@ export default function AdminProducts() {
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<Product | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [categoryNames, setCategoryNames] = useState<string[]>([]);
 
   const totalPages = Math.ceil(total / PAGE_SIZE);
 
@@ -30,6 +32,7 @@ export default function AdminProducts() {
   };
 
   useEffect(() => { loadProducts(page); }, [page]);
+  useEffect(() => { getCategoryNames().then(setCategoryNames).catch(() => {}); }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -76,7 +79,7 @@ export default function AdminProducts() {
               <input name="brand" defaultValue={editing?.brand || 'Mozini'} placeholder="Brand" className="w-full border rounded px-3 py-2" />
               <select name="category" defaultValue={editing?.category} required className="w-full border rounded px-3 py-2">
                 <option value="">Select Category</option>
-                {CATEGORY_NAMES.map(c => <option key={c} value={c}>{c}</option>)}
+                {categoryNames.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
               <div className="grid grid-cols-2 gap-4">
                 <input name="price" type="number" defaultValue={editing?.price} placeholder="Price (KES)" required className="border rounded px-3 py-2" />

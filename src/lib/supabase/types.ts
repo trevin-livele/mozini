@@ -255,6 +255,48 @@ export type Database = {
           }
         ];
       };
+      categories: {
+        Row: {
+          id: number;
+          name: string;
+          slug: string;
+          parent_id: number | null;
+          icon: string;
+          image_url: string | null;
+          sort_order: number;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: number;
+          name: string;
+          slug: string;
+          parent_id?: number | null;
+          icon?: string;
+          image_url?: string | null;
+          sort_order?: number;
+          is_active?: boolean;
+        };
+        Update: {
+          id?: number;
+          name?: string;
+          slug?: string;
+          parent_id?: number | null;
+          icon?: string;
+          image_url?: string | null;
+          sort_order?: number;
+          is_active?: boolean;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'categories_parent_id_fkey';
+            columns: ['parent_id'];
+            referencedRelation: 'categories';
+            referencedColumns: ['id'];
+          }
+        ];
+      };
       site_settings: {
         Row: {
           key: string;
