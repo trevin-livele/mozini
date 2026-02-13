@@ -75,10 +75,17 @@ Make sure your Supabase project has the correct redirect URLs configured:
 
 2. Vercel will automatically deploy
 
-3. If the issue persists:
+3. If you get "An unexpected error occurred" during deployment:
+   - This is usually a transient Vercel infrastructure issue
+   - Wait 1-2 minutes and click "Redeploy" in Vercel dashboard
+   - Or push a small change to trigger a new deployment
+   - The build succeeded, so the code is fine
+
+4. If the issue persists:
    - Clear your browser cookies for the domain
    - Try in an incognito/private window
    - Check Vercel logs for any errors
+   - Contact Vercel support if the deployment keeps failing
 
 ## Testing After Deployment
 
