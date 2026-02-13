@@ -216,105 +216,106 @@ export default function AdminDeliveryZonesPage() {
       {/* Zone tables */}
       <div className="space-y-6 overflow-x-auto">
         {Array.from(grouped.entries()).map(([zoneName, areas]) => (
-        <div key={zoneName} className="mb-6">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-sm font-bold text-gray-800">{zoneName}</span>
-            <span className="text-xs text-gray-500">— {areas[0]?.zone_label}</span>
-            <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{areas.length} areas</span>
-          </div>
-          <div className="bg-white border border-gray-200 rounded-lg overflow-x-auto">
-            <table className="w-full text-sm min-w-[600px]">
-              <thead>
-                <tr className="bg-gray-50 text-left text-xs text-gray-500 uppercase">
-                  <th className="px-4 py-2.5">Area</th>
-                  <th className="px-4 py-2.5 w-28">Fee</th>
-                  <th className="px-4 py-2.5 w-16">Active</th>
-                  <th className="px-4 py-2.5 w-32 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {areas.map((z) => (
-                  <tr key={z.id} className={`border-t border-gray-100 ${!z.is_active ? 'opacity-50' : ''}`}>
-                    <td className="px-4 py-2.5">
-                      {editingId === z.id ? (
-                        <input
-                          value={editArea}
-                          onChange={(e) => setEditArea(e.target.value)}
-                          className="px-2 py-1 border border-gray-300 rounded text-sm w-full"
-                        />
-                      ) : (
-                        <span className="text-gray-800">{z.area_name}</span>
-                      )}
-                    </td>
-                    <td className="px-4 py-2.5">
-                      {editingId === z.id ? (
-                        <input
-                          type="number"
-                          min="0"
-                          value={editFee}
-                          onChange={(e) => setEditFee(e.target.value)}
-                          className="px-2 py-1 border border-gray-300 rounded text-sm w-20"
-                        />
-                      ) : (
-                        <span className="font-medium text-gray-700">{formatKES(z.fee)}</span>
-                      )}
-                    </td>
-                    <td className="px-4 py-2.5">
-                      <button
-                        onClick={() => handleToggle(z)}
-                        className={`w-8 h-5 rounded-full transition-colors relative ${z.is_active ? 'bg-green-500' : 'bg-gray-300'}`}
-                        aria-label={z.is_active ? 'Deactivate' : 'Activate'}
-                      >
-                        <span className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${z.is_active ? 'left-3.5' : 'left-0.5'}`} />
-                      </button>
-                    </td>
-                    <td className="px-4 py-2.5 text-right">
-                      {editingId === z.id ? (
-                        <div className="flex gap-1 justify-end">
-                          <button
-                            onClick={() => handleSaveEdit(z.id)}
-                            disabled={saving}
-                            className="px-2.5 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700 disabled:opacity-50"
-                          >
-                            Save
-                          </button>
-                          <button
-                            onClick={() => setEditingId(null)}
-                            className="px-2.5 py-1 bg-gray-200 text-gray-700 rounded text-xs hover:bg-gray-300"
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="flex gap-1 justify-end">
-                          <button
-                            onClick={() => { setEditingId(z.id); setEditFee(String(z.fee)); setEditArea(z.area_name); }}
-                            className="px-2.5 py-1 bg-blue-50 text-blue-700 rounded text-xs hover:bg-blue-100"
-                          >
-                            Edit
-                          </button>
-                          <button
-                            onClick={() => handleDelete(z.id, z.area_name)}
-                            className="px-2.5 py-1 bg-red-50 text-red-700 rounded text-xs hover:bg-red-100"
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      )}
-                    </td>
+          <div key={zoneName} className="mb-6">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-sm font-bold text-gray-800">{zoneName}</span>
+              <span className="text-xs text-gray-500">— {areas[0]?.zone_label}</span>
+              <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{areas.length} areas</span>
+            </div>
+            <div className="bg-white border border-gray-200 rounded-lg overflow-x-auto">
+              <table className="w-full text-sm min-w-[600px]">
+                <thead>
+                  <tr className="bg-gray-50 text-left text-xs text-gray-500 uppercase">
+                    <th className="px-4 py-2.5">Area</th>
+                    <th className="px-4 py-2.5 w-28">Fee</th>
+                    <th className="px-4 py-2.5 w-16">Active</th>
+                    <th className="px-4 py-2.5 w-32 text-right">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {areas.map((z) => (
+                    <tr key={z.id} className={`border-t border-gray-100 ${!z.is_active ? 'opacity-50' : ''}`}>
+                      <td className="px-4 py-2.5">
+                        {editingId === z.id ? (
+                          <input
+                            value={editArea}
+                            onChange={(e) => setEditArea(e.target.value)}
+                            className="px-2 py-1 border border-gray-300 rounded text-sm w-full"
+                          />
+                        ) : (
+                          <span className="text-gray-800">{z.area_name}</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-2.5">
+                        {editingId === z.id ? (
+                          <input
+                            type="number"
+                            min="0"
+                            value={editFee}
+                            onChange={(e) => setEditFee(e.target.value)}
+                            className="px-2 py-1 border border-gray-300 rounded text-sm w-20"
+                          />
+                        ) : (
+                          <span className="font-medium text-gray-700">{formatKES(z.fee)}</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-2.5">
+                        <button
+                          onClick={() => handleToggle(z)}
+                          className={`w-8 h-5 rounded-full transition-colors relative ${z.is_active ? 'bg-green-500' : 'bg-gray-300'}`}
+                          aria-label={z.is_active ? 'Deactivate' : 'Activate'}
+                        >
+                          <span className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${z.is_active ? 'left-3.5' : 'left-0.5'}`} />
+                        </button>
+                      </td>
+                      <td className="px-4 py-2.5 text-right">
+                        {editingId === z.id ? (
+                          <div className="flex gap-1 justify-end">
+                            <button
+                              onClick={() => handleSaveEdit(z.id)}
+                              disabled={saving}
+                              className="px-2.5 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700 disabled:opacity-50"
+                            >
+                              Save
+                            </button>
+                            <button
+                              onClick={() => setEditingId(null)}
+                              className="px-2.5 py-1 bg-gray-200 text-gray-700 rounded text-xs hover:bg-gray-300"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="flex gap-1 justify-end">
+                            <button
+                              onClick={() => { setEditingId(z.id); setEditFee(String(z.fee)); setEditArea(z.area_name); }}
+                              className="px-2.5 py-1 bg-blue-50 text-blue-700 rounded text-xs hover:bg-blue-100"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDelete(z.id, z.area_name)}
+                              className="px-2.5 py-1 bg-red-50 text-red-700 rounded text-xs hover:bg-red-100"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
 
-      {grouped.size === 0 && (
-        <div className="text-center py-10 text-gray-400">
-          {filter ? 'No areas match your search.' : 'No delivery zones configured yet. Click "+ Add Area" to get started.'}
-        </div>
-      )}
+        {grouped.size === 0 && (
+          <div className="text-center py-10 text-gray-400">
+            {filter ? 'No areas match your search.' : 'No delivery zones configured yet. Click "+ Add Area" to get started.'}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

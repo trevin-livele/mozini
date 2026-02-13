@@ -8,6 +8,7 @@ The redirect loop issue has been fixed by:
    - Properly handles Supabase auth session refresh
    - Protects admin routes
    - Prevents redirect loops
+   - Note: Next.js 16 shows a deprecation warning about middleware, but it still works fine
 
 2. **Updated Auth Flow**
    - Changed from `window.location.href` to `router.push()` + `router.refresh()`
@@ -16,6 +17,9 @@ The redirect loop issue has been fixed by:
 3. **Improved Sign-Out**
    - Now uses Next.js router instead of window.location
    - Properly clears session before navigation
+
+4. **Fixed Syntax Error**
+   - Fixed JSX syntax error in delivery-zones admin page
 
 ## Required Environment Variables in Vercel
 
