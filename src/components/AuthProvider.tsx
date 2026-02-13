@@ -45,8 +45,8 @@ export function AuthProvider({ children, initialUser }: { children: ReactNode; i
     // Check current session immediately (handles page refresh / SSR mismatch)
     supabase.auth.getSession().then(({ data: { session } }) => {
       const currentUser = session?.user ?? null;
-      if (currentUser && !user) {
-        setUser(currentUser);
+      setUser(currentUser);
+      if (currentUser) {
         syncCart();
         syncWishlist();
         checkAdminRole(currentUser.id);
@@ -54,7 +54,7 @@ export function AuthProvider({ children, initialUser }: { children: ReactNode; i
       setLoading(false);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       const newUser = session?.user ?? null;
       setUser(newUser);
       setLoading(false);

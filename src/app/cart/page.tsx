@@ -175,10 +175,10 @@ export default function CartPage() {
                 <span>Total</span>
                 <span className="text-[var(--copper)]">{formatPrice(total)}</span>
               </div>
-              <Link href="/checkout" className="block w-full bg-[var(--copper)] text-white text-center py-3 rounded text-sm font-medium uppercase tracking-wider hover:bg-[var(--copper-dark)] transition-colors mt-4">
+              <Link href="/checkout" className="block w-full bg-[var(--copper)] text-white text-center py-3 rounded text-sm font-medium uppercase tracking-wider hover:bg-[var(--copper-dark)] transition-colors mt-4 min-h-[44px] flex items-center justify-center">
                 Proceed to Checkout
               </Link>
-              <Link href="/shop" className="block w-full border-2 border-[var(--copper)] text-[var(--copper)] text-center py-3 rounded text-sm font-medium uppercase tracking-wider hover:bg-[var(--copper)] hover:text-white transition-colors mt-2.5">
+              <Link href="/shop" className="block w-full border-2 border-[var(--copper)] text-[var(--copper)] text-center py-3 rounded text-sm font-medium uppercase tracking-wider hover:bg-[var(--copper)] hover:text-white transition-colors mt-2.5 min-h-[44px] flex items-center justify-center">
                 Continue Shopping
               </Link>
             </div>

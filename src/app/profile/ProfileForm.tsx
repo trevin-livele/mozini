@@ -1,12 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { updateProfile, signOut } from '@/lib/actions/auth';
 import type { Profile } from '@/lib/supabase/types';
 
 export default function ProfileForm({ profile }: { profile: Profile }) {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -19,6 +21,12 @@ export default function ProfileForm({ profile }: { profile: Profile }) {
     if (result?.error) setMessage(`Error: ${result.error}`);
     else setMessage('Profile updated!');
     setLoading(false);
+  }
+
+  async function handleSignOut() {
+    await signOut();
+    router.push('/');
+    router.refresh();
   }
 
   return (
@@ -58,7 +66,7 @@ export default function ProfileForm({ profile }: { profile: Profile }) {
         <button type="submit" disabled={loading} className="flex-1 bg-[var(--copper)] text-white py-3 rounded text-sm font-medium uppercase tracking-wider hover:bg-[var(--copper-dark)] transition-colors disabled:opacity-50">
           {loading ? 'Saving...' : 'Save Changes'}
         </button>
-        <button type="button" onClick={() => signOut()} className="px-6 py-3 rounded text-sm font-medium uppercase tracking-wider border-2 border-[var(--border)] text-[var(--text-light)] hover:border-[var(--copper)] hover:text-[var(--copper)] transition-colors">
+        <button type="button" onClick={handleSignOut} className="px-6 py-3 rounded text-sm font-medium uppercase tracking-wider border-2 border-[var(--border)] text-[var(--text-light)] hover:border-[var(--copper)] hover:text-[var(--copper)] transition-colors">
           Sign Out
         </button>
       </div>

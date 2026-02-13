@@ -214,15 +214,16 @@ export default function AdminDeliveryZonesPage() {
       <p className="text-xs text-gray-500 mb-4">{zones.length} areas across {new Set(zones.map((z) => z.zone_name)).size} zones</p>
 
       {/* Zone tables */}
-      {Array.from(grouped.entries()).map(([zoneName, areas]) => (
+      <div className="space-y-6 overflow-x-auto">
+        {Array.from(grouped.entries()).map(([zoneName, areas]) => (
         <div key={zoneName} className="mb-6">
           <div className="flex items-center gap-2 mb-2">
             <span className="text-sm font-bold text-gray-800">{zoneName}</span>
             <span className="text-xs text-gray-500">— {areas[0]?.zone_label}</span>
             <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{areas.length} areas</span>
           </div>
-          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-            <table className="w-full text-sm">
+          <div className="bg-white border border-gray-200 rounded-lg overflow-x-auto">
+            <table className="w-full text-sm min-w-[600px]">
               <thead>
                 <tr className="bg-gray-50 text-left text-xs text-gray-500 uppercase">
                   <th className="px-4 py-2.5">Area</th>

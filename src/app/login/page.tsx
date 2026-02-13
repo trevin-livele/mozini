@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, Suspense } from 'react';
 import { signIn } from '@/lib/actions/auth';
+import { createClient } from '@/lib/supabase/client';
 
 function LoginForm() {
   const searchParams = useSearchParams();
@@ -25,9 +26,15 @@ function LoginForm() {
       setError(result.error);
       setLoading(false);
     } else if (result?.success) {
-      // Refresh server components so AuthProvider picks up the new session
-      router.refresh();
-      router.push(result.redirectTo || '/');
+      // Wait for the session to be fully established
+      const supabase = createClient();
+      await supabase.auth.getSession();
+      
+      // Use router.push with a small delay to ensure session is set
+      setTimeout(() => {
+        router.push(result.redirectTo || '/');
+        router.refresh();
+      }, 100);
     }
   }
 

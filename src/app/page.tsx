@@ -33,13 +33,13 @@ function HighlightOfTheMonth() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
                   href="/shop"
-                  className="inline-block bg-[var(--copper)] text-white px-8 py-3.5 rounded-lg text-sm font-semibold uppercase tracking-wider hover:bg-[var(--copper-dark)] transition-all text-center"
+                  className="inline-block bg-[var(--copper)] text-white px-8 py-3.5 rounded-lg text-sm font-semibold uppercase tracking-wider hover:bg-[var(--copper-dark)] transition-all text-center min-h-[44px] flex items-center justify-center"
                 >
                   Shop Now
                 </Link>
                 <Link
                   href="/faqs"
-                  className="inline-block bg-white text-[var(--copper)] border-2 border-[var(--copper)] px-8 py-3.5 rounded-lg text-sm font-semibold uppercase tracking-wider hover:bg-[var(--copper-pale)] transition-all text-center"
+                  className="inline-block bg-white text-[var(--copper)] border-2 border-[var(--copper)] px-8 py-3.5 rounded-lg text-sm font-semibold uppercase tracking-wider hover:bg-[var(--copper-pale)] transition-all text-center min-h-[44px] flex items-center justify-center"
                 >
                   Learn More
                 </Link>
@@ -274,7 +274,7 @@ export default function Home() {
               <div className="font-serif text-xs md:text-sm tracking-[2px] md:tracking-[3px] uppercase text-[#FF6B6B] mb-2 md:mb-3 italic font-semibold">Valentine&apos;s Day Special 💕</div>
               <h2 className="font-serif text-2xl md:text-3xl lg:text-4xl font-semibold leading-tight mb-2.5 md:mb-3.5">Celebrate Love with Perfect Gifts</h2>
               <p className="text-xs md:text-sm text-white/70 mb-5 md:mb-7">Watches · Jewelry · Flowers · Personalized Gifts</p>
-              <Link href="/shop" className="inline-block bg-white text-[var(--copper)] px-6 md:px-8 py-2.5 md:py-3 rounded text-xs md:text-sm font-medium uppercase tracking-wider border-2 border-white hover:bg-[var(--copper-pale)] hover:text-[var(--copper-dark)] transition-all">Shop Now</Link>
+              <Link href="/shop" className="inline-block bg-white text-[var(--copper)] px-6 md:px-8 py-2.5 md:py-3 rounded text-xs md:text-sm font-medium uppercase tracking-wider border-2 border-white hover:bg-[var(--copper-pale)] hover:text-[var(--copper-dark)] transition-all min-h-[44px] flex items-center justify-center">Shop Now</Link>
             </div>
           </div>
         </div>

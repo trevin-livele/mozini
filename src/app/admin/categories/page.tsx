@@ -166,8 +166,8 @@ export default function AdminCategoriesPage() {
         </div>
       )}
 
-      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="bg-white border border-gray-200 rounded-lg overflow-x-auto">
+        <table className="w-full text-sm min-w-[700px]">
           <thead>
             <tr className="bg-gray-50 text-left text-xs text-gray-500 uppercase">
               <th className="px-4 py-2.5">Category</th>

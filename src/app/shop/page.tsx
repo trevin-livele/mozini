@@ -24,6 +24,7 @@ function ShopContent() {
   const [searchText, setSearchText] = useState(searchParam || '');
   const [sortBy, setSortBy] = useState('default');
   const [page, setPage] = useState(1);
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
   const PAGE_SIZE = 12;
 
   useEffect(() => {
@@ -75,50 +76,63 @@ function ShopContent() {
   const totalPages = Math.ceil(total / PAGE_SIZE);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[250px_1fr] gap-10">
+    <div className="grid grid-cols-1 lg:grid-cols-[250px_1fr] gap-6 lg:gap-10">
+      {/* Mobile Filters Toggle */}
+      <div className="lg:hidden mb-4">
+        <button
+          onClick={() => setShowMobileFilters(!showMobileFilters)}
+          className="w-full flex items-center justify-between px-4 py-3 bg-white border border-[var(--border)] rounded-lg text-sm font-medium text-[var(--dark)] hover:border-[var(--copper)] transition-colors"
+        >
+          <span>🔍 Filters & Search</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={`transition-transform ${showMobileFilters ? 'rotate-180' : ''}`}><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+      </div>
+
       {/* Sidebar */}
-      <aside className="hidden lg:block">
-        <div className="mb-8">
-          <h3 className="text-[15px] font-semibold text-[var(--dark)] mb-4 pb-2.5 border-b-2 border-[var(--copper)]">Search</h3>
+      <aside className={`${showMobileFilters ? 'block' : 'hidden'} lg:block`}>
+        <div className="mb-6 lg:mb-8">
+          <h3 className="text-sm lg:text-[15px] font-semibold text-[var(--dark)] mb-3 lg:mb-4 pb-2 lg:pb-2.5 border-b-2 border-[var(--copper)]">Search</h3>
           <input
             type="text"
             placeholder="Search products..."
             value={searchText}
             onChange={(e) => { setSearchText(e.target.value); setPage(1); }}
-            className="w-full px-3 py-2 border border-[var(--border)] rounded text-sm focus:border-[var(--copper)] focus:outline-none transition-colors"
+            className="w-full px-3 py-2.5 lg:py-2 border border-[var(--border)] rounded text-sm focus:border-[var(--copper)] focus:outline-none transition-colors"
           />
         </div>
-        <div className="mb-8">
-          <h3 className="text-[15px] font-semibold text-[var(--dark)] mb-4 pb-2.5 border-b-2 border-[var(--copper)]">Categories</h3>
-          {categories.map((cat) => (
-            <label key={cat.name} className="flex items-center gap-2.5 py-1.5 text-sm cursor-pointer hover:text-[var(--copper)] transition-colors">
-              <input
-                type="checkbox"
-                checked={selectedCategories.includes(cat.name)}
-                onChange={() => toggleCategory(cat.name)}
-                className="w-4 h-4 accent-[var(--copper)]"
-              />
-              {cat.name} ({cat.count})
-            </label>
-          ))}
+        <div className="mb-6 lg:mb-8">
+          <h3 className="text-sm lg:text-[15px] font-semibold text-[var(--dark)] mb-3 lg:mb-4 pb-2 lg:pb-2.5 border-b-2 border-[var(--copper)]">Categories</h3>
+          <div className="max-h-[200px] lg:max-h-none overflow-y-auto">
+            {categories.map((cat) => (
+              <label key={cat.name} className="flex items-center gap-2.5 py-2 lg:py-1.5 text-sm cursor-pointer hover:text-[var(--copper)] transition-colors min-h-[44px] lg:min-h-0">
+                <input
+                  type="checkbox"
+                  checked={selectedCategories.includes(cat.name)}
+                  onChange={() => toggleCategory(cat.name)}
+                  className="w-5 h-5 lg:w-4 lg:h-4 accent-[var(--copper)] flex-shrink-0"
+                />
+                <span className="flex-1">{cat.name} ({cat.count})</span>
+              </label>
+            ))}
+          </div>
         </div>
-        <div className="mb-8">
-          <h3 className="text-[15px] font-semibold text-[var(--dark)] mb-4 pb-2.5 border-b-2 border-[var(--copper)]">Price Range (KES)</h3>
-          <div className="flex gap-2.5 items-center">
-            <input type="number" placeholder="Min" value={priceMin} onChange={(e) => { setPriceMin(e.target.value); setPage(1); }} className="w-full px-3 py-2 border border-[var(--border)] rounded text-sm" />
+        <div className="mb-6 lg:mb-8">
+          <h3 className="text-sm lg:text-[15px] font-semibold text-[var(--dark)] mb-3 lg:mb-4 pb-2 lg:pb-2.5 border-b-2 border-[var(--copper)]">Price Range (KES)</h3>
+          <div className="flex gap-2 lg:gap-2.5 items-center">
+            <input type="number" placeholder="Min" value={priceMin} onChange={(e) => { setPriceMin(e.target.value); setPage(1); }} className="w-full px-3 py-2.5 lg:py-2 border border-[var(--border)] rounded text-sm" />
             <span className="text-[var(--text-light)]">—</span>
-            <input type="number" placeholder="Max" value={priceMax} onChange={(e) => { setPriceMax(e.target.value); setPage(1); }} className="w-full px-3 py-2 border border-[var(--border)] rounded text-sm" />
+            <input type="number" placeholder="Max" value={priceMax} onChange={(e) => { setPriceMax(e.target.value); setPage(1); }} className="w-full px-3 py-2.5 lg:py-2 border border-[var(--border)] rounded text-sm" />
           </div>
         </div>
       </aside>
 
       {/* Products */}
       <div>
-        <div className="flex justify-between items-center mb-6 pb-4 border-b border-[var(--border)]">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6 pb-4 border-b border-[var(--border)]">
           <div className="text-sm text-[var(--text-light)]">
             {loading ? 'Loading...' : `Showing ${products.length} product${products.length !== 1 ? 's' : ''}`}
           </div>
-          <select value={sortBy} onChange={(e) => { setSortBy(e.target.value); setPage(1); }} className="px-3 py-2 border border-[var(--border)] rounded text-sm text-[var(--text)]">
+          <select value={sortBy} onChange={(e) => { setSortBy(e.target.value); setPage(1); }} className="w-full sm:w-auto px-3 py-2.5 sm:py-2 border border-[var(--border)] rounded text-sm text-[var(--text)]">
             <option value="default">Sort: Default</option>
             <option value="price-asc">Price: Low to High</option>
             <option value="price-desc">Price: High to Low</option>
@@ -137,12 +151,12 @@ function ShopContent() {
             </div>
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex justify-center gap-2 mt-10">
+              <div className="flex flex-wrap justify-center gap-2 mt-10">
                 {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
                   <button
                     key={p}
                     onClick={() => setPage(p)}
-                    className={`w-10 h-10 rounded text-sm font-medium transition-colors ${p === page ? 'bg-[var(--copper)] text-white' : 'border border-[var(--border)] text-[var(--text)] hover:border-[var(--copper)] hover:text-[var(--copper)]'}`}
+                    className={`min-w-[44px] min-h-[44px] w-10 h-10 rounded text-sm font-medium transition-colors ${p === page ? 'bg-[var(--copper)] text-white' : 'border border-[var(--border)] text-[var(--text)] hover:border-[var(--copper)] hover:text-[var(--copper)]'}`}
                   >
                     {p}
                   </button>
@@ -155,7 +169,7 @@ function ShopContent() {
             <div className="text-6xl mb-5 opacity-60">🔍</div>
             <h2 className="font-serif text-2xl text-[var(--dark)] mb-3">No Products Found</h2>
             <p className="text-[var(--text-light)] mb-7">Try adjusting your filters</p>
-            <button onClick={() => { setSelectedCategories([]); setPriceMin(''); setPriceMax(''); setSearchText(''); setPage(1); }} className="bg-[var(--copper)] text-white px-8 py-3 rounded text-sm font-medium uppercase tracking-wider hover:bg-[var(--copper-dark)] transition-colors">
+            <button onClick={() => { setSelectedCategories([]); setPriceMin(''); setPriceMax(''); setSearchText(''); setPage(1); }} className="bg-[var(--copper)] text-white px-6 sm:px-8 py-3 rounded text-sm font-medium uppercase tracking-wider hover:bg-[var(--copper-dark)] transition-colors min-h-[44px]">
               Clear Filters
             </button>
           </div>

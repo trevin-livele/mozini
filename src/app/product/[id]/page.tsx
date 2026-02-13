@@ -136,13 +136,13 @@ export default function ProductPage() {
                 </div>
               </div>
               <div className="flex gap-2 md:gap-3 mb-5 md:mb-6 flex-wrap">
-                <button onClick={handleAddToCart} disabled={adding} className="flex-1 min-w-[200px] bg-[var(--copper)] text-white px-6 md:px-8 py-2.5 md:py-3 rounded text-xs md:text-sm font-medium uppercase tracking-wider hover:bg-[var(--copper-dark)] transition-colors disabled:opacity-50">
+                <button onClick={handleAddToCart} disabled={adding} className="flex-1 min-w-[200px] min-h-[44px] bg-[var(--copper)] text-white px-6 md:px-8 py-2.5 md:py-3 rounded text-xs md:text-sm font-medium uppercase tracking-wider hover:bg-[var(--copper-dark)] transition-colors disabled:opacity-50">
                   {adding ? 'Adding...' : '🛒 Add to Cart'}
                 </button>
-                <button onClick={handleToggleWishlist} className={`px-4 md:px-5 py-2.5 md:py-3 rounded text-xs md:text-sm font-medium uppercase tracking-wider border-2 transition-colors ${inWishlist ? 'bg-[var(--copper)] text-white border-[var(--copper)]' : 'border-[var(--copper)] text-[var(--copper)] hover:bg-[var(--copper)] hover:text-white'}`}>
+                <button onClick={handleToggleWishlist} className={`min-w-[44px] min-h-[44px] px-4 md:px-5 py-2.5 md:py-3 rounded text-xs md:text-sm font-medium uppercase tracking-wider border-2 transition-colors ${inWishlist ? 'bg-[var(--copper)] text-white border-[var(--copper)]' : 'border-[var(--copper)] text-[var(--copper)] hover:bg-[var(--copper)] hover:text-white'}`}>
                   {inWishlist ? '♥' : '♡'}
                 </button>
-                <button onClick={handleShare} className="px-4 md:px-5 py-2.5 md:py-3 rounded text-xs md:text-sm font-medium uppercase tracking-wider border-2 border-[var(--copper)] text-[var(--copper)] hover:bg-[var(--copper)] hover:text-white transition-colors">📤</button>
+                <button onClick={handleShare} className="min-w-[44px] min-h-[44px] px-4 md:px-5 py-2.5 md:py-3 rounded text-xs md:text-sm font-medium uppercase tracking-wider border-2 border-[var(--copper)] text-[var(--copper)] hover:bg-[var(--copper)] hover:text-white transition-colors">📤</button>
               </div>
               <div className="text-xs md:text-sm text-[var(--text-light)] leading-7 md:leading-8">
                 <div><strong className="text-[var(--dark)] font-medium">SKU:</strong> MZ-{String(product.id).padStart(4, '0')}</div>

@@ -208,7 +208,7 @@ export default function Header() {
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="sm:w-5 sm:h-5 md:w-[22px] md:h-[22px]"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
               </button>
               {searchOpen && (
-                <div className="fixed left-4 right-4 sm:absolute sm:left-auto sm:right-0 md:right-auto md:left-1/2 md:-translate-x-1/2 top-[60px] sm:top-full sm:mt-3 bg-white border border-[var(--border)] rounded-2xl shadow-2xl sm:w-[380px] md:w-[400px] z-50 overflow-hidden">
+                <div className="fixed left-2 right-2 sm:absolute sm:left-auto sm:right-0 md:right-auto md:left-1/2 md:-translate-x-1/2 top-[60px] sm:top-full sm:mt-3 bg-white border border-[var(--border)] rounded-2xl shadow-2xl sm:w-[380px] md:w-[400px] z-[60] overflow-hidden max-h-[calc(100vh-80px)] overflow-y-auto">
                   <form onSubmit={handleSearchSubmit}>
                     {/* Header */}
                     <div className="flex items-center justify-between px-5 pt-4 pb-2">
@@ -341,9 +341,9 @@ export default function Header() {
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <>
-          <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setMobileMenuOpen(false)}></div>
-          <div className="fixed top-0 left-0 w-[280px] h-full bg-white z-50 shadow-lg lg:hidden overflow-y-auto">
-            <div className="p-6">
+          <div className="fixed inset-0 bg-black/50 z-[60] lg:hidden" onClick={() => setMobileMenuOpen(false)}></div>
+          <div className="fixed top-0 left-0 w-[min(280px,85vw)] h-full bg-white z-[70] shadow-lg lg:hidden overflow-y-auto overscroll-contain">
+            <div className="p-6 pb-20">
               <div className="flex items-center justify-between mb-8">
                 {logoError ? (
                   <span className="w-8 h-8 rounded-xl bg-[var(--copper)] flex items-center justify-center text-white font-serif font-bold text-lg shadow-sm">M</span>
@@ -388,7 +388,12 @@ export default function Header() {
                     )}
                     <Link href="/profile" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-sm text-[var(--text)] hover:text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors">MY PROFILE</Link>
                     <Link href="/orders" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-sm text-[var(--text)] hover:text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors">MY ORDERS</Link>
-                    <button onClick={() => { setMobileMenuOpen(false); signOut(); }} className="px-4 py-3 text-sm text-left text-[var(--text)] hover:text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors">SIGN OUT</button>
+                    <button onClick={async () => { 
+                      setMobileMenuOpen(false); 
+                      await signOut();
+                      router.push('/');
+                      router.refresh();
+                    }} className="px-4 py-3 text-sm text-left text-[var(--text)] hover:text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors">SIGN OUT</button>
                   </>
                 ) : (
                   <>

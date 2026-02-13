@@ -257,21 +257,21 @@ export default function CheckoutPage() {
                         className="w-full px-3 md:px-4 py-2.5 md:py-3 border border-[var(--border)] rounded text-sm focus:border-[var(--copper)] transition-colors"
                       />
                       {selectedArea && !showAreaDropdown && (
-                        <div className="mt-2 flex items-center gap-2 text-sm">
-                          <span className="bg-[rgba(44,95,99,0.1)] text-[var(--copper)] px-3 py-1.5 rounded-full text-xs font-medium">
+                        <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
+                          <span className="bg-[rgba(44,95,99,0.1)] text-[var(--copper)] px-2 md:px-3 py-1 md:py-1.5 rounded-full text-[10px] md:text-xs font-medium break-words max-w-full">
                             📍 {selectedArea.area_name} — {selectedArea.zone_label} ({selectedArea.zone_name}) — KES {selectedArea.fee}
                           </span>
                           <button
                             type="button"
                             onClick={() => { setSelectedAreaId(null); setAreaSearch(''); }}
-                            className="text-xs text-red-500 hover:text-red-700"
+                            className="text-[10px] md:text-xs text-red-500 hover:text-red-700 whitespace-nowrap"
                           >
                             Change
                           </button>
                         </div>
                       )}
                       {showAreaDropdown && (
-                        <div className="absolute z-20 top-full left-0 right-0 mt-1 bg-white border border-[var(--border)] rounded-lg shadow-lg max-h-64 overflow-y-auto">
+                        <div className="absolute z-20 top-full left-0 right-0 mt-1 bg-white border border-[var(--border)] rounded-lg shadow-lg max-h-[min(16rem,50vh)] overflow-y-auto overscroll-contain">
                           {filteredAreas.length === 0 ? (
                             <div className="px-4 py-3 text-xs text-[var(--text-light)]">No areas found. Try a different search.</div>
                           ) : (
@@ -280,7 +280,7 @@ export default function CheckoutPage() {
                                 .filter((z) => filteredAreas.some((a) => a.zone_name === z.zone_name))
                                 .map((zone) => (
                                   <div key={zone.zone_name}>
-                                    <div className="px-3 py-1.5 bg-gray-50 text-xs font-semibold text-gray-500 uppercase tracking-wide sticky top-0">
+                                    <div className="px-3 py-1.5 bg-gray-50 text-[10px] md:text-xs font-semibold text-gray-500 uppercase tracking-wide sticky top-0 z-10">
                                       {zone.zone_name} — {zone.zone_label}
                                     </div>
                                     {filteredAreas
@@ -294,10 +294,10 @@ export default function CheckoutPage() {
                                             setAreaSearch('');
                                             setShowAreaDropdown(false);
                                           }}
-                                          className={`w-full text-left px-4 py-2.5 text-sm hover:bg-[rgba(44,95,99,0.05)] flex justify-between items-center transition-colors ${selectedAreaId === area.id ? 'bg-[rgba(44,95,99,0.08)]' : ''}`}
+                                          className={`w-full text-left px-3 md:px-4 py-2 md:py-2.5 text-xs md:text-sm hover:bg-[rgba(44,95,99,0.05)] flex justify-between items-center gap-2 transition-colors ${selectedAreaId === area.id ? 'bg-[rgba(44,95,99,0.08)]' : ''}`}
                                         >
-                                          <span className="text-[var(--dark)]">{area.area_name}</span>
-                                          <span className="text-xs font-semibold text-[var(--copper)]">KES {area.fee}</span>
+                                          <span className="text-[var(--dark)] truncate">{area.area_name}</span>
+                                          <span className="text-[10px] md:text-xs font-semibold text-[var(--copper)] whitespace-nowrap">KES {area.fee}</span>
                                         </button>
                                       ))}
                                   </div>
