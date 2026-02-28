@@ -54,7 +54,10 @@ export default function AdminMessages() {
       </div>
 
       {loading ? (
-        <p>Loading...</p>
+        <div className="flex items-center justify-center py-16 gap-3">
+          <div className="w-8 h-8 border-3 border-gray-200 border-t-[var(--copper)] rounded-full animate-spin" />
+          <span className="text-sm text-gray-500">Loading messages...</span>
+        </div>
       ) : messages.length === 0 ? (
         <div className="bg-white rounded-lg shadow p-12 text-center">
           <div className="text-5xl mb-4 opacity-50">📭</div>

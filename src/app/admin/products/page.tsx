@@ -168,7 +168,10 @@ export default function AdminProducts() {
       )}
 
       {loading ? (
-        <p>Loading...</p>
+        <div className="flex items-center justify-center py-16 gap-3">
+          <div className="w-8 h-8 border-3 border-gray-200 border-t-[var(--copper)] rounded-full animate-spin" />
+          <span className="text-sm text-gray-500">Loading products...</span>
+        </div>
       ) : (
         <>
           <div className="bg-white rounded-lg shadow overflow-hidden">

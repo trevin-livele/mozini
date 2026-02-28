@@ -9,18 +9,21 @@ import { CATEGORIES as FALLBACK_CATEGORIES } from '@/lib/data';
 export default function CollectionsPage() {
   const [categories, setCategories] = useState<CategoryTree[]>([]);
   const [collections, setCollections] = useState<Collection[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getCategoryTree()
-      .then((tree) => {
-        if (tree.length > 0) setCategories(tree);
-        else setCategories(FALLBACK_CATEGORIES.map((c) => ({
-          id: 0, name: c.name, slug: c.name, icon: c.icon, image_url: c.image || null, sort_order: 0,
-          children: c.subcategories?.map((s) => ({ id: 0, name: s.name, slug: s.name, icon: c.icon, image_url: s.image || null, sort_order: 0, children: [] })) || [],
-        })));
-      })
-      .catch(() => {});
-    getCollections().then(setCollections).catch(() => {});
+    Promise.all([
+      getCategoryTree()
+        .then((tree) => {
+          if (tree.length > 0) setCategories(tree);
+          else setCategories(FALLBACK_CATEGORIES.map((c) => ({
+            id: 0, name: c.name, slug: c.name, icon: c.icon, image_url: c.image || null, sort_order: 0,
+            children: c.subcategories?.map((s) => ({ id: 0, name: s.name, slug: s.name, icon: c.icon, image_url: s.image || null, sort_order: 0, children: [] })) || [],
+          })));
+        })
+        .catch(() => {}),
+      getCollections().then(setCollections).catch(() => {}),
+    ]).finally(() => setLoading(false));
   }, []);
 
   return (
@@ -35,6 +38,13 @@ export default function CollectionsPage() {
       </div>
       <div className="py-10 pb-20">
         <div className="max-w-6xl mx-auto px-5">
+          {loading ? (
+            <div className="flex flex-col items-center justify-center py-20 gap-4">
+              <div className="w-10 h-10 border-3 border-[var(--border)] border-t-[var(--copper)] rounded-full animate-spin" />
+              <p className="text-sm text-[var(--text-light)]">Loading collections...</p>
+            </div>
+          ) : (
+            <>
           {collections.length > 0 && (
             <div className="mb-12">
               <h2 className="font-serif text-2xl text-[var(--dark)] mb-6 text-center">Special Collections</h2>
@@ -80,6 +90,8 @@ export default function CollectionsPage() {
               </Link>
             ))}
           </div>
+            </>
+          )}
         </div>
       </div>
     </>

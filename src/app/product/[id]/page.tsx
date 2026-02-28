@@ -36,7 +36,12 @@ export default function ProductPage() {
   }, [productId]);
 
   if (loading) {
-    return <div className="text-center py-20 text-[var(--text-light)]">Loading...</div>;
+    return (
+      <div className="flex flex-col items-center justify-center py-20 gap-4">
+        <div className="w-10 h-10 border-3 border-[var(--border)] border-t-[var(--copper)] rounded-full animate-spin" />
+        <p className="text-sm text-[var(--text-light)]">Loading product...</p>
+      </div>
+    );
   }
 
   if (!product) {

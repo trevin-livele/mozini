@@ -34,7 +34,10 @@ export default function WishlistPage() {
       <div className="py-12 pb-20">
         <div className="max-w-6xl mx-auto px-5">
           {loading ? (
-            <div className="text-center py-20 text-[var(--text-light)]">Loading...</div>
+            <div className="flex flex-col items-center justify-center py-20 gap-4">
+              <div className="w-10 h-10 border-3 border-[var(--border)] border-t-[var(--copper)] rounded-full animate-spin" />
+              <p className="text-sm text-[var(--text-light)]">Loading wishlist...</p>
+            </div>
           ) : !user ? (
             <div className="text-center py-20">
               <div className="text-6xl mb-5 opacity-60">♡</div>

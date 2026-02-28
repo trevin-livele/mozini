@@ -1,0 +1,10 @@
+'use client';
+
+export default function LoadingSpinner({ message = 'Loading...' }: { message?: string }) {
+  return (
+    <div className="flex flex-col items-center justify-center py-20 gap-4">
+      <div className="w-10 h-10 border-3 border-[var(--border)] border-t-[var(--copper)] rounded-full animate-spin" />
+      <p className="text-sm text-[var(--text-light)]">{message}</p>
+    </div>
+  );
+}

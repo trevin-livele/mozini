@@ -104,7 +104,7 @@ export default function AdminDeliveryZonesPage() {
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
   const paged = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-  if (loading) return <div className="py-10 text-center text-gray-500">Loading delivery zones...</div>;
+  if (loading) return <div className="flex items-center justify-center py-16 gap-3"><div className="w-8 h-8 border-3 border-gray-200 border-t-[var(--copper)] rounded-full animate-spin" /><span className="text-sm text-gray-500">Loading delivery zones...</span></div>;
 
   return (
     <div>

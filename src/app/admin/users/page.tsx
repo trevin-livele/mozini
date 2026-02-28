@@ -33,7 +33,10 @@ export default function AdminUsers() {
       <h1 className="text-2xl font-bold mb-6">Users</h1>
 
       {loading ? (
-        <p>Loading...</p>
+        <div className="flex items-center justify-center py-16 gap-3">
+          <div className="w-8 h-8 border-3 border-gray-200 border-t-[var(--copper)] rounded-full animate-spin" />
+          <span className="text-sm text-gray-500">Loading users...</span>
+        </div>
       ) : (
         <div className="bg-white rounded-lg shadow overflow-hidden">
           {/* Desktop table */}

@@ -17,7 +17,12 @@ export default function CollectionDetailPage() {
     getCollectionProducts(slug).then(setCollection).finally(() => setLoading(false));
   }, [slug]);
 
-  if (loading) return <div className="text-center py-20 text-[var(--text-light)]">Loading...</div>;
+  if (loading) return (
+    <div className="flex flex-col items-center justify-center py-20 gap-4">
+      <div className="w-10 h-10 border-3 border-[var(--border)] border-t-[var(--copper)] rounded-full animate-spin" />
+      <p className="text-sm text-[var(--text-light)]">Loading collection...</p>
+    </div>
+  );
   if (!collection) return (
     <div className="text-center py-20">
       <h1 className="font-serif text-3xl text-[var(--dark)] mb-4">Collection Not Found</h1>

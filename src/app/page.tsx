@@ -231,7 +231,10 @@ export default function Home() {
             ))}
           </div>
           {loadingProducts ? (
-            <div className="py-20 text-[var(--text-light)]">Loading products...</div>
+            <div className="flex flex-col items-center justify-center py-20 gap-4">
+              <div className="w-10 h-10 border-3 border-[var(--border)] border-t-[var(--copper)] rounded-full animate-spin" />
+              <p className="text-sm text-[var(--text-light)]">Loading products...</p>
+            </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
               {products.map((product) => (

@@ -199,7 +199,10 @@ export default function AdminBroadcast() {
           </div>
 
           {loading ? (
-            <p className="text-sm text-gray-400">Loading...</p>
+            <div className="flex items-center justify-center py-8 gap-3">
+              <div className="w-8 h-8 border-3 border-gray-200 border-t-[var(--copper)] rounded-full animate-spin" />
+              <span className="text-sm text-gray-500">Loading...</span>
+            </div>
           ) : (
             <>
               <div className="text-xs text-gray-400 mb-3">
