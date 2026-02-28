@@ -76,7 +76,7 @@ export default function PrivacyPage() {
           <p>For privacy-related questions or requests:</p>
           <ul>
             <li>WhatsApp: <a href="https://wa.me/254115757568" className="text-[var(--copper)]">+254 115 757 568</a></li>
-            <li>Email: <a href="mailto:info@mozini.co.ke" className="text-[var(--copper)]">info@mozini.co.ke</a></li>
+            <li>Email: <a href="mailto:info@mizini.co.ke" className="text-[var(--copper)]">info@mizini.co.ke</a></li>
           </ul>
         </div>
       </div>

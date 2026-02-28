@@ -25,6 +25,7 @@ function ShopContent() {
   const [sortBy, setSortBy] = useState('default');
   const [page, setPage] = useState(1);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const [selectedOccasion, setSelectedOccasion] = useState('');
   const PAGE_SIZE = 12;
 
   useEffect(() => {
@@ -59,12 +60,20 @@ function ShopContent() {
         const min = parseInt(priceMin) || 0;
         const max = parseInt(priceMax) || Infinity;
         filtered = filtered.filter((pr) => pr.price >= min && pr.price <= max);
+        if (selectedOccasion) {
+          const occasionLower = selectedOccasion.toLowerCase();
+          filtered = filtered.filter((pr) =>
+            pr.category?.toLowerCase().includes(occasionLower) ||
+            pr.name?.toLowerCase().includes(occasionLower) ||
+            pr.desc?.toLowerCase().includes(occasionLower)
+          );
+        }
         setProducts(filtered);
         setTotal(t);
       })
       .catch(() => { setProducts([]); setTotal(0); })
       .finally(() => setLoading(false));
-  }, [selectedCategories, sortBy, page, priceMin, priceMax, searchText]);
+  }, [selectedCategories, sortBy, page, priceMin, priceMax, searchText, selectedOccasion]);
 
   const toggleCategory = (cat: string) => {
     setSelectedCategories((prev) =>
@@ -117,7 +126,40 @@ function ShopContent() {
           </div>
         </div>
         <div className="mb-6 lg:mb-8">
-          <h3 className="text-sm lg:text-[15px] font-semibold text-[var(--dark)] mb-3 lg:mb-4 pb-2 lg:pb-2.5 border-b-2 border-[var(--copper)]">Price Range (KES)</h3>
+          <h3 className="text-sm lg:text-[15px] font-semibold text-[var(--dark)] mb-3 lg:mb-4 pb-2 lg:pb-2.5 border-b-2 border-[var(--copper)]">Occasion</h3>
+          <input
+            type="text"
+            placeholder="Type an occasion..."
+            value={selectedOccasion}
+            onChange={(e) => { setSelectedOccasion(e.target.value); setPage(1); }}
+            className="w-full px-3 py-2.5 lg:py-2 border border-[var(--border)] rounded text-sm focus:border-[var(--copper)] focus:outline-none transition-colors mb-2"
+          />
+          <div className="flex flex-wrap gap-1.5">
+            {[
+              { value: '', label: 'All' },
+              { value: 'Valentine', label: '💝 Valentine' },
+              { value: 'Birthday', label: '🎂 Birthday' },
+              { value: 'Anniversary', label: '💍 Anniversary' },
+              { value: 'Wedding', label: '💒 Wedding' },
+              { value: 'Gift', label: '🎁 Gift' },
+            ].map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => { setSelectedOccasion(opt.value); setPage(1); }}
+                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+                  selectedOccasion === opt.value
+                    ? 'bg-[var(--copper)] text-white shadow-sm'
+                    : 'bg-[var(--bg-soft)] text-[var(--text)] hover:bg-[var(--border)]'
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="mb-6 lg:mb-8">
+          <h3 className="text-sm lg:text-[15px] font-semibold text-[var(--dark)] mb-3 lg:mb-4 pb-2 lg:pb-2.5 border-b-2 border-[var(--copper)]">Budget (KES)</h3>
           <div className="flex gap-2 lg:gap-2.5 items-center">
             <input type="number" placeholder="Min" value={priceMin} onChange={(e) => { setPriceMin(e.target.value); setPage(1); }} className="w-full px-3 py-2.5 lg:py-2 border border-[var(--border)] rounded text-sm" />
             <span className="text-[var(--text-light)]">—</span>
@@ -169,7 +211,7 @@ function ShopContent() {
             <div className="text-6xl mb-5 opacity-60">🔍</div>
             <h2 className="font-serif text-2xl text-[var(--dark)] mb-3">No Products Found</h2>
             <p className="text-[var(--text-light)] mb-7">Try adjusting your filters</p>
-            <button onClick={() => { setSelectedCategories([]); setPriceMin(''); setPriceMax(''); setSearchText(''); setPage(1); }} className="bg-[var(--copper)] text-white px-6 sm:px-8 py-3 rounded text-sm font-medium uppercase tracking-wider hover:bg-[var(--copper-dark)] transition-colors min-h-[44px]">
+            <button onClick={() => { setSelectedCategories([]); setPriceMin(''); setPriceMax(''); setSearchText(''); setSelectedOccasion(''); setPage(1); }} className="bg-[var(--copper)] text-white px-6 sm:px-8 py-3 rounded text-sm font-medium uppercase tracking-wider hover:bg-[var(--copper-dark)] transition-colors min-h-[44px]">
               Clear Filters
             </button>
           </div>

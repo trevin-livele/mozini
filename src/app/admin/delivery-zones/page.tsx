@@ -18,6 +18,8 @@ export default function AdminDeliveryZonesPage() {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
   const [filter, setFilter] = useState('');
+  const [zoneFilter, setZoneFilter] = useState('');
+  const [page, setPage] = useState(1);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editFee, setEditFee] = useState('');
   const [editArea, setEditArea] = useState('');
@@ -86,22 +88,21 @@ export default function AdminDeliveryZonesPage() {
     setSaving(false);
   };
 
-  // Group by zone for display
-  const grouped = new Map<string, DeliveryZone[]>();
-  const filtered = zones.filter(
-    (z) =>
-      !filter ||
-      z.area_name.toLowerCase().includes(filter.toLowerCase()) ||
-      z.zone_name.toLowerCase().includes(filter.toLowerCase()) ||
-      z.zone_label.toLowerCase().includes(filter.toLowerCase())
-  );
-  for (const z of filtered) {
-    if (!grouped.has(z.zone_name)) grouped.set(z.zone_name, []);
-    grouped.get(z.zone_name)!.push(z);
-  }
+  // Unique zone names for filters and add form
+  const uniqueZones = [...new Map(zones.map(z => [z.zone_name, { zone_name: z.zone_name, zone_label: z.zone_label }])).values()];
+  const existingZones = uniqueZones.map(z => `${z.zone_name}|${z.zone_label}`);
 
-  // Unique zone names for the add form dropdown
-  const existingZones = [...new Set(zones.map((z) => `${z.zone_name}|${z.zone_label}`))];
+  // Filter
+  const filtered = zones.filter((z) => {
+    if (zoneFilter && z.zone_name !== zoneFilter) return false;
+    if (filter && !z.area_name.toLowerCase().includes(filter.toLowerCase()) && !z.zone_label.toLowerCase().includes(filter.toLowerCase())) return false;
+    return true;
+  });
+
+  // Pagination
+  const PAGE_SIZE = 10;
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const paged = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   if (loading) return <div className="py-10 text-center text-gray-500">Loading delivery zones...</div>;
 
@@ -110,11 +111,21 @@ export default function AdminDeliveryZonesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Delivery Zones</h1>
         <div className="flex gap-2">
+          <select
+            value={zoneFilter}
+            onChange={(e) => { setZoneFilter(e.target.value); setPage(1); }}
+            className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:border-blue-500 focus:outline-none"
+          >
+            <option value="">All Zones</option>
+            {uniqueZones.map((z) => (
+              <option key={z.zone_name} value={z.zone_name}>{z.zone_name} — {z.zone_label}</option>
+            ))}
+          </select>
           <input
             type="text"
             placeholder="Search areas..."
             value={filter}
-            onChange={(e) => setFilter(e.target.value)}
+            onChange={(e) => { setFilter(e.target.value); setPage(1); }}
             className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:border-blue-500 focus:outline-none w-48"
           />
           <button
@@ -211,111 +222,78 @@ export default function AdminDeliveryZonesPage() {
         </div>
       )}
 
-      <p className="text-xs text-gray-500 mb-4">{zones.length} areas across {new Set(zones.map((z) => z.zone_name)).size} zones</p>
+      <p className="text-xs text-gray-500 mb-4">{filtered.length} areas{zoneFilter ? ` in ${zoneFilter}` : ` across ${new Set(zones.map((z) => z.zone_name)).size} zones`}</p>
 
-      {/* Zone tables */}
-      <div className="space-y-6 overflow-x-auto">
-        {Array.from(grouped.entries()).map(([zoneName, areas]) => (
-          <div key={zoneName} className="mb-6">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-sm font-bold text-gray-800">{zoneName}</span>
-              <span className="text-xs text-gray-500">— {areas[0]?.zone_label}</span>
-              <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{areas.length} areas</span>
-            </div>
-            <div className="bg-white border border-gray-200 rounded-lg overflow-x-auto">
-              <table className="w-full text-sm min-w-[600px]">
-                <thead>
-                  <tr className="bg-gray-50 text-left text-xs text-gray-500 uppercase">
-                    <th className="px-4 py-2.5">Area</th>
-                    <th className="px-4 py-2.5 w-28">Fee</th>
-                    <th className="px-4 py-2.5 w-16">Active</th>
-                    <th className="px-4 py-2.5 w-32 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {areas.map((z) => (
-                    <tr key={z.id} className={`border-t border-gray-100 ${!z.is_active ? 'opacity-50' : ''}`}>
-                      <td className="px-4 py-2.5">
-                        {editingId === z.id ? (
-                          <input
-                            value={editArea}
-                            onChange={(e) => setEditArea(e.target.value)}
-                            className="px-2 py-1 border border-gray-300 rounded text-sm w-full"
-                          />
-                        ) : (
-                          <span className="text-gray-800">{z.area_name}</span>
-                        )}
-                      </td>
-                      <td className="px-4 py-2.5">
-                        {editingId === z.id ? (
-                          <input
-                            type="number"
-                            min="0"
-                            value={editFee}
-                            onChange={(e) => setEditFee(e.target.value)}
-                            className="px-2 py-1 border border-gray-300 rounded text-sm w-20"
-                          />
-                        ) : (
-                          <span className="font-medium text-gray-700">{formatKES(z.fee)}</span>
-                        )}
-                      </td>
-                      <td className="px-4 py-2.5">
-                        <button
-                          onClick={() => handleToggle(z)}
-                          className={`w-8 h-5 rounded-full transition-colors relative ${z.is_active ? 'bg-green-500' : 'bg-gray-300'}`}
-                          aria-label={z.is_active ? 'Deactivate' : 'Activate'}
-                        >
-                          <span className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${z.is_active ? 'left-3.5' : 'left-0.5'}`} />
-                        </button>
-                      </td>
-                      <td className="px-4 py-2.5 text-right">
-                        {editingId === z.id ? (
-                          <div className="flex gap-1 justify-end">
-                            <button
-                              onClick={() => handleSaveEdit(z.id)}
-                              disabled={saving}
-                              className="px-2.5 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700 disabled:opacity-50"
-                            >
-                              Save
-                            </button>
-                            <button
-                              onClick={() => setEditingId(null)}
-                              className="px-2.5 py-1 bg-gray-200 text-gray-700 rounded text-xs hover:bg-gray-300"
-                            >
-                              Cancel
-                            </button>
-                          </div>
-                        ) : (
-                          <div className="flex gap-1 justify-end">
-                            <button
-                              onClick={() => { setEditingId(z.id); setEditFee(String(z.fee)); setEditArea(z.area_name); }}
-                              className="px-2.5 py-1 bg-blue-50 text-blue-700 rounded text-xs hover:bg-blue-100"
-                            >
-                              Edit
-                            </button>
-                            <button
-                              onClick={() => handleDelete(z.id, z.area_name)}
-                              className="px-2.5 py-1 bg-red-50 text-red-700 rounded text-xs hover:bg-red-100"
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        ))}
-
-        {grouped.size === 0 && (
+      <div className="bg-white border border-gray-200 rounded-lg overflow-x-auto">
+        <table className="w-full text-sm min-w-[600px]">
+          <thead>
+            <tr className="bg-gray-50 text-left text-xs text-gray-500 uppercase border-b">
+              <th className="px-4 py-2.5">Zone</th>
+              <th className="px-4 py-2.5">Area</th>
+              <th className="px-4 py-2.5 w-28">Fee</th>
+              <th className="px-4 py-2.5 w-16">Active</th>
+              <th className="px-4 py-2.5 w-32 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {paged.map((z) => (
+              <tr key={z.id} className={`border-t border-gray-100 hover:bg-gray-50 ${!z.is_active ? 'opacity-50' : ''}`}>
+                <td className="px-4 py-2.5">
+                  <span className="font-medium text-gray-800">{z.zone_name}</span>
+                  <span className="text-xs text-gray-400 ml-1">— {z.zone_label}</span>
+                </td>
+                <td className="px-4 py-2.5">
+                  {editingId === z.id ? (
+                    <input value={editArea} onChange={(e) => setEditArea(e.target.value)} className="px-2 py-1 border border-gray-300 rounded text-sm w-full" />
+                  ) : (
+                    <span className="text-gray-800">{z.area_name}</span>
+                  )}
+                </td>
+                <td className="px-4 py-2.5">
+                  {editingId === z.id ? (
+                    <input type="number" min="0" value={editFee} onChange={(e) => setEditFee(e.target.value)} className="px-2 py-1 border border-gray-300 rounded text-sm w-20" />
+                  ) : (
+                    <span className="font-medium text-gray-700">{formatKES(z.fee)}</span>
+                  )}
+                </td>
+                <td className="px-4 py-2.5">
+                  <button onClick={() => handleToggle(z)} className={`w-8 h-5 rounded-full transition-colors relative ${z.is_active ? 'bg-green-500' : 'bg-gray-300'}`} aria-label={z.is_active ? 'Deactivate' : 'Activate'}>
+                    <span className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${z.is_active ? 'left-3.5' : 'left-0.5'}`} />
+                  </button>
+                </td>
+                <td className="px-4 py-2.5 text-right">
+                  {editingId === z.id ? (
+                    <div className="flex gap-1 justify-end">
+                      <button onClick={() => handleSaveEdit(z.id)} disabled={saving} className="px-2.5 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700 disabled:opacity-50">Save</button>
+                      <button onClick={() => setEditingId(null)} className="px-2.5 py-1 bg-gray-200 text-gray-700 rounded text-xs hover:bg-gray-300">Cancel</button>
+                    </div>
+                  ) : (
+                    <div className="flex gap-1 justify-end">
+                      <button onClick={() => { setEditingId(z.id); setEditFee(String(z.fee)); setEditArea(z.area_name); }} className="px-2.5 py-1 bg-blue-50 text-blue-700 rounded text-xs hover:bg-blue-100">Edit</button>
+                      <button onClick={() => handleDelete(z.id, z.area_name)} className="px-2.5 py-1 bg-red-50 text-red-700 rounded text-xs hover:bg-red-100">Delete</button>
+                    </div>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {filtered.length === 0 && (
           <div className="text-center py-10 text-gray-400">
-            {filter ? 'No areas match your search.' : 'No delivery zones configured yet. Click "+ Add Area" to get started.'}
+            {filter || zoneFilter ? 'No areas match your filters.' : 'No delivery zones configured yet. Click "+ Add Area" to get started.'}
           </div>
         )}
       </div>
+
+      {totalPages > 1 && (
+        <div className="flex justify-center gap-2 mt-6">
+          <button onClick={() => setPage(Math.max(1, page - 1))} disabled={page === 1} className="px-3 py-2 border rounded text-sm hover:bg-gray-50 disabled:opacity-40">← Prev</button>
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+            <button key={p} onClick={() => setPage(p)} className={`w-9 h-9 rounded text-sm font-medium ${p === page ? 'bg-[var(--copper)] text-white' : 'border hover:bg-gray-50'}`}>{p}</button>
+          ))}
+          <button onClick={() => setPage(Math.min(totalPages, page + 1))} disabled={page === totalPages} className="px-3 py-2 border rounded text-sm hover:bg-gray-50 disabled:opacity-40">Next →</button>
+        </div>
+      )}
     </div>
   );
 }

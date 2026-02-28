@@ -21,7 +21,7 @@ export default function AdminUsers() {
 
   useEffect(() => { loadUsers(); }, []);
 
-  const handleRoleChange = async (userId: string, role: 'customer' | 'admin') => {
+  const handleRoleChange = async (userId: string, role: 'customer' | 'admin' | 'super_admin') => {
     if (!confirm(`Change this user's role to ${role}?`)) return;
     const result = await updateUserRole(userId, role);
     if (result.error) alert(result.error);
@@ -59,11 +59,12 @@ export default function AdminUsers() {
                   <td className="px-4 py-3">
                     <select
                       value={u.role}
-                      onChange={(e) => handleRoleChange(u.id, e.target.value as 'customer' | 'admin')}
-                      className={`px-2 py-1 rounded text-xs border-0 cursor-pointer ${u.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-700'}`}
+                      onChange={(e) => handleRoleChange(u.id, e.target.value as 'customer' | 'admin' | 'super_admin')}
+                      className={`px-2 py-1 rounded text-xs border-0 cursor-pointer ${u.role === 'super_admin' ? 'bg-red-100 text-red-700' : u.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-700'}`}
                     >
                       <option value="customer">Customer</option>
                       <option value="admin">Admin</option>
+                      <option value="super_admin">Super Admin</option>
                     </select>
                   </td>
                   <td className="px-4 py-3 text-gray-500">
@@ -85,11 +86,12 @@ export default function AdminUsers() {
                   </div>
                   <select
                     value={u.role}
-                    onChange={(e) => handleRoleChange(u.id, e.target.value as 'customer' | 'admin')}
-                    className={`px-2 py-1 rounded text-xs border-0 cursor-pointer shrink-0 ${u.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-700'}`}
+                    onChange={(e) => handleRoleChange(u.id, e.target.value as 'customer' | 'admin' | 'super_admin')}
+                    className={`px-2 py-1 rounded text-xs border-0 cursor-pointer shrink-0 ${u.role === 'super_admin' ? 'bg-red-100 text-red-700' : u.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-700'}`}
                   >
                     <option value="customer">Customer</option>
                     <option value="admin">Admin</option>
+                    <option value="super_admin">Super Admin</option>
                   </select>
                 </div>
                 <div className="flex items-center gap-3 text-xs text-gray-400 mt-1">

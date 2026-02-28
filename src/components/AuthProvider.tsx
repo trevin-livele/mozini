@@ -27,7 +27,7 @@ export function AuthProvider({ children, initialUser }: { children: ReactNode; i
       .select('role')
       .eq('id', userId)
       .single();
-    setIsAdmin(data?.role === 'admin');
+    setIsAdmin(data?.role === 'admin' || data?.role === 'super_admin');
   };
 
   useEffect(() => {

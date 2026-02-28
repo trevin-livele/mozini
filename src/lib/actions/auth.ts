@@ -108,5 +108,5 @@ export async function isAdmin(): Promise<boolean> {
     .eq('id', user.id)
     .single();
 
-  return data?.role === 'admin';
+  return data?.role === 'admin' || data?.role === 'super_admin';
 }

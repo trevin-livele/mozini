@@ -55,16 +55,12 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
           {/* Brand */}
           <div>
-            <Link href="/" className="flex items-center gap-2 mb-4">
+            <Link href="/" className="flex items-center mb-4">
               {logoError ? (
-                <span className="w-10 h-10 rounded-xl bg-[var(--copper)] flex items-center justify-center text-white font-serif font-bold text-xl shadow-sm">M</span>
+                <span className="w-16 h-16 rounded-xl bg-[var(--copper)] flex items-center justify-center text-white font-serif font-bold text-4xl shadow-sm">M</span>
               ) : (
-                <Image src="/images/logodark.png" alt="Mozini Logo" width={40} height={40} className="h-10 w-auto" onError={() => setLogoError(true)} />
+                <Image src="/images/logodark.png" alt="Mozini Logo" width={64} height={64} className="h-16 w-auto" onError={() => setLogoError(true)} />
               )}
-              <span className="font-serif text-xl font-bold text-white leading-tight">
-                Mozini<br />
-                <span className="text-[10px] font-normal tracking-wider text-white/50 uppercase">Watches &amp; Gifts</span>
-              </span>
             </Link>
             <p className="text-sm leading-relaxed mb-5">Kenya&apos;s finest watches &amp; gifts collection. Premium timepieces, jewelry, and personalized gifts crafted with precision and love.</p>
           </div>
@@ -101,7 +97,7 @@ export default function Footer() {
             <ul className="space-y-2.5">
               <li className="text-sm">📍 Digital Shopping Mall, F27</li>
               <li><a href="https://wa.me/254115757568" target="_blank" className="text-sm hover:text-[var(--copper-light)]">💬 WhatsApp: +254 115 757 568</a></li>
-              <li><a href="mailto:info@mozini.co.ke" className="text-sm hover:text-[var(--copper-light)]">✉️ info@mozini.co.ke</a></li>
+              <li><a href="mailto:info@mizini.co.ke" className="text-sm hover:text-[var(--copper-light)]">✉️ info@mizini.co.ke</a></li>
               <li className="text-sm">🕐 Mon–Sat: 9AM–7PM</li>
             </ul>
           </div>

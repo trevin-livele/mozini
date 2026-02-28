@@ -52,7 +52,10 @@ export default function ProductCard({ product }: ProductCardProps) {
   const handleWhatsAppInquiry = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    const message = `Hi! I'm interested in this product:\n\n${product.name}\nPrice: ${formatPrice(product.price)}\n\nCan you provide more details?`;
+    const imageUrl = product.image_url
+      ? (product.image_url.startsWith('http') ? product.image_url : `${window.location.origin}${product.image_url}`)
+      : '';
+    const message = `Hi! I'm interested in this product:\n\n${product.name}\nPrice: ${formatPrice(product.price)}\n${imageUrl ? `\n📸 ${imageUrl}` : ''}\n\nCan you provide more details?`;
     window.open(`https://wa.me/254115757568?text=${encodeURIComponent(message)}`, '_blank');
   };
 

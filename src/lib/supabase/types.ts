@@ -9,7 +9,7 @@ export type Database = {
           phone: string | null;
           address: string | null;
           city: string | null;
-          role: 'customer' | 'admin';
+          role: 'customer' | 'admin' | 'super_admin';
           created_at: string;
           updated_at: string;
         };
@@ -20,7 +20,7 @@ export type Database = {
           phone?: string | null;
           address?: string | null;
           city?: string | null;
-          role?: 'customer' | 'admin';
+          role?: 'customer' | 'admin' | 'super_admin';
         };
         Update: {
           id?: string;
@@ -29,7 +29,7 @@ export type Database = {
           phone?: string | null;
           address?: string | null;
           city?: string | null;
-          role?: 'customer' | 'admin';
+          role?: 'customer' | 'admin' | 'super_admin';
         };
         Relationships: [];
       };
@@ -123,7 +123,7 @@ export type Database = {
         Row: {
           id: string;
           user_id: string | null;
-          status: 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+          status: 'pending' | 'confirmed' | 'processing' | 'dispatched' | 'delivered' | 'cancelled';
           subtotal: number;
           shipping: number;
           total: number;
@@ -375,6 +375,67 @@ export type Database = {
           is_read?: boolean;
         };
         Relationships: [];
+      };
+      collections: {
+        Row: {
+          id: number;
+          name: string;
+          slug: string;
+          description: string | null;
+          image_url: string | null;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: number;
+          name: string;
+          slug: string;
+          description?: string | null;
+          image_url?: string | null;
+          is_active?: boolean;
+        };
+        Update: {
+          id?: number;
+          name?: string;
+          slug?: string;
+          description?: string | null;
+          image_url?: string | null;
+          is_active?: boolean;
+        };
+        Relationships: [];
+      };
+      collection_products: {
+        Row: {
+          id: number;
+          collection_id: number;
+          product_id: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: number;
+          collection_id: number;
+          product_id: number;
+        };
+        Update: {
+          id?: number;
+          collection_id?: number;
+          product_id?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'collection_products_collection_id_fkey';
+            columns: ['collection_id'];
+            referencedRelation: 'collections';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'collection_products_product_id_fkey';
+            columns: ['product_id'];
+            referencedRelation: 'products';
+            referencedColumns: ['id'];
+          }
+        ];
       };
     };
     Views: Record<string, never>;

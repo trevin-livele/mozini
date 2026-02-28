@@ -85,7 +85,7 @@ export default function ContactPage() {
                 <div className="w-11 h-11 bg-[var(--bg-soft)] rounded-full flex items-center justify-center text-xl flex-shrink-0">✉️</div>
                 <div>
                   <h4 className="text-sm font-semibold text-[var(--dark)] mb-0.5">Email</h4>
-                  <p className="text-sm text-[var(--text-light)]">info@mozini.co.ke</p>
+                  <p className="text-sm text-[var(--text-light)]">info@mizini.co.ke</p>
                 </div>
               </div>
 
@@ -151,7 +151,7 @@ export default function ContactPage() {
 
                 {submitted && (
                   <div className="mt-4 p-4 bg-green-100 rounded text-sm text-green-800">
-                    ✅ Thank you! We&apos;ll get back to you within 24 hours.
+                    ✅ Thank you! We will get back to you ASAP.
                   </div>
                 )}
               </form>

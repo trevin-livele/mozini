@@ -99,6 +99,8 @@ export async function createOrder(
     shipping = pickupMtaaniFee;
   } else if (input.notes?.includes('Delivery: self-pickup')) {
     shipping = selfPickupFee;
+  } else if (input.notes?.includes('Delivery: nationwide')) {
+    shipping = 0; // fee determined by courier, communicated separately
   } else if (input.deliveryAreaId) {
     // Zone-based delivery fee — validate from DB
     const { data: zoneRow } = await supabase

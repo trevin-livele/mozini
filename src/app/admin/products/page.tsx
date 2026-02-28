@@ -16,13 +16,17 @@ export default function AdminProducts() {
   const [editing, setEditing] = useState<Product | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [categoryNames, setCategoryNames] = useState<string[]>([]);
+  const [searchText, setSearchText] = useState('');
+  const [filterCategory, setFilterCategory] = useState('');
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const totalPages = Math.ceil(total / PAGE_SIZE);
 
   const loadProducts = async (p = page) => {
     setLoading(true);
     try {
-      const data = await getAdminProducts({ page: p, limit: PAGE_SIZE });
+      const data = await getAdminProducts({ page: p, limit: PAGE_SIZE, search: searchText || undefined, category: filterCategory || undefined });
       setProducts(data.products);
       setTotal(data.total);
     } catch (e: any) {
@@ -31,12 +35,30 @@ export default function AdminProducts() {
     setLoading(false);
   };
 
-  useEffect(() => { loadProducts(page); }, [page]);
+  useEffect(() => { loadProducts(page); }, [page, searchText, filterCategory]);
   useEffect(() => { getCategoryNames().then(setCategoryNames).catch(() => {}); }, []);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+
+    // If an image file was selected, convert to base64 data URL for storage
+    if (imageFile) {
+      const reader = new FileReader();
+      const dataUrl = await new Promise<string>((resolve) => {
+        reader.onload = () => resolve(reader.result as string);
+        reader.readAsDataURL(imageFile);
+      });
+      formData.set('imageUrl', dataUrl);
+    }
 
     const result = editing
       ? await updateProduct(editing.id, formData)
@@ -47,6 +69,8 @@ export default function AdminProducts() {
     } else {
       setShowForm(false);
       setEditing(null);
+      setImageFile(null);
+      setImagePreview(null);
       loadProducts(page);
     }
   };
@@ -58,16 +82,42 @@ export default function AdminProducts() {
     else loadProducts(page);
   };
 
+  const openForm = (product?: Product) => {
+    setEditing(product || null);
+    setImageFile(null);
+    setImagePreview(product?.image_url || null);
+    setShowForm(true);
+  };
+
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
         <div>
           <h1 className="text-2xl font-bold">Products</h1>
           <p className="text-sm text-gray-500 mt-1">{total} total</p>
         </div>
-        <button onClick={() => { setEditing(null); setShowForm(true); }} className="bg-[var(--copper)] text-white px-4 py-2 rounded-lg hover:opacity-90">
+        <button onClick={() => openForm()} className="bg-[var(--copper)] text-white px-4 py-2 rounded-lg hover:opacity-90">
           + Add Product
         </button>
+      </div>
+
+      {/* Search & Filter */}
+      <div className="flex flex-col sm:flex-row gap-3 mb-6">
+        <input
+          type="text"
+          placeholder="Search products..."
+          value={searchText}
+          onChange={(e) => { setSearchText(e.target.value); setPage(1); }}
+          className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:border-[var(--copper)] focus:outline-none"
+        />
+        <select
+          value={filterCategory}
+          onChange={(e) => { setFilterCategory(e.target.value); setPage(1); }}
+          className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:border-[var(--copper)] focus:outline-none"
+        >
+          <option value="">All Categories</option>
+          {categoryNames.map(c => <option key={c} value={c}>{c}</option>)}
+        </select>
       </div>
 
       {showForm && (
@@ -89,7 +139,16 @@ export default function AdminProducts() {
                 <input name="icon" defaultValue={editing?.icon || '🎁'} placeholder="Icon (emoji)" className="border rounded px-3 py-2" />
                 <input name="stock" type="number" defaultValue={editing?.stock ?? 100} placeholder="Stock" className="border rounded px-3 py-2" />
               </div>
-              <input name="imageUrl" defaultValue={editing?.image_url || ''} placeholder="Image URL" className="w-full border rounded px-3 py-2" />
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Product Image</label>
+                <input type="file" accept="image/*" onChange={handleImageChange} className="w-full text-sm" />
+                {imagePreview && (
+                  <div className="mt-2 w-20 h-20 rounded border overflow-hidden">
+                    <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                  </div>
+                )}
+                <input type="hidden" name="imageUrl" defaultValue={editing?.image_url || ''} />
+              </div>
               <div className="grid grid-cols-2 gap-4">
                 <input name="badge" defaultValue={editing?.badge} placeholder="Badge (e.g. sale, hot)" className="border rounded px-3 py-2" />
                 <input name="tag" defaultValue={editing?.tag} placeholder="Tag (e.g. featured, new, best)" className="border rounded px-3 py-2" />
@@ -101,7 +160,7 @@ export default function AdminProducts() {
               </label>
               <div className="flex gap-3 pt-2">
                 <button type="submit" className="flex-1 bg-[var(--copper)] text-white py-2 rounded-lg hover:opacity-90">Save</button>
-                <button type="button" onClick={() => { setShowForm(false); setEditing(null); }} className="flex-1 border py-2 rounded-lg hover:bg-gray-50">Cancel</button>
+                <button type="button" onClick={() => { setShowForm(false); setEditing(null); setImageFile(null); setImagePreview(null); }} className="flex-1 border py-2 rounded-lg hover:bg-gray-50">Cancel</button>
               </div>
             </form>
           </div>
@@ -113,7 +172,6 @@ export default function AdminProducts() {
       ) : (
         <>
           <div className="bg-white rounded-lg shadow overflow-hidden">
-            {/* Desktop table */}
             <table className="w-full text-sm hidden md:table">
               <thead className="bg-gray-50 border-b">
                 <tr>
@@ -131,11 +189,7 @@ export default function AdminProducts() {
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         <div className="w-10 h-10 bg-gray-100 rounded flex items-center justify-center overflow-hidden flex-shrink-0">
-                          {p.image_url ? (
-                            <img src={p.image_url} alt={p.name} className="w-full h-full object-cover" />
-                          ) : (
-                            <span className="text-xl">{p.icon}</span>
-                          )}
+                          {p.image_url ? <img src={p.image_url} alt={p.name} className="w-full h-full object-cover" /> : <span className="text-xl">{p.icon}</span>}
                         </div>
                         <div>
                           <p className="font-medium">{p.name}</p>
@@ -152,7 +206,7 @@ export default function AdminProducts() {
                       </span>
                     </td>
                     <td className="px-4 py-3 text-right">
-                      <button onClick={() => { setEditing(p); setShowForm(true); }} className="text-blue-600 hover:underline mr-3">Edit</button>
+                      <button onClick={() => openForm(p)} className="text-blue-600 hover:underline mr-3">Edit</button>
                       <button onClick={() => handleDelete(p.id)} className="text-red-600 hover:underline">Delete</button>
                     </td>
                   </tr>
@@ -160,17 +214,12 @@ export default function AdminProducts() {
               </tbody>
             </table>
 
-            {/* Mobile cards */}
             <div className="md:hidden divide-y">
               {products.map((p) => (
                 <div key={p.id} className="p-4">
                   <div className="flex items-start gap-3">
                     <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0">
-                      {p.image_url ? (
-                        <img src={p.image_url} alt={p.name} className="w-full h-full object-cover" />
-                      ) : (
-                        <span className="text-2xl">{p.icon}</span>
-                      )}
+                      {p.image_url ? <img src={p.image_url} alt={p.name} className="w-full h-full object-cover" /> : <span className="text-2xl">{p.icon}</span>}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-sm truncate">{p.name}</p>
@@ -185,7 +234,7 @@ export default function AdminProducts() {
                     </div>
                   </div>
                   <div className="flex gap-3 mt-3 pt-2 border-t border-gray-100">
-                    <button onClick={() => { setEditing(p); setShowForm(true); }} className="text-blue-600 text-xs font-medium">Edit</button>
+                    <button onClick={() => openForm(p)} className="text-blue-600 text-xs font-medium">Edit</button>
                     <button onClick={() => handleDelete(p.id)} className="text-red-600 text-xs font-medium">Delete</button>
                   </div>
                 </div>
@@ -195,29 +244,11 @@ export default function AdminProducts() {
 
           {totalPages > 1 && (
             <div className="flex justify-center gap-2 mt-6">
-              <button
-                onClick={() => setPage(Math.max(1, page - 1))}
-                disabled={page === 1}
-                className="px-3 py-2 border rounded text-sm hover:bg-gray-50 disabled:opacity-40"
-              >
-                ← Prev
-              </button>
+              <button onClick={() => setPage(Math.max(1, page - 1))} disabled={page === 1} className="px-3 py-2 border rounded text-sm hover:bg-gray-50 disabled:opacity-40">← Prev</button>
               {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                <button
-                  key={p}
-                  onClick={() => setPage(p)}
-                  className={`w-9 h-9 rounded text-sm font-medium ${p === page ? 'bg-[var(--copper)] text-white' : 'border hover:bg-gray-50'}`}
-                >
-                  {p}
-                </button>
+                <button key={p} onClick={() => setPage(p)} className={`w-9 h-9 rounded text-sm font-medium ${p === page ? 'bg-[var(--copper)] text-white' : 'border hover:bg-gray-50'}`}>{p}</button>
               ))}
-              <button
-                onClick={() => setPage(Math.min(totalPages, page + 1))}
-                disabled={page === totalPages}
-                className="px-3 py-2 border rounded text-sm hover:bg-gray-50 disabled:opacity-40"
-              >
-                Next →
-              </button>
+              <button onClick={() => setPage(Math.min(totalPages, page + 1))} disabled={page === totalPages} className="px-3 py-2 border rounded text-sm hover:bg-gray-50 disabled:opacity-40">Next →</button>
             </div>
           )}
         </>

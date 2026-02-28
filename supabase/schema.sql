@@ -15,7 +15,7 @@ create table public.profiles (
   phone text,
   address text,
   city text,
-  role text not null default 'customer' check (role in ('customer', 'admin')),
+  role text not null default 'customer' check (role in ('customer', 'admin', 'super_admin')),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -84,7 +84,7 @@ create index idx_cart_items_user on public.cart_items(user_id);
 create table public.orders (
   id uuid default uuid_generate_v4() primary key,
   user_id uuid references public.profiles(id) on delete set null,
-  status text not null default 'pending' check (status in ('pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled')),
+  status text not null default 'pending' check (status in ('pending', 'confirmed', 'processing', 'dispatched', 'delivered', 'cancelled')),
   subtotal integer not null check (subtotal >= 0),
   shipping integer not null default 0,
   total integer not null check (total >= 0),

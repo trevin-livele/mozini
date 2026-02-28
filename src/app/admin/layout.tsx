@@ -9,12 +9,12 @@ const NAV_ITEMS = [
   { href: '/admin', label: 'Dashboard', icon: '📊' },
   { href: '/admin/products', label: 'Products', icon: '📦' },
   { href: '/admin/categories', label: 'Categories', icon: '📂' },
+  { href: '/admin/collections', label: 'Collections', icon: '🏷️' },
   { href: '/admin/orders', label: 'Orders', icon: '🛒' },
   { href: '/admin/users', label: 'Users', icon: '👥' },
   { href: '/admin/messages', label: 'Messages', icon: '💬' },
   { href: '/admin/broadcast', label: 'Broadcast', icon: '📢' },
   { href: '/admin/delivery-zones', label: 'Delivery Zones', icon: '🗺️' },
-  { href: '/admin/settings', label: 'Settings', icon: '⚙️' },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

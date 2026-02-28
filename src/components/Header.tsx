@@ -145,29 +145,24 @@ export default function Header() {
           </button>
 
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-1.5 md:gap-2 group shrink-0 min-w-0">
+          <Link href="/" className="flex items-center group shrink-0">
             {logoError ? (
-              <span className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-[var(--copper)] flex items-center justify-center text-white font-serif font-bold text-lg md:text-xl shadow-sm shrink-0">M</span>
+              <span className="w-14 h-14 md:w-16 md:h-16 rounded-xl bg-[var(--copper)] flex items-center justify-center text-white font-serif font-bold text-3xl md:text-4xl shadow-sm shrink-0">M</span>
             ) : (
-              <Image src="/images/logo.png" alt="Mozini Logo" width={40} height={40} className="h-8 md:h-10 w-auto shrink-0" onError={() => setLogoError(true)} />
+              <Image src="/images/logo.png" alt="Mozini Logo" width={64} height={64} className="h-14 md:h-16 w-auto shrink-0" onError={() => setLogoError(true)} />
             )}
-            <span className="font-serif text-base md:text-xl font-bold text-[var(--dark)] leading-tight truncate">
-              Mozini
-              <span className="hidden md:inline"><br /><span className="text-xs font-normal tracking-wider text-[var(--text-light)] uppercase">Watches &amp; Gifts</span></span>
-            </span>
           </Link>
 
           {/* Desktop Nav - Inline */}
           <nav className="hidden lg:flex items-center gap-1">
             <Link href="/" className="px-3 py-2 text-[13px] text-[var(--text)] hover:text-[var(--copper)] transition-colors">HOME</Link>
-            <Link href="/shop" className="px-3 py-2 text-[13px] text-[var(--text)] hover:text-[var(--copper)] transition-colors">SHOP</Link>
-            {/* Gifts Dropdown */}
+            {/* Shop Dropdown */}
             <div ref={giftsRef} className="relative">
               <button
                 onClick={() => setGiftsOpen(!giftsOpen)}
                 className="px-3 py-2 text-[13px] text-[var(--text)] hover:text-[var(--copper)] transition-colors flex items-center gap-1"
               >
-                GIFTS
+                SHOP
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={`transition-transform ${giftsOpen ? 'rotate-180' : ''}`}><path d="M6 9l6 6 6-6"/></svg>
               </button>
               {giftsOpen && (
@@ -196,6 +191,7 @@ export default function Header() {
                 </div>
               )}
             </div>
+            <Link href="/collections" className="px-3 py-2 text-[13px] text-[var(--text)] hover:text-[var(--copper)] transition-colors">COLLECTIONS</Link>
             <Link href="/contact" className="px-3 py-2 text-[13px] text-[var(--text)] hover:text-[var(--copper)] transition-colors">CONTACT</Link>
             <Link href="/faqs" className="px-3 py-2 text-[13px] text-[var(--text)] hover:text-[var(--copper)] transition-colors">FAQs</Link>
           </nav>
@@ -346,9 +342,9 @@ export default function Header() {
             <div className="p-6 pb-20">
               <div className="flex items-center justify-between mb-8">
                 {logoError ? (
-                  <span className="w-8 h-8 rounded-xl bg-[var(--copper)] flex items-center justify-center text-white font-serif font-bold text-lg shadow-sm">M</span>
+                  <span className="w-14 h-14 rounded-xl bg-[var(--copper)] flex items-center justify-center text-white font-serif font-bold text-3xl shadow-sm">M</span>
                 ) : (
-                  <Image src="/images/logo.png" alt="Mozini" width={32} height={32} className="h-8 w-auto" onError={() => setLogoError(true)} />
+                  <Image src="/images/logo.png" alt="Mozini" width={56} height={56} className="h-14 w-auto" onError={() => setLogoError(true)} />
                 )}
                 <button onClick={() => setMobileMenuOpen(false)} className="text-2xl">&times;</button>
               </div>
@@ -356,9 +352,9 @@ export default function Header() {
                 <Link href="/" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-sm text-[var(--text)] hover:text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors">HOME</Link>
                 <Link href="/shop" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-sm text-[var(--text)] hover:text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors">SHOP</Link>
 
-                {/* Mobile Gifts Accordion */}
+                {/* Mobile Shop Accordion */}
                 <button onClick={() => setMobileGiftsOpen(!mobileGiftsOpen)} className="px-4 py-3 text-sm text-[var(--text)] hover:text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors flex items-center justify-between">
-                  GIFTS
+                  SHOP BY CATEGORY
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={`transition-transform ${mobileGiftsOpen ? 'rotate-180' : ''}`}><path d="M6 9l6 6 6-6"/></svg>
                 </button>
                 {mobileGiftsOpen && (
@@ -378,6 +374,7 @@ export default function Header() {
                   </div>
                 )}
 
+                <Link href="/collections" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-sm text-[var(--text)] hover:text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors">COLLECTIONS</Link>
                 <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-sm text-[var(--text)] hover:text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors">CONTACT</Link>
                 <Link href="/faqs" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-sm text-[var(--text)] hover:text-[var(--copper)] hover:bg-[var(--bg-soft)] rounded transition-colors">FAQs</Link>
                 <hr className="my-2 border-[var(--border)]" />

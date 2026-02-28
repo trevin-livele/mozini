@@ -11,6 +11,8 @@ import type { Product, Order, Profile, ContactMessage } from '@/lib/supabase/typ
 export async function getAdminProducts(options?: {
   page?: number;
   limit?: number;
+  search?: string;
+  category?: string;
 }): Promise<{ products: Product[]; total: number }> {
   if (!(await isAdmin())) throw new Error('Unauthorized');
   
@@ -19,11 +21,21 @@ export async function getAdminProducts(options?: {
   const from = (page - 1) * limit;
 
   const supabase = await createClient();
-  const { data, error, count } = await supabase
+  let query = supabase
     .from('products')
     .select('*', { count: 'exact' })
-    .order('created_at', { ascending: false })
-    .range(from, from + limit - 1);
+    .order('created_at', { ascending: false });
+
+  if (options?.search) {
+    query = query.ilike('name', `%${options.search}%`);
+  }
+  if (options?.category) {
+    query = query.eq('category', options.category);
+  }
+
+  query = query.range(from, from + limit - 1);
+
+  const { data, error, count } = await query;
 
   if (error) throw new Error(error.message);
   return { products: data || [], total: count || 0 };
@@ -129,7 +141,7 @@ export async function updateOrderStatus(orderId: string, status: string) {
     const statusMessages: Record<string, string> = {
       confirmed: `Hi ${order.shipping_name}! ✅ Your Mozini order #${orderId.slice(0, 8)} has been *confirmed*. We're preparing it now!`,
       processing: `Hi ${order.shipping_name}! 📦 Your Mozini order #${orderId.slice(0, 8)} is being *processed* and will be shipped soon.`,
-      shipped: `Hi ${order.shipping_name}! 🚚 Great news! Your Mozini order #${orderId.slice(0, 8)} has been *shipped*. It's on its way to you!`,
+      dispatched: `Hi ${order.shipping_name}! 🚚 Great news! Your Mozini order #${orderId.slice(0, 8)} has been *dispatched*. It's on its way to you!`,
       delivered: `Hi ${order.shipping_name}! 🎉 Your Mozini order #${orderId.slice(0, 8)} has been *delivered*. Enjoy your purchase! Thank you for shopping with us 💝`,
       cancelled: `Hi ${order.shipping_name}, your Mozini order #${orderId.slice(0, 8)} has been *cancelled*. If you have questions, please reach out to us.`,
     };
@@ -160,7 +172,7 @@ export async function getAdminUsers(): Promise<Profile[]> {
   return data || [];
 }
 
-export async function updateUserRole(userId: string, role: 'customer' | 'admin') {
+export async function updateUserRole(userId: string, role: 'customer' | 'admin' | 'super_admin') {
   if (!(await isAdmin())) return { error: 'Unauthorized' };
   
   const supabase = await createClient();
